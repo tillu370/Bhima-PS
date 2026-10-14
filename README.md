@@ -62,3 +62,18 @@ update public.profiles set role = 'admin' where email = 'someone@example.com';
 - Confirm the phone number and email shown in the footer.
 - Set the real WhatsApp number in `js/config.js` (`whatsapp`, format `91XXXXXXXXXX`). It currently uses the footer number +91 98765 43210, which looks like a placeholder.
 - Online payments are not implemented.
+
+## Deploy on Vercel
+
+`vercel.json` is included (no framework, no install step). Import the GitHub repo in Vercel and add these
+Environment Variables (see `.env.example`):
+
+| Variable | Value |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | your project URL, `https://xxxx.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | the `sb_publishable_...` key |
+| `WHATSAPP_NUMBER` | e.g. `919876543210` |
+
+During the build, `scripts/build-config.js` writes these into `js/config.js`. If no variables are set, the
+committed `js/config.js` is used as is. Only public values belong here: never add a `service_role` / `sb_secret_` key.
+After deploying, add the Vercel URL to Supabase > Authentication > URL Configuration.
