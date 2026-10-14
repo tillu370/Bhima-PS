@@ -1,0 +1,227 @@
+/* ==========================================================================
+   BHIMA PRINT - MOBILE LAYER (loaded last on every page)
+   Tablet <= 900px, phone <= 640px, small phone <= 380px.
+   ========================================================================== */
+
+/* ---------- all small screens ---------- */
+@media (max-width: 900px) {
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  :root { --section-y: 38px; --gutter: 16px; }
+
+  /* backdrop-filter breaks rendering on many phones and is costly: use solid colours */
+  *, *::before, *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .main-header { background: #fff; }
+  .corp-badge { background: #fff; }
+
+  /* 16px inputs stop iOS from zooming the page when a field is focused */
+  input, select, textarea { font-size: 16px !important; }
+  .btn, .pill-btn, .icon-btn, .qty-stepper button, .faq-question { -webkit-tap-highlight-color: transparent; }
+
+  /* modal becomes a bottom sheet, cart drawer fills the screen height */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal-card, .modal-card.wide { width: 100%; max-width: none; border-radius: 24px 24px 0 0; max-height: 92vh; max-height: 92dvh; padding: 22px 18px calc(22px + env(safe-area-inset-bottom)); }
+  .cart-drawer { height: 100vh; height: 100dvh; width: min(100vw, 440px); }
+  .cart-drawer-footer { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+  .toast { left: 12px; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); max-width: none; transform: translateY(20px); text-align: center; }
+  .toast.show { transform: translateY(0); }
+
+  .section-header { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 22px; }
+  .hero-section::after, .categories-section::before, .page-hero::after { display: none; }
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 640px) {
+  :root { --section-y: 32px; }
+
+  /* top bar + header */
+  .top-bar { font-size: .8rem; padding: 7px 0; }
+  .follow-text { display: none; }
+  .main-header { padding: 9px 0; }
+  .mobile-nav { top: 64px; max-height: calc(100vh - 64px); overflow-y: auto; }
+  .mobile-nav a { min-height: 48px; display: flex; align-items: center; }
+
+  /* hero */
+  .hero-section { padding: 22px 0 28px; }
+  .hero-title { font-size: clamp(2.3rem, 11vw, 3rem); margin-bottom: 14px; }
+  .hero-desc { font-size: 1.02rem; margin-bottom: 22px; }
+  .hero-buttons { margin-bottom: 24px; gap: 10px; }
+  .hero-image-stage { aspect-ratio: 4 / 3; border-radius: 20px; }
+  .marquee { padding: 11px 0; }
+  .marquee-track { font-size: .95rem; gap: 20px; }
+
+  /* category tiles */
+  .categories-grid { gap: 10px; }
+  .category-card { padding: 9px 9px 14px; border-radius: 18px; }
+  .category-img-container { border-radius: 12px; margin-bottom: 10px; }
+  .category-name { font-size: .92rem; }
+  .category-desc { font-size: .8rem; margin-bottom: 8px; }
+  .category-arrow-btn { width: 34px; height: 34px; }
+
+  /* promo banners */
+  .promo-grid { gap: 16px; }
+  .promo-card { border-radius: 20px; }
+  .promo-content { padding: 24px 20px 4px; }
+  .promo-title { font-size: 2rem; white-space: normal; }
+  .promo-desc { max-width: none; margin: 8px 0 16px; }
+  .promo-visual { height: 190px; }
+
+  /* products: one-row horizontally scrollable filter, safe card chips */
+  .products-header { margin-bottom: 18px; }
+  .filter-pills, .catalog-bar .filter-pills {
+    flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    margin: 0 calc(-1 * var(--gutter)); padding: 4px var(--gutter) 8px; width: calc(100% + 2 * var(--gutter)); flex: none;
+  }
+  .filter-pills::-webkit-scrollbar { display: none; }
+  .pill-btn { flex: none; min-height: 44px; padding: 8px 18px; white-space: nowrap; }
+  .products-grid { gap: 12px; }
+  .product-card { border-radius: 18px; padding: 8px 8px 14px; }
+  .product-card::after { max-width: calc(100% - 78px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; left: 16px; top: 16px; font-size: .6rem; letter-spacing: .05em; padding: 4px 8px; }
+  .product-img-box { border-radius: 12px; margin-bottom: 12px; }
+  .product-info { padding: 0 4px; }
+  .product-title { font-size: 1rem; margin-bottom: 10px; }
+  .product-bottom { padding-top: 10px; gap: 8px; }
+  .product-price strong { font-size: 1.2rem; }
+  .btn-add { padding: 9px 12px; border-radius: 12px; font-size: .9rem; min-height: 40px; }
+  .wishlist-btn { width: 40px; height: 40px; top: 14px; right: 14px; }
+  .center-cta .btn { width: 100%; }
+
+  /* why us */
+  .why-heading br { display: none; }
+  .why-heading { font-size: 2rem; }
+  .why-card { padding: 16px; }
+  .why-icon-box { width: 52px; height: 52px; }
+
+  /* business banner */
+  .corporate-card { border-radius: 22px; min-height: 0; }
+  .corp-left { padding: 26px 18px 22px; }
+  .corp-right { min-height: 260px; }
+  .corp-badge { left: 14px; right: 14px; bottom: 14px; padding: 12px 14px; }
+  .btn-teal-pill { width: 100%; align-self: stretch; }
+
+  /* how it works */
+  .step-card { padding: 22px 20px 26px; }
+  .step-card::after { font-size: 5rem; }
+  .step-illustration { width: 64px; height: 64px; }
+  .step-title { margin-top: 18px; font-size: 1.25rem; }
+  .step-desc { max-width: none; }
+
+  /* testimonials */
+  .testimonials-grid { padding: 24px 16px; border-radius: 22px; gap: 18px; }
+  .testi-hero-title { font-size: 1.9rem; }
+  .testimonial-card { padding: 22px 18px 18px; }
+  .testimonials-grid::before { font-size: 12rem; bottom: -50px; }
+
+  /* faq */
+  .faq-question { padding: 16px 16px 16px 20px; font-size: 1rem; min-height: 60px; }
+  .faq-toggle-icon { width: 34px; height: 34px; }
+  .faq-answer, .faq-item.active .faq-answer { padding-left: 20px; padding-right: 20px; }
+  .faqs-section .view-all-link { align-self: stretch; justify-content: center; }
+
+  /* cta */
+  .bottom-cta-card { padding: 26px 20px; border-radius: 22px; }
+  .cta-title { font-size: 1.9rem; }
+
+  /* footer */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 20px; padding-bottom: 32px; }
+  .footer-brand-col, .footer-contact-col { grid-column: 1 / -1; }
+  .footer-wordmark { display: none; }
+  .footer-col-title { margin-bottom: 16px; }
+  .footer-links-col ul, .contact-info-list { gap: 4px; }
+  .footer-links-col a, .contact-info-list a { display: inline-flex; min-height: 40px; align-items: center; }
+  .sub-footer-content { gap: 14px; padding-top: 6px; padding-bottom: 6px; }
+  .to-top { align-self: stretch; justify-content: center; min-height: 44px; }
+
+  /* inner pages */
+  .page-hero { padding: 22px 0 24px; }
+  .page-hero h1 { font-size: 2rem; }
+  .page-hero p { font-size: 1rem; }
+  .page-section { padding: 24px 0 48px; }
+  .breadcrumbs { font-size: .82rem; margin-bottom: 8px; }
+  .catalog-bar { margin-bottom: 14px; gap: 10px; }
+  .sort-select { width: 100%; min-height: 48px; }
+  .pd-grid { gap: 20px; }
+  .pd-image { border-radius: 20px; aspect-ratio: 4 / 3; }
+  .pd-info h1 { font-size: 1.9rem; }
+  .pd-price strong { font-size: 1.9rem; }
+  .pd-actions { gap: 10px; }
+  .pd-actions .btn { flex: 1 1 100%; }
+  .pd-actions .qty-stepper { flex: 1 1 auto; justify-content: space-between; }
+  .qty-stepper button { width: 44px; height: 44px; }
+  .related h2 { font-size: 1.4rem; }
+  .form-card, .summary-card, .panel { border-radius: 20px; padding: 20px 16px; }
+  .cart-line { padding: 14px; gap: 12px; border-radius: 16px; }
+  .summary-card { margin-bottom: 8px; }
+  .dash { gap: 14px; }
+  .dash-nav { margin: 0 calc(-1 * var(--gutter)); border-radius: 0; border-left: 0; border-right: 0; padding: 8px var(--gutter); scrollbar-width: none; }
+  .dash-nav::-webkit-scrollbar { display: none; }
+  .dash-nav button, .dash-nav a { flex: none; min-height: 44px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { padding: 14px; }
+  .stat strong { font-size: 1.6rem; }
+  .data-table { font-size: .86rem; }
+  .data-table th, .data-table td { padding: 10px 9px; }
+  .admin-filters select, .admin-filters input { width: 100%; }
+  .panel-head .btn { width: 100%; }
+  .tabs { margin-bottom: 18px; }
+  .order-success .btn, .state-box .btn { width: 100%; margin-top: 10px; }
+  .prose { font-size: 1rem; line-height: 1.7; }
+}
+
+/* ---------- very small phones ---------- */
+@media (max-width: 380px) {
+  :root { --gutter: 14px; }
+  .top-bar-left .highlight-badge { font-size: .74rem; }
+  .brand-name { font-size: .95rem; }
+  .brand-sub { display: none; }
+  .logo-mark { width: 36px; height: 36px; }
+  .hero-title { font-size: 2.2rem; }
+  .hero-trust-badges { grid-template-columns: 1fr; }
+  .products-grid, .categories-grid { gap: 8px; }
+  .product-price strong { font-size: 1.1rem; }
+  .product-card::after { display: none; }
+  .btn-add::before { display: none; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .dash-nav button, .dash-nav a { padding: 10px 12px; }
+}
+
+/* ---------- touch devices: no sticky hover lifts ---------- */
+@media (hover: none) {
+  .category-card:hover, .product-card:hover, .why-card:hover, .promo-card:hover, .step-card:hover,
+  .testimonial-card:hover, .faq-item:hover, .btn:hover, .corp-checklist li:hover { transform: none; }
+  .category-card:hover .category-img-container img, .product-card:hover .product-img-box img,
+  .promo-card:hover .promo-img, .corporate-card:hover .corp-main-img { transform: none; }
+}
+
+@media (max-width: 640px) {
+  .blob.b1 { width: 130px; height: 130px; right: -40px; top: -50px; }
+  .blob.b2 { width: 110px; height: 110px; left: auto; right: 20px; bottom: -60px; }
+}
+
+/* ---------- dashboards: never let tables widen the page; tables become stacked cards on phones ---------- */
+@media (max-width: 1000px) {
+  .dash { grid-template-columns: minmax(0, 1fr); }
+  .dash > * { min-width: 0; }
+  .panel { min-width: 0; overflow: hidden; }
+}
+@media (max-width: 640px) {
+  .table-wrap { border: 0; overflow: visible; border-radius: 0; }
+  .data-table, .data-table tbody, .data-table tr, .data-table td { display: block; width: 100%; }
+  .data-table thead { display: none; }
+  .data-table tr { border: 2px solid #eef2f6; border-radius: 16px; padding: 4px 14px; margin-bottom: 12px; background: #fff; }
+  .data-table tr:hover td { background: transparent; }
+  .data-table td { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; text-align: right; border: 0; border-bottom: 1px dashed #eef2f6; padding: 10px 0; }
+  .data-table td:last-child { border-bottom: 0; }
+  .data-table td::before { content: attr(data-label); flex: none; max-width: 38%; text-align: left; font-weight: 800; color: #64748b; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; padding-top: 2px; }
+  .data-table td[data-label=""]::before { display: none; }
+  .data-table td[data-label=""] { justify-content: flex-start; }
+  .data-table td .row-actions { justify-content: flex-end; width: 100%; }
+  .data-table td select { max-width: 100%; min-height: 44px; }
+  .data-table td[style] { max-width: none !important; }
+}
+@media (max-width: 640px) {
+  .data-table td { display: block; text-align: right; overflow: hidden; word-break: break-word; }
+  .data-table td::before { float: left; margin-right: 14px; text-align: left; }
+  .data-table td[data-label=""] { text-align: left; }
+  .data-table td .row-actions { justify-content: flex-end; clear: both; padding-top: 4px; }
+  .data-table td .badge { margin-left: 4px; }
+}
