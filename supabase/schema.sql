@@ -166,12 +166,12 @@ do $seed$
 begin
   if not exists (select 1 from public.categories) then
     insert into public.categories (slug, name, description, sort_order, image_url) values
-     ('mugs-bottles','Mugs & Bottles','Mugs and water bottles with your photo or design',1,'/images/prod_personalised_mug.jpg'),
-     ('apparel-cushions','T-Shirts & Pillows','T-shirts and pillows, personalised',2,'/images/prod_folded_tees.jpg'),
-     ('frames-clocks','Photo Frames & Clocks','Photo, LED and wood frames, wall clocks',3,'/images/prod_photo_frame.jpg'),
-     ('laser-wood','Laser & Wood Engraving','Engraved wood, laser gifts, key chains, name boards',4,null),
-     ('keychains-magnets','Key Chains, Magnets & Badges','Photo key chains, fridge magnets, photo badges',5,null),
-     ('corporate-gifts','Corporate & Office Gifts','Gift sets, pens, pen stands, wallet cards, leather',6,'/images/corp_merchandise_set.jpg');
+     ('mugs-bottles','Mugs & Bottles','Mugs and water bottles with your photo or design',1,'/images/mugs-bottles.png'),
+     ('apparel-cushions','T-Shirts & Pillows','T-shirts and pillows, personalised',2,'/images/apparel-cushions.png'),
+     ('frames-clocks','Photo Frames & Clocks','Photo, LED and wood frames, wall clocks',3,'/images/frames-clocks.png'),
+     ('laser-wood','Laser & Wood Engraving','Engraved wood, laser gifts, key chains, name boards',4,'/images/laser-wood.png'),
+     ('keychains-magnets','Key Chains, Magnets & Badges','Photo key chains, fridge magnets, photo badges',5,'/images/keychains-magnets.png'),
+     ('corporate-gifts','Corporate & Office Gifts','Gift sets, pens, pen stands, wallet cards, leather',6,'/images/corporate-gifts.png');
 
     insert into public.products (slug, category_id, name, description, price_from, image_url, is_featured, sort_order)
     select v.slug, c.id, v.name, v.descr, null, v.img, v.feat, v.ord

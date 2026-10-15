@@ -19,11 +19,23 @@ export const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
 export const hasPrice = v => v !== null && v !== undefined && v !== '';
 export const priceText = v => (hasPrice(v) ? money(v) : 'On request');
 
+export const CATEGORY_DEFAULT_IMAGES = {
+  'mugs-bottles': '/images/mugs-bottles.png',
+  'apparel-cushions': '/images/apparel-cushions.png',
+  'frames-clocks': '/images/frames-clocks.png',
+  'laser-wood': '/images/laser-wood.png',
+  'keychains-magnets': '/images/keychains-magnets.png',
+  'corporate-gifts': '/images/corporate-gifts.png',
+};
+
 // Product images are stored as "./images/x.jpg" (local) or full https URLs (uploaded to Supabase Storage).
-export const imgUrl = u => {
-  if (!u) return PLACEHOLDER_IMG;
-  if (/^(https?:|data:|\/)/.test(u)) return u;
-  return '/' + u.replace(/^\.?\/?/, '');
+export const imgUrl = (u, fallbackCategorySlug) => {
+  if (u && /^(https?:|data:|\/)/.test(u)) return u;
+  if (u) return '/' + u.replace(/^\.?\/?/, '');
+  if (fallbackCategorySlug && CATEGORY_DEFAULT_IMAGES[fallbackCategorySlug]) {
+    return CATEGORY_DEFAULT_IMAGES[fallbackCategorySlug];
+  }
+  return PLACEHOLDER_IMG;
 };
 
 export const errMsg = e => (e && (e.message || e.error_description)) || 'Something went wrong. Please try again.';

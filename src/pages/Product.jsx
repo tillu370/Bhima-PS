@@ -60,7 +60,7 @@ export default function Product() {
         {state === 'ok' && p && (
           <>
             <div className="pd-grid">
-              <div className="pd-image"><img src={imgUrl(p.image_url)} alt={p.name} /></div>
+              <div className="pd-image"><img src={imgUrl(p.image_url, p.categories?.slug)} alt={p.name} /></div>
               <div className="pd-info">
                 {p.categories && <Link className="eyebrow" to={`/products?cat=${encodeURIComponent(p.categories.slug)}`}>{p.categories.name}</Link>}
                 <h1>{p.name}</h1>
