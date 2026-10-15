@@ -63,7 +63,7 @@ export const TEMPLATES = {
     base: () => '', overlay: () => ''
   },
   bottle: {
-    label: 'Water bottle', area: { x: 255, y: 185, w: 90, h: 280 }, palette: 'metal', colour: '#9ca3af',
+    label: 'Water bottle', area: { x: 262, y: 235, w: 96, h: 280 }, palette: 'metal', colour: '#ffffff',
     photo: '/mockups/bottle.jpg', mask: '/mockups/bottle-mask.png', shade: '/mockups/bottle-shade.jpg',
     base: () => '', overlay: () => ''
   },
