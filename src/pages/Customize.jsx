@@ -37,6 +37,7 @@ const loadImg = url => new Promise((resolve, reject) => {
   img.onerror = () => reject(new Error('Could not load the product photo.'));
   img.src = url;
 });
+const defaultOpts = t => Object.fromEntries((t.groups || []).map(g => [g.key, g.options[0].key]));
 const isWhite = c => c.toLowerCase() === '#ffffff';
 
 /* ------------------------------------------------------------ product picker */
@@ -80,8 +81,8 @@ function Studio({ slug }) {
   const cart = useCart();
   const { toast } = useUi();
   const baseTpl = useMemo(() => templateFor(slug), [slug]);
-  const [opt, setOpt] = useState({ style: 'round', placement: 'front' });
-  const tpl = useMemo(() => (baseTpl.resolve ? baseTpl.resolve(opt.style, opt.placement) : baseTpl), [baseTpl, opt]);
+  const [opt, setOpt] = useState(() => defaultOpts(templateFor(slug)));
+  const tpl = useMemo(() => (baseTpl.resolve ? baseTpl.resolve(opt) : baseTpl), [baseTpl, opt]);
   const tplRef = useRef(tpl);
   tplRef.current = tpl;
   const palette = useMemo(() => paletteForSlug(slug), [slug]);
@@ -107,7 +108,7 @@ function Studio({ slug }) {
   /* ---- load product + list for the switcher */
   useEffect(() => {
     let on = true;
-    setState('loading'); setOpt({ style: 'round', placement: 'front' }); setColour(startColour(slug)); setBg(null); setSel(null); setCount(0); setError('');
+    setState('loading'); setOpt(defaultOpts(templateFor(slug))); setColour(startColour(slug)); setBg(null); setSel(null); setCount(0); setError('');
     Promise.all([
       supabase.from('products').select('id,slug,name,description,price_from,image_url').eq('slug', slug).eq('is_active', true).maybeSingle(),
       supabase.from('products').select('slug,name').eq('is_active', true).order('sort_order')
@@ -390,16 +391,14 @@ function Studio({ slug }) {
               </select>
             </label>
 
-            {baseTpl.resolve && (
+            {baseTpl.groups && (
               <div className="opt-groups">
-                <div className="opt-group" role="radiogroup" aria-label="Style">
-                  <span>Style</span>
-                  {baseTpl.styles.map(o => <button key={o.key} type="button" role="radio" aria-checked={opt.style === o.key} className={opt.style === o.key ? 'on' : ''} onClick={() => setOpt(v => ({ ...v, style: o.key }))}>{o.label}</button>)}
-                </div>
-                <div className="opt-group" role="radiogroup" aria-label="Print position">
-                  <span>Print position</span>
-                  {baseTpl.placements.map(o => <button key={o.key} type="button" role="radio" aria-checked={opt.placement === o.key} className={opt.placement === o.key ? 'on' : ''} onClick={() => setOpt(v => ({ ...v, placement: o.key }))}>{o.label}</button>)}
-                </div>
+                {baseTpl.groups.map(g => (
+                  <div className="opt-group" role="radiogroup" aria-label={g.label} key={g.key}>
+                    <span>{g.label}</span>
+                    {g.options.map(o => <button key={o.key} type="button" role="radio" aria-checked={opt[g.key] === o.key} className={opt[g.key] === o.key ? 'on' : ''} onClick={() => setOpt(v => ({ ...v, [g.key]: o.key }))}>{o.label}</button>)}
+                  </div>
+                ))}
               </div>
             )}
 

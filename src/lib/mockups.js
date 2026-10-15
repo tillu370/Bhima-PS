@@ -168,9 +168,8 @@ const TEE_PLACEMENTS = [{ key: 'front', label: 'Front' }, { key: 'pocket', label
 const PHOTO_TEE_AREAS = { front: photoTee.area, pocket: { x: 326, y: 176, w: 56, h: 56 } };
 TEMPLATES.tshirt = {
   ...photoTee,
-  styles: TEE_STYLES,
-  placements: TEE_PLACEMENTS,
-  resolve(style = 'round', placement = 'front') {
+  groups: [{ key: 'style', label: 'Style', options: TEE_STYLES }, { key: 'placement', label: 'Print position', options: TEE_PLACEMENTS }],
+  resolve({ style = 'round', placement = 'front' } = {}) {
     const st = TEE_STYLES.find(x => x.key === style) || TEE_STYLES[0];
     const pl = TEE_PLACEMENTS.find(x => x.key === placement) || TEE_PLACEMENTS[0];
     const label = `${st.label} T-shirt, ${pl.label.toLowerCase()}`;
@@ -179,6 +178,120 @@ TEMPLATES.tshirt = {
     return { label, area: t.area, palette: 'fabric', colour: '#ffffff', base: t.base, overlay: t.overlay };
   }
 };
+
+
+// ---- shape variants for the flat products (key chains, magnets, badges, cards, boards) and frames/clocks
+const PLATES = {
+  keychain: { label: 'Key chain', ins: 24, shapes: {
+    rect: { label: 'Rectangle', w: 210, h: 290, r: 32, cy: 318 },
+    round: { label: 'Round', w: 270, h: 270, e: 1, cy: 338 },
+    oval: { label: 'Oval', w: 210, h: 300, e: 1, cy: 326 } } },
+  magnet: { label: 'Fridge magnet', ins: 20, shapes: {
+    rect: { label: 'Rectangle', w: 400, h: 340, r: 20, cy: 300 },
+    square: { label: 'Square', w: 350, h: 350, r: 20, cy: 300 },
+    round: { label: 'Round', w: 360, h: 360, e: 1, cy: 300 } } },
+  badge: { label: 'Badge', ins: 28, shapes: {
+    round: { label: 'Round', w: 340, h: 340, e: 1, cy: 300 },
+    square: { label: 'Square', w: 330, h: 330, r: 44, cy: 300 },
+    oval: { label: 'Oval', w: 400, h: 300, e: 1, cy: 300 } } },
+  card: { label: 'Wallet card', ins: 22, shapes: {
+    landscape: { label: 'Landscape', w: 460, h: 290, r: 26, cy: 320 },
+    portrait: { label: 'Portrait', w: 290, h: 460, r: 26, cy: 300 } } },
+  board: { label: 'Name board', ins: 26, shapes: {
+    landscape: { label: 'Landscape', w: 520, h: 270, r: 14, cy: 305 },
+    portrait: { label: 'Portrait', w: 300, h: 430, r: 14, cy: 300 },
+    round: { label: 'Round', w: 380, h: 380, e: 1, cy: 300 } } }
+};
+const shapeEl = (g, attrs = '') => (g.e
+  ? `<ellipse cx="300" cy="${g.cy}" rx="${g.w / 2}" ry="${g.h / 2}" ${attrs}/>`
+  : `<rect x="${300 - g.w / 2}" y="${g.cy - g.h / 2}" width="${g.w}" height="${g.h}" rx="${g.r}" ${attrs}/>`);
+const grow = (g, d) => ({ ...g, w: g.w + d * 2, h: g.h + d * 2, r: (g.r || 0) + d });
+function plate(kind, shapeKey) {
+  const def = PLATES[kind];
+  const g = def.shapes[shapeKey] || Object.values(def.shapes)[0];
+  const ins = def.ins;
+  const k = 0.13;
+  const area = g.e
+    ? { x: Math.round(300 - g.w / 2 + g.w * k), y: Math.round(g.cy - g.h / 2 + g.h * k), w: Math.round(g.w * (1 - 2 * k)), h: Math.round(g.h * (1 - 2 * k)), round: true }
+    : { x: 300 - g.w / 2 + ins, y: g.cy - g.h / 2 + ins, w: g.w - ins * 2, h: g.h - ins * 2 };
+  const clip = `<clipPath id="plC">${shapeEl(g)}</clipPath>`;
+  const ringY = g.cy - g.h / 2 - 44;
+  const before = () => (kind === 'keychain'
+    ? `<circle cx="300" cy="${ringY}" r="46" fill="none" stroke="#9ca3af" stroke-width="12"/><circle cx="300" cy="${ringY}" r="46" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="272" y="${g.cy - g.h / 2 - 20}" width="56" height="34" rx="8" fill="#b6bcc6"/>`
+    : kind === 'badge'
+      ? `${shapeEl(grow(g, 14), 'fill="#c3c9d3"')}${shapeEl(grow(g, 14), 'fill="url(#metalH)" opacity=".7"')}`
+      : '');
+  const after = c => (kind === 'board' && !g.e
+    ? [[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sy]) => {
+      const px = 300 + sx * (g.w / 2 - 14), py = g.cy + sy * (g.h / 2 - 14);
+      return `<circle cx="${px}" cy="${py}" r="7" fill="${shade(c, -0.5)}"/><circle cx="${px - 1.5}" cy="${py - 1.5}" r="3" fill="#fff" opacity=".35"/>`;
+    }).join('')
+    : '');
+  const grain = kind === 'board' ? `<g clip-path="url(#plC)"><rect x="0" y="0" width="600" height="600" filter="url(#grain)" opacity=".3"/></g>` : '';
+  return {
+    area,
+    base: c => svg(`${bg}${floor(300, g.cy + g.h / 2 + 12, g.w / 2 + 10, 14, 0.3)}${clip}${before()}${shapeEl(g, `fill="${c}"`)}${grain}${shapeEl(g, 'fill="none" stroke="#000" stroke-opacity=".16" stroke-width="2"')}${after(c)}`),
+    overlay: () => svg(`${clip}<g clip-path="url(#plC)"><rect width="600" height="600" fill="url(#diag)"${kind === 'board' ? ' opacity=".45"' : ''}/>${kind === 'board' ? '<rect width="600" height="600" fill="url(#ambV)" opacity=".6"/>' : `<path d="M0 0 L${g.w + 260} 0 L0 ${g.h + 260} Z" fill="url(#glare)" opacity=".55"/>`}</g>`)
+  };
+}
+for (const kind of Object.keys(PLATES)) {
+  const orig = TEMPLATES[kind];
+  const opts = Object.entries(PLATES[kind].shapes).map(([key, v]) => ({ key, label: v.label }));
+  const first = plate(kind, opts[0].key);
+  TEMPLATES[kind] = {
+    ...orig, area: first.area, base: first.base, overlay: first.overlay,
+    groups: [{ key: 'shape', label: 'Shape', options: opts }],
+    resolve({ shape } = {}) {
+      const t = plate(kind, shape || opts[0].key);
+      const lab = opts.find(o => o.key === shape) || opts[0];
+      return { ...orig, label: `${PLATES[kind].label}, ${lab.label.toLowerCase()}`, area: t.area, base: t.base, overlay: t.overlay };
+    }
+  };
+}
+
+// Frames: the square frame is a photo; portrait and landscape are drawn.
+function frameSvg(w, h) {
+  const x = 300 - w / 2, y = 305 - h / 2, b = 40;
+  const area = { x: x + b + 24, y: y + b + 24, w: w - 2 * (b + 24), h: h - 2 * (b + 24) };
+  return {
+    area,
+    base: c => svg(`${bg}${floor(300, y + h + 14, w / 2 + 6, 16, 0.34)}<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="${c}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" filter="url(#grain)" opacity=".3"/><path d="M${x} ${y} H${x + w} L${x + w - b} ${y + b} H${x + b} Z" fill="#fff" opacity=".22"/><path d="M${x} ${y} L${x + b} ${y + b} V${y + h - b} L${x} ${y + h} Z" fill="#fff" opacity=".1"/><path d="M${x + w} ${y + h} H${x} L${x + b} ${y + h - b} H${x + w - b} Z" fill="#000" opacity=".28"/><path d="M${x + w} ${y} V${y + h} L${x + w - b} ${y + h - b} V${y + b} Z" fill="#000" opacity=".2"/><rect x="${x + b}" y="${y + b}" width="${w - 2 * b}" height="${h - 2 * b}" fill="#f7f4ee"/>`),
+    overlay: () => svg(`<path d="M${area.x} ${area.y} H${area.x + area.w} v10 H${area.x + 10} V${area.y + area.h} h-10 Z" fill="#000" opacity=".2" filter="url(#bl3)"/><path d="M${x + b} ${y + b} H${x + w - b} L${x + w * 0.4} ${y + h - b} H${x + b} Z" fill="url(#glare)" opacity=".45"/>`)
+  };
+}
+{
+  const orig = TEMPLATES.frame;
+  const opts = [{ key: 'square', label: 'Square' }, { key: 'portrait', label: 'Portrait' }, { key: 'landscape', label: 'Landscape' }];
+  TEMPLATES.frame = {
+    ...orig,
+    groups: [{ key: 'shape', label: 'Shape', options: opts }],
+    resolve({ shape = 'square' } = {}) {
+      if (shape === 'square') return { ...orig, label: 'Photo frame, square' };
+      const t = frameSvg(shape === 'portrait' ? 330 : 450, shape === 'portrait' ? 450 : 330);
+      return { label: `Photo frame, ${shape}`, area: t.area, palette: orig.palette, colour: orig.colour, base: t.base, overlay: t.overlay };
+    }
+  };
+}
+
+// Clock: round (existing) or square face.
+const clockMarks = (r1, r2) => `${Array.from({ length: 12 }, (_, i) => { const a = (i * 30 - 90) * Math.PI / 180; return `<line x1="${300 + r1 * Math.cos(a)}" y1="${300 + r1 * Math.sin(a)}" x2="${300 + r2 * Math.cos(a)}" y2="${300 + r2 * Math.sin(a)}" stroke="#1f2937" stroke-width="${i % 3 === 0 ? 8 : 4}" stroke-linecap="round"/>`; }).join('')}<line x1="300" y1="300" x2="300" y2="190" stroke="#1f2937" stroke-width="10" stroke-linecap="round"/><line x1="300" y1="300" x2="372" y2="345" stroke="#1f2937" stroke-width="7" stroke-linecap="round"/><line x1="300" y1="318" x2="300" y2="150" stroke="#dc2626" stroke-width="3" stroke-linecap="round" transform="rotate(130 300 300)"/><circle cx="300" cy="300" r="11" fill="#dc2626"/>`;
+{
+  const orig = TEMPLATES.clock;
+  const opts = [{ key: 'round', label: 'Round' }, { key: 'square', label: 'Square' }];
+  const sq = {
+    area: { x: 140, y: 140, w: 320, h: 320 },
+    base: c => svg(`${bg}${floor(300, 548, 200, 14, 0.3)}<rect x="72" y="72" width="456" height="456" rx="34" fill="${c}"/><rect x="72" y="72" width="456" height="456" rx="34" fill="url(#diag)"/><rect x="96" y="96" width="408" height="408" rx="22" fill="${shade(c, 0.12)}"/><rect x="104" y="104" width="392" height="392" rx="18" fill="#fdfdfb"/>`),
+    overlay: () => svg(`${clockMarks(176, 156)}<rect x="104" y="104" width="392" height="392" rx="18" fill="url(#glare)" opacity=".7"/>`)
+  };
+  TEMPLATES.clock = {
+    ...orig,
+    groups: [{ key: 'shape', label: 'Shape', options: opts }],
+    resolve({ shape = 'round' } = {}) {
+      if (shape === 'round') return { ...orig, label: 'Wall clock, round' };
+      return { label: 'Wall clock, square', area: sq.area, palette: orig.palette, colour: orig.colour, base: sq.base, overlay: sq.overlay };
+    }
+  };
+}
 
 const BY_SLUG = {
   'mug-printing': 'mug', 'water-bottles': 'bottle', 't-shirt-printing': 'tshirt', 'pillow-printing': 'pillow',
