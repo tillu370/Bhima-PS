@@ -53,29 +53,29 @@ const PILLOW = 'M88 128 C250 92 350 92 512 128 C546 270 546 330 512 472 C350 508
 
 export const TEMPLATES = {
   tshirt: {
-    label: 'T-shirt', area: { x: 205, y: 150, w: 190, h: 270 }, palette: 'fabric', colour: '#ffffff',
-    base: c => svg(`${bg}${floor(300, 552, 190, 16, 0.3)}<path d="${TEE}" fill="${c}"/><path d="M205 72 C225 138 375 138 395 72" fill="none" stroke="${shade(c, -0.2)}" stroke-width="16" stroke-linecap="round"/><path d="M212 74 C240 112 360 112 388 74 C366 94 234 94 212 74 Z" fill="${shade(c, -0.42)}"/><g fill="none" stroke="${shade(c, -0.22)}" stroke-width="2" stroke-dasharray="5 4"><path d="M160 521 L440 521"/><path d="M118 244 L148 222"/><path d="M482 244 L452 222"/></g>`),
-    overlay: () => svg(`<clipPath id="teeC"><path d="${TEE}"/></clipPath><g clip-path="url(#teeC)"><rect width="600" height="600" fill="url(#cylH)" opacity=".5"/><rect width="600" height="600" fill="url(#ambV)"/><g fill="#000" opacity=".07" filter="url(#bl6)"><ellipse cx="230" cy="330" rx="14" ry="70" transform="rotate(8 230 330)"/><ellipse cx="372" cy="400" rx="12" ry="60" transform="rotate(-9 372 400)"/><ellipse cx="300" cy="500" rx="80" ry="10"/></g><g fill="#fff" opacity=".12" filter="url(#bl6)"><ellipse cx="260" cy="300" rx="10" ry="60" transform="rotate(8 260 300)"/><ellipse cx="342" cy="250" rx="9" ry="50" transform="rotate(-7 342 250)"/></g><path d="M148 222 L148 330 L170 300 Z" fill="#000" opacity=".22" filter="url(#bl3)"/><path d="M452 222 L452 330 L430 300 Z" fill="#000" opacity=".22" filter="url(#bl3)"/><rect width="600" height="600" filter="url(#nz)" opacity=".05"/></g>`)
+    label: 'T-shirt', area: { x: 215, y: 165, w: 170, h: 220 }, palette: 'fabric', colour: '#ffffff',
+    photo: '/mockups/tshirt.jpg', mask: '/mockups/tshirt-mask.png', shade: '/mockups/tshirt-shade.jpg',
+    base: () => '', overlay: () => ''
   },
   mug: {
-    label: 'Mug', area: { x: 160, y: 190, w: 230, h: 230 }, palette: 'ceramic', colour: '#ffffff',
-    base: c => svg(`${bg}${floor(290, 492, 175, 20, 0.34)}<path d="M416 214 C528 204 528 408 414 398" fill="none" stroke="${shade(c, -0.22)}" stroke-width="40" stroke-linecap="round"/><path d="M416 214 C514 208 514 404 414 398" fill="none" stroke="${c}" stroke-width="30" stroke-linecap="round"/><path d="M420 222 C500 220 500 392 418 388" fill="none" stroke="#fff" stroke-width="5" opacity=".45" stroke-linecap="round"/><path d="${MUG}" fill="${c}"/><ellipse cx="275" cy="142" rx="145" ry="21" fill="${shade(c, 0.1)}"/><ellipse cx="275" cy="144" rx="132" ry="16" fill="${shade(c, -0.38)}"/><ellipse cx="275" cy="149" rx="118" ry="9" fill="${shade(c, -0.55)}" opacity=".55"/>`),
-    overlay: () => svg(`<clipPath id="mugC"><path d="${MUG}"/></clipPath><g clip-path="url(#mugC)"><rect x="120" y="150" width="310" height="345" fill="url(#cylH)"/><rect x="120" y="150" width="310" height="345" fill="url(#ambV)" opacity=".8"/></g>${streak(190, 175, 15, 270, 0.55)}${streak(352, 190, 6, 240, 0.18)}`)
+    label: 'Mug', area: { x: 252, y: 175, w: 228, h: 275 }, palette: 'ceramic', colour: '#ffffff',
+    photo: '/mockups/mug.jpg', mask: '/mockups/mug-mask.png', shade: '/mockups/mug-shade.jpg',
+    base: () => '', overlay: () => ''
   },
   bottle: {
-    label: 'Water bottle', area: { x: 235, y: 235, w: 130, h: 215 }, palette: 'metal', colour: '#9ca3af',
-    base: c => svg(`${bg}${floor(300, 552, 120, 14, 0.34)}<rect x="258" y="52" width="84" height="66" rx="16" fill="${shade(c, -0.55)}"/><rect x="248" y="112" width="104" height="44" rx="10" fill="${shade(c, -0.15)}"/><path d="${BOTTLE}" fill="${c}"/><rect x="215" y="150" width="170" height="8" fill="${shade(c, -0.35)}" opacity=".6"/>`),
-    overlay: () => svg(`<clipPath id="botC"><path d="${BOTTLE}"/></clipPath><rect x="258" y="52" width="84" height="66" rx="16" fill="url(#metalH)" opacity=".7"/><rect x="248" y="112" width="104" height="44" rx="10" fill="url(#metalH)" opacity=".6"/><g clip-path="url(#botC)"><rect x="205" y="150" width="190" height="400" fill="url(#metalH)"/><rect x="205" y="150" width="190" height="400" fill="url(#ambV)" opacity=".6"/></g>${streak(244, 175, 12, 340, 0.6)}`)
+    label: 'Water bottle', area: { x: 255, y: 185, w: 90, h: 280 }, palette: 'metal', colour: '#9ca3af',
+    photo: '/mockups/bottle.jpg', mask: '/mockups/bottle-mask.png', shade: '/mockups/bottle-shade.jpg',
+    base: () => '', overlay: () => ''
   },
   pillow: {
-    label: 'Pillow', area: { x: 150, y: 150, w: 300, h: 300 }, palette: 'fabric', colour: '#ffffff',
-    base: c => svg(`${bg}${floor(300, 508, 220, 20, 0.28)}<path d="${PILLOW}" fill="${c}"/><g stroke="${shade(c, -0.25)}" stroke-width="3" fill="none" opacity=".7"><path d="M92 132 C150 150 160 160 168 205"/><path d="M508 132 C450 150 440 160 432 205"/><path d="M92 468 C150 450 160 440 168 395"/><path d="M508 468 C450 450 440 440 432 395"/></g>`),
-    overlay: () => svg(`<clipPath id="pilC"><path d="${PILLOW}"/></clipPath><g clip-path="url(#pilC)"><rect width="600" height="600" fill="url(#puff)"/><g fill="#000" opacity=".16" filter="url(#bl6)"><path d="M92 132 C150 150 160 160 168 205 L120 190 Z"/><path d="M508 132 C450 150 440 160 432 205 L480 190 Z"/><path d="M92 468 C150 450 160 440 168 395 L120 410 Z"/><path d="M508 468 C450 450 440 440 432 395 L480 410 Z"/></g><rect width="600" height="600" filter="url(#nz)" opacity=".12"/></g>`)
+    label: 'Pillow', area: { x: 180, y: 170, w: 240, h: 240 }, palette: 'fabric', colour: '#ffffff',
+    photo: '/mockups/pillow.jpg', mask: '/mockups/pillow-mask.png', shade: '/mockups/pillow-shade.jpg',
+    base: () => '', overlay: () => ''
   },
   frame: {
-    label: 'Photo frame', area: { x: 135, y: 135, w: 330, h: 330 }, palette: 'frame', colour: '#8a5a3c',
-    base: c => svg(`${bg}${floor(300, 536, 230, 18, 0.34)}<rect x="76" y="76" width="448" height="448" rx="6" fill="${c}"/><rect x="76" y="76" width="448" height="448" rx="6" fill="url(#grain)" opacity=".5"/><path d="M76 76 L524 76 L480 120 L120 120 Z" fill="#fff" opacity=".22"/><path d="M76 76 L120 120 L120 480 L76 524 Z" fill="#fff" opacity=".1"/><path d="M524 524 L76 524 L120 480 L480 480 Z" fill="#000" opacity=".28"/><path d="M524 76 L524 524 L480 480 L480 120 Z" fill="#000" opacity=".2"/><rect x="120" y="120" width="360" height="360" fill="#f7f4ee"/>`),
-    overlay: () => svg(`<path d="M135 135 L465 135 L465 148 L148 148 L148 465 L135 465 Z" fill="#000" opacity=".22" filter="url(#bl3)"/><path d="M120 120 L480 120 L240 480 L120 480 Z" fill="url(#glare)" opacity=".5"/>`)
+    label: 'Photo frame', area: { x: 145, y: 148, w: 305, h: 315 }, palette: 'frame', colour: '#8a5a3c',
+    photo: '/mockups/frame.jpg', shade: '/mockups/frame-shade.jpg',
+    base: () => '', overlay: () => ''
   },
   clock: {
     label: 'Wall clock', area: { x: 130, y: 130, w: 340, h: 340, round: true }, palette: 'frame', colour: '#111827',

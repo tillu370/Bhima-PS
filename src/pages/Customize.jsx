@@ -31,6 +31,14 @@ const svgImage = markup => new Promise((resolve, reject) => {
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup);
 });
 
+const loadImg = url => new Promise((resolve, reject) => {
+  const img = new Image();
+  img.onload = () => resolve(img);
+  img.onerror = () => reject(new Error('Could not load the product photo.'));
+  img.src = url;
+});
+const isWhite = c => c.toLowerCase() === '#ffffff';
+
 /* ------------------------------------------------------------ product picker */
 function Picker() {
   const [products, setProducts] = useState(null);
@@ -51,6 +59,7 @@ function Picker() {
             {products.map(p => (
               <Link className="picker-card" to={'/customize/' + encodeURIComponent(p.slug)} key={p.id}>
                 <div className="picker-mock">
+                  {templateFor(p.slug).photo && <img className="mockup-photo" src={templateFor(p.slug).photo} alt="" loading="lazy" />}
                   <div className="mockup-base" dangerouslySetInnerHTML={{ __html: templateFor(p.slug).base(startColour(p.slug)) }} />
                   <div className="mockup-overlay" dangerouslySetInnerHTML={{ __html: templateFor(p.slug).overlay(startColour(p.slug)) }} />
                 </div>
@@ -231,12 +240,36 @@ function Studio({ slug }) {
     const out = document.createElement('canvas');
     out.width = size; out.height = size;
     const ctx = out.getContext('2d');
-    ctx.drawImage(await svgImage(tpl.base(colour)), 0, 0, size, size);
+    const photo = tpl.photo ? await loadImg(tpl.photo) : null;
+    if (photo) {
+      ctx.drawImage(photo, 0, 0, size, size);
+      if (!isWhite(colour) && tpl.mask) {
+        const t = document.createElement('canvas');
+        t.width = size; t.height = size;
+        const tc = t.getContext('2d');
+        tc.fillStyle = colour; tc.fillRect(0, 0, size, size);
+        tc.globalCompositeOperation = 'destination-in';
+        tc.drawImage(await loadImg(tpl.mask), 0, 0, size, size);
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.drawImage(t, 0, 0);
+        ctx.globalCompositeOperation = 'source-over';
+      }
+    } else {
+      ctx.drawImage(await svgImage(tpl.base(colour)), 0, 0, size, size);
+    }
     const a = tpl.area;
     ctx.save();
     if (a.round) { ctx.beginPath(); ctx.ellipse((a.x + a.w / 2) * k, (a.y + a.h / 2) * k, (a.w / 2) * k, (a.h / 2) * k, 0, 0, Math.PI * 2); ctx.clip(); }
     ctx.drawImage(c.toCanvasElement(Math.max(2, Math.ceil((a.w * k) / a.w))), a.x * k, a.y * k, a.w * k, a.h * k);
     ctx.restore();
+    if (photo && tpl.shade) {
+      // The product photo's own light and shadow, multiplied over the artwork so it looks printed on.
+      ctx.save();
+      ctx.beginPath(); ctx.rect(a.x * k, a.y * k, a.w * k, a.h * k); ctx.clip();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.drawImage(await loadImg(tpl.shade), 0, 0, size, size);
+      ctx.restore();
+    }
     const ov = tpl.overlay(colour);
     if (ov) ctx.drawImage(await svgImage(ov), 0, 0, size, size);
     return new Promise((resolve, reject) => out.toBlob(b => (b ? resolve(b) : reject(new Error('Could not create the preview image.'))), 'image/png'));
@@ -301,12 +334,15 @@ function Studio({ slug }) {
           {/* ------------------------------------------------ stage */}
           <div className="studio-stage">
             <div className="mockup" style={{ aspectRatio: '1 / 1' }}>
-              <div className="mockup-base" dangerouslySetInnerHTML={{ __html: tpl.base(colour) }} />
+              {tpl.photo && <img className="mockup-photo" src={tpl.photo} alt="" />}
+              {tpl.photo && tpl.mask && !isWhite(colour) && <div className="mockup-tint" style={{ background: colour, WebkitMaskImage: `url(${tpl.mask})`, maskImage: `url(${tpl.mask})` }} />}
+              {tpl.base && <div className="mockup-base" dangerouslySetInnerHTML={{ __html: tpl.base(colour) }} />}
               <div ref={areaRef} className={'print-area' + (area.round ? ' round' : '')}
                 style={{ left: pct(area.x), top: pct(area.y), width: pct(area.w), height: pct(area.h) }}>
                 <canvas ref={canvasEl} />
                 {count === 0 && <div className="area-hint" aria-hidden="true">Your design goes here</div>}
               </div>
+              {tpl.photo && tpl.shade && <img className="mockup-shade" src={tpl.shade} alt="" style={{ clipPath: `inset(${pct(area.y)} ${pct(VB - area.x - area.w)} ${pct(VB - area.y - area.h)} ${pct(area.x)})` }} />}
               {overlay && <div className="mockup-overlay" dangerouslySetInnerHTML={{ __html: overlay }} />}
             </div>
             <p className="studio-note">The dashed box is the print area. Drag to move, use the corner handles to resize or rotate.</p>
