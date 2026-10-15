@@ -79,7 +79,11 @@ function Studio({ slug }) {
   const navigate = useNavigate();
   const cart = useCart();
   const { toast } = useUi();
-  const tpl = useMemo(() => templateFor(slug), [slug]);
+  const baseTpl = useMemo(() => templateFor(slug), [slug]);
+  const [opt, setOpt] = useState({ style: 'round', placement: 'front' });
+  const tpl = useMemo(() => (baseTpl.resolve ? baseTpl.resolve(opt.style, opt.placement) : baseTpl), [baseTpl, opt]);
+  const tplRef = useRef(tpl);
+  tplRef.current = tpl;
   const palette = useMemo(() => paletteForSlug(slug), [slug]);
 
   const [product, setProduct] = useState(null);
@@ -103,7 +107,7 @@ function Studio({ slug }) {
   /* ---- load product + list for the switcher */
   useEffect(() => {
     let on = true;
-    setState('loading'); setColour(startColour(slug)); setBg(null); setSel(null); setCount(0); setError('');
+    setState('loading'); setOpt({ style: 'round', placement: 'front' }); setColour(startColour(slug)); setBg(null); setSel(null); setCount(0); setError('');
     Promise.all([
       supabase.from('products').select('id,slug,name,description,price_from,image_url').eq('slug', slug).eq('is_active', true).maybeSingle(),
       supabase.from('products').select('slug,name').eq('is_active', true).order('sort_order')
@@ -128,14 +132,14 @@ function Studio({ slug }) {
     setSel({
       kind: k, fill: typeof o.fill === 'string' ? o.fill : '#0f7f7a', fontFamily: o.fontFamily, fontSize: o.fontSize,
       bold: o.fontWeight === 'bold' || o.fontWeight === 700, italic: o.fontStyle === 'italic', text: o.text,
-      angle: Math.round(((o.angle % 360) + 360) % 360), size: Math.round((o.getScaledWidth() / tpl.area.w) * 100)
+      angle: Math.round(((o.angle % 360) + 360) % 360), size: Math.round((o.getScaledWidth() / tplRef.current.area.w) * 100)
     });
-  }, [tpl]);
+  }, []);
 
   /* ---- create the fabric canvas once the stage is on screen */
   useEffect(() => {
     if (state !== 'ok' || !canvasEl.current) return undefined;
-    const c = new Canvas(canvasEl.current, { width: tpl.area.w, height: tpl.area.h, preserveObjectStacking: true, selection: false, backgroundColor: undefined });
+    const c = new Canvas(canvasEl.current, { width: tplRef.current.area.w, height: tplRef.current.area.h, preserveObjectStacking: true, selection: false, backgroundColor: undefined });
     fab.current = c;
     ['selection:created', 'selection:updated', 'selection:cleared', 'object:modified', 'object:added', 'object:removed', 'text:changed']
       .forEach(ev => c.on(ev, sync));
@@ -160,7 +164,22 @@ function Studio({ slug }) {
       fab.current = null;
       files.current.clear();
     };
-  }, [state, tpl, sync]);
+  }, [state, baseTpl, sync]);
+
+  /* switching style or placement changes the print area: resize the canvas and carry the design across */
+  useEffect(() => {
+    const c = fab.current;
+    if (!c) return;
+    const { w, h } = tpl.area;
+    if (c.width === w && c.height === h) return;
+    const rx = w / c.width, ry = h / c.height, r = Math.min(rx, ry);
+    c.getObjects().forEach(o => { o.set({ left: o.left * rx, top: o.top * ry, scaleX: o.scaleX * r, scaleY: o.scaleY * r }); o.setCoords(); });
+    c.setDimensions({ width: w, height: h }, { backstoreOnly: true });
+    const a = areaRef.current;
+    if (a) c.setDimensions({ width: a.clientWidth + 'px', height: a.clientHeight + 'px' }, { cssOnly: true });
+    c.requestRenderAll();
+    sync();
+  }, [tpl, sync]);
 
   useEffect(() => {
     const c = fab.current;
@@ -370,6 +389,19 @@ function Studio({ slug }) {
                 {allProducts.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>)}
               </select>
             </label>
+
+            {baseTpl.resolve && (
+              <div className="opt-groups">
+                <div className="opt-group" role="radiogroup" aria-label="Style">
+                  <span>Style</span>
+                  {baseTpl.styles.map(o => <button key={o.key} type="button" role="radio" aria-checked={opt.style === o.key} className={opt.style === o.key ? 'on' : ''} onClick={() => setOpt(v => ({ ...v, style: o.key }))}>{o.label}</button>)}
+                </div>
+                <div className="opt-group" role="radiogroup" aria-label="Print position">
+                  <span>Print position</span>
+                  {baseTpl.placements.map(o => <button key={o.key} type="button" role="radio" aria-checked={opt.placement === o.key} className={opt.placement === o.key ? 'on' : ''} onClick={() => setOpt(v => ({ ...v, placement: o.key }))}>{o.label}</button>)}
+                </div>
+              </div>
+            )}
 
             <div className="tabs studio-tabs" role="tablist" aria-label="Design tools">
               {TABS.map(([k, label]) => <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{label}</button>)}

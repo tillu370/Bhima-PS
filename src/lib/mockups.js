@@ -129,6 +129,57 @@ export const TEMPLATES = {
   }
 };
 
+
+// ---- T-shirt styles and print placements. Round neck front/pocket uses the product photo; the other
+// styles and the back view are drawn with the same lighting as the other SVG mock-ups.
+const OVER = 'M203 76 C225 106 262 116 300 116 C338 116 375 106 397 76 L462 94 L584 236 L528 296 L480 266 L488 548 Q488 560 474 560 L126 560 Q112 560 112 548 L120 266 L72 296 L16 236 L138 94 Z';
+const TEE_PATH = { round: TEE, polo: TEE, oversized: OVER };
+const TEE_AREAS = {
+  round: { front: { x: 205, y: 170, w: 190, h: 250 }, pocket: { x: 330, y: 172, w: 58, h: 58 }, back: { x: 205, y: 160, w: 190, h: 260 } },
+  oversized: { front: { x: 200, y: 180, w: 200, h: 270 }, pocket: { x: 334, y: 172, w: 62, h: 62 }, back: { x: 200, y: 165, w: 200, h: 285 } },
+  polo: { front: { x: 205, y: 232, w: 190, h: 190 }, pocket: { x: 336, y: 182, w: 56, h: 56 }, back: { x: 205, y: 150, w: 190, h: 270 } }
+};
+const teeNeck = (style, back, c) => {
+  const edge = shade(c, -0.22);
+  if (style === 'polo') {
+    return back
+      ? `<path d="M205 72 C232 100 368 100 395 72 L395 92 C368 122 232 122 205 92 Z" fill="${shade(c, 0.05)}" stroke="${edge}" stroke-width="2"/>`
+      : `<path d="M236 70 C262 92 338 92 364 70 L300 156 Z" fill="${shade(c, -0.42)}"/><path d="M212 66 L296 78 L266 170 L203 98 Z" fill="${shade(c, 0.06)}" stroke="${edge}" stroke-width="2" stroke-linejoin="round"/><path d="M388 66 L304 78 L334 170 L397 98 Z" fill="${shade(c, 0.06)}" stroke="${edge}" stroke-width="2" stroke-linejoin="round"/><rect x="288" y="118" width="24" height="100" rx="3" fill="${shade(c, -0.04)}" stroke="${edge}" stroke-width="1.5"/>${[140, 170, 200].map(y => `<circle cx="300" cy="${y}" r="4.5" fill="${shade(c, -0.35)}"/><circle cx="299" cy="${y - 1}" r="1.6" fill="#fff" opacity=".5"/>`).join('')}`;
+  }
+  const dy = back ? 28 : 64;
+  return `<path d="M205 72 C225 ${72 + dy} 375 ${72 + dy} 395 72" fill="none" stroke="${shade(c, -0.2)}" stroke-width="16" stroke-linecap="round"/><path d="M212 74 C240 ${back ? 90 : 112} 360 ${back ? 90 : 112} 388 74 C366 ${back ? 82 : 94} 234 ${back ? 82 : 94} 212 74 Z" fill="${shade(c, back ? -0.2 : -0.42)}"/>`;
+};
+const teeSvg = (style, placement) => {
+  const back = placement === 'back';
+  const path = TEE_PATH[style];
+  const area = TEE_AREAS[style][placement];
+  const pocket = placement === 'pocket'
+    ? c => `<path d="M${area.x - 4} ${area.y - 4} H${area.x + area.w + 4} V${area.y + area.h + 8} L${area.x + area.w / 2} ${area.y + area.h + 18} L${area.x - 4} ${area.y + area.h + 8} Z" fill="none" stroke="${shade(c, -0.25)}" stroke-width="2" stroke-dasharray="5 4"/>`
+    : () => '';
+  return {
+    area,
+    base: c => svg(`${bg}${floor(300, 566, 200, 16, 0.3)}<path d="${path}" fill="${c}"/>${teeNeck(style, back, c)}${pocket(c)}<g fill="none" stroke="${shade(c, -0.22)}" stroke-width="2" stroke-dasharray="5 4"><path d="M${style === 'oversized' ? 130 : 160} ${style === 'oversized' ? 541 : 521} L${style === 'oversized' ? 470 : 440} ${style === 'oversized' ? 541 : 521}"/></g>`),
+    overlay: () => svg(`<clipPath id="teeC"><path d="${path}"/></clipPath><g clip-path="url(#teeC)"><rect width="600" height="600" fill="url(#cylH)" opacity=".5"/><rect width="600" height="600" fill="url(#ambV)"/><g fill="#000" opacity=".07" filter="url(#bl6)"><ellipse cx="230" cy="330" rx="14" ry="70" transform="rotate(8 230 330)"/><ellipse cx="372" cy="400" rx="12" ry="60" transform="rotate(-9 372 400)"/><ellipse cx="300" cy="510" rx="80" ry="10"/></g><g fill="#fff" opacity=".12" filter="url(#bl6)"><ellipse cx="260" cy="300" rx="10" ry="60" transform="rotate(8 260 300)"/><ellipse cx="342" cy="250" rx="9" ry="50" transform="rotate(-7 342 250)"/></g><rect width="600" height="600" filter="url(#nz)" opacity=".05"/></g>`)
+  };
+};
+const photoTee = TEMPLATES.tshirt;
+const TEE_STYLES = [{ key: 'round', label: 'Round neck' }, { key: 'oversized', label: 'Oversized' }, { key: 'polo', label: 'Polo' }];
+const TEE_PLACEMENTS = [{ key: 'front', label: 'Front' }, { key: 'pocket', label: 'Left pocket' }, { key: 'back', label: 'Back' }];
+const PHOTO_TEE_AREAS = { front: photoTee.area, pocket: { x: 326, y: 176, w: 56, h: 56 } };
+TEMPLATES.tshirt = {
+  ...photoTee,
+  styles: TEE_STYLES,
+  placements: TEE_PLACEMENTS,
+  resolve(style = 'round', placement = 'front') {
+    const st = TEE_STYLES.find(x => x.key === style) || TEE_STYLES[0];
+    const pl = TEE_PLACEMENTS.find(x => x.key === placement) || TEE_PLACEMENTS[0];
+    const label = `${st.label} T-shirt, ${pl.label.toLowerCase()}`;
+    if (st.key === 'round' && pl.key !== 'back') return { ...photoTee, label, area: PHOTO_TEE_AREAS[pl.key] };
+    const t = teeSvg(st.key, pl.key);
+    return { label, area: t.area, palette: 'fabric', colour: '#ffffff', base: t.base, overlay: t.overlay };
+  }
+};
+
 const BY_SLUG = {
   'mug-printing': 'mug', 'water-bottles': 'bottle', 't-shirt-printing': 'tshirt', 'pillow-printing': 'pillow',
   'photo-frames': 'frame', 'led-frames': 'frame', 'wood-photo-frames': 'frame', 'photo-wall-clocks': 'clock',
