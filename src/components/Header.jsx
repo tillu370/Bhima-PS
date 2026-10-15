@@ -7,9 +7,9 @@ import { useCategories } from '../lib/data.js';
 import { LogoMark, Wordmark } from './LogoMark.jsx';
 
 const STATIC_CATS = [
-  { slug: 'business-cards', name: 'Business Cards' }, { slug: 'apparel', name: 'T-Shirts & Apparel' },
-  { slug: 'gifts', name: 'Gifts & Drinkware' }, { slug: 'packaging', name: 'Packaging' },
-  { slug: 'stationery', name: 'Stationery' }, { slug: 'signage', name: 'Signage & Banners' }
+  { slug: 'mugs-bottles', name: 'Mugs & Bottles' }, { slug: 'apparel-cushions', name: 'T-Shirts & Pillows' },
+  { slug: 'frames-clocks', name: 'Photo Frames & Clocks' }, { slug: 'laser-wood', name: 'Laser & Wood Engraving' },
+  { slug: 'keychains-magnets', name: 'Key Chains, Magnets & Badges' }, { slug: 'corporate-gifts', name: 'Corporate & Office Gifts' }
 ];
 
 export function Header() {

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
-import { errMsg, imgUrl, money } from '../lib/utils.js';
+import { errMsg, hasPrice, imgUrl, money } from '../lib/utils.js';
 
 export function ProductCard({ product: p }) {
   const { wishlist, toggleWishlist } = useAuth();
@@ -38,7 +38,9 @@ export function ProductCard({ product: p }) {
       <div className="product-info">
         <h3 className="product-title"><Link to={href}>{p.name}</Link></h3>
         <div className="product-bottom">
-          <span className="product-price"><strong>{money(p.price_from)}</strong> <small>onwards</small></span>
+          {hasPrice(p.price_from)
+            ? <span className="product-price"><strong>{money(p.price_from)}</strong> <small>onwards</small></span>
+            : <span className="product-price"><strong className="on-request">Ask price</strong> <small>on request</small></span>}
           <button className={'btn-add' + (added ? ' added' : '')} onClick={add}>{added ? 'Added' : 'Add'}</button>
         </div>
       </div>

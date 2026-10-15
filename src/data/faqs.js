@@ -6,7 +6,7 @@ export const FAQS = [
   },
   {
     "q": "What is the minimum order quantity?",
-    "a": "We cater to both individual and bulk requirements! For items like mugs and custom t-shirts, you can order even 1 piece. For business cards and bulk packaging, minimums start from 50 to 100 units."
+    "a": "We take both single-piece and bulk orders. Tell us the item and the quantity you need and we will confirm any minimum when we share the price."
   },
   {
     "q": "How much time does printing take?",

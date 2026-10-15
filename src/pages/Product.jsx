@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
-import { errMsg, imgUrl, money } from '../lib/utils.js';
+import { errMsg, hasPrice, imgUrl, money } from '../lib/utils.js';
 
 export default function Product() {
   const { slug } = useParams();
@@ -64,9 +64,11 @@ export default function Product() {
               <div className="pd-info">
                 {p.categories && <Link className="eyebrow" to={`/products?cat=${encodeURIComponent(p.categories.slug)}`}>{p.categories.name}</Link>}
                 <h1>{p.name}</h1>
-                <div className="pd-price"><span>Starting from</span><strong>{money(p.price_from)}</strong></div>
+                {hasPrice(p.price_from)
+                  ? <div className="pd-price"><span>Starting from</span><strong>{money(p.price_from)}</strong></div>
+                  : <div className="pd-price"><span>Price</span><strong>On request</strong></div>}
                 <p className="pd-desc">{p.description}</p>
-                <p className="pd-note">This is a starting price. Final price depends on quantity, size and finish. We confirm it with you before we begin printing.</p>
+                <p className="pd-note">{hasPrice(p.price_from) ? 'This is a starting price. Final price depends on quantity, size and finish. We confirm it with you before we begin printing.' : 'Send us the quantity and your design or photo and we reply with the price on WhatsApp before we begin.'}</p>
                 <div className="pd-actions">
                   <div className="qty-stepper" role="group" aria-label="Quantity">
                     <button type="button" onClick={() => setQty(q => clamp(q - 1))} aria-label="Decrease quantity">−</button>

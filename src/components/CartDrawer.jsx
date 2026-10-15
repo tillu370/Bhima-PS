@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useDialog } from '../lib/useDialog.js';
-import { imgUrl, money } from '../lib/utils.js';
+import { eachText, imgUrl, totalText } from '../lib/utils.js';
 
 export function CartDrawer() {
   const { cartOpen, setCartOpen } = useUi();
@@ -34,7 +34,7 @@ export function CartDrawer() {
               <img className="cart-thumb" src={imgUrl(i.image)} alt="" />
               <div className="cart-item-main">
                 <Link className="cart-item-title" to={'/product/' + encodeURIComponent(i.slug)} onClick={close}>{i.name}</Link>
-                <div className="cart-item-price">from {money(i.price)}</div>
+                <div className="cart-item-price">{eachText(i)}</div>
                 <div className="qty-stepper" role="group" aria-label={`Quantity for ${i.name}`}>
                   <button type="button" onClick={() => cart.setQty(i.id, i.qty - 1)} aria-label="Decrease quantity">−</button>
                   <span aria-live="polite">{i.qty}</span>
@@ -46,8 +46,8 @@ export function CartDrawer() {
           ))}
         </div>
         <div className="cart-drawer-footer">
-          <div className="cart-subtotal"><span>Estimated subtotal:</span><strong>{empty ? '₹0' : 'from ' + money(cart.subtotal)}</strong></div>
-          <p className="cart-note">Starting prices. We confirm the final price on WhatsApp before production.</p>
+          <div className="cart-subtotal"><span>Estimated total:</span><strong>{empty ? '-' : totalText(cart)}</strong></div>
+          <p className="cart-note">We confirm prices on WhatsApp before production.</p>
           <Link className="btn btn-secondary btn-block" to="/cart" onClick={close}>View Cart</Link>
           <Link className={'btn btn-primary btn-block btn-checkout' + (empty ? ' disabled' : '')} to="/checkout" aria-disabled={empty} onClick={e => { if (empty) e.preventDefault(); else close(); }}>Order on WhatsApp</Link>
         </div>
