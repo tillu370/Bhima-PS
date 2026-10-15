@@ -11,6 +11,7 @@ import './styles/vibe.css';
 import './styles/vibe2.css';
 import './styles/animations.css';
 import './styles/pages.css';
+import './styles/studio.css';
 import './styles/mobile.css';
 
 createRoot(document.getElementById('root')).render(

@@ -161,6 +161,16 @@ drop policy if exists "product images admin delete" on storage.objects;
 create policy "product images admin delete" on storage.objects for delete to authenticated
   using (bucket_id = 'product-images' and public.is_admin());
 
+-- Customiser: public bucket for design previews and customer-uploaded logos/photos.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('design-uploads', 'design-uploads', true, 5242880, array['image/png','image/jpeg','image/webp','image/gif'])
+on conflict (id) do update set file_size_limit = 5242880, allowed_mime_types = array['image/png','image/jpeg','image/webp','image/gif'];
+
+drop policy if exists "design uploads insert" on storage.objects;
+create policy "design uploads insert" on storage.objects for insert to anon, authenticated
+  with check (bucket_id = 'design-uploads');
+-- no select/update/delete policies: files cannot be listed or changed through the API; admins manage them in the dashboard.
+
 -- ---------- starter data (only inserted when the tables are empty) ----------
 do $seed$
 begin

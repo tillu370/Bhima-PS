@@ -81,6 +81,7 @@ export default function Product() {
                   </button>
                 </div>
                 <div className="pd-actions">
+                  <Link className="btn btn-teal-pill" to={"/customize/" + encodeURIComponent(p.slug)}>Customise &amp; Preview</Link>
                   <button className="btn btn-secondary" onClick={() => { cart.add(p, clamp(qty)); navigate('/checkout'); }}>Buy Now</button>
                   <button className="btn btn-secondary" onClick={() => openEnquiry('Question about ' + p.name, { product: p.name })}>Ask About This Product</button>
                 </div>

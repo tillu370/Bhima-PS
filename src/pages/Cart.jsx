@@ -26,18 +26,26 @@ export default function Cart() {
           <div className="cart-layout">
             <div>
               {cart.items.map(i => (
-                <article className="cart-line" key={i.id}>
+                <article className="cart-line" key={i.lineId || i.id}>
                   <img src={imgUrl(i.image)} alt="" />
                   <div>
                     <h3><Link to={'/product/' + encodeURIComponent(i.slug)}>{i.name}</Link></h3>
                     <p className="muted">{eachText(i)}</p>
+                    {i.design && (
+                      <p className="custom-line">
+                        <span className="custom-chip">Customised</span> {i.design.colourName} {i.design.template.toLowerCase()}
+                        {i.design.texts.length > 0 && <>, text: {i.design.texts.map(t => `"${t.text}"`).join(", ")}</>}
+                        {i.design.assets.length > 0 && <>, {i.design.assets.length} uploaded file{i.design.assets.length > 1 ? "s" : ""}</>}
+                        {" · "}<a href={i.design.preview} target="_blank" rel="noopener noreferrer">View design</a>
+                      </p>
+                    )}
                     <div className="qty-stepper" role="group" aria-label={`Quantity for ${i.name}`} style={{ marginTop: 10 }}>
-                      <button type="button" onClick={() => cart.setQty(i.id, i.qty - 1)} aria-label="Decrease quantity">−</button>
-                      <input type="number" min="1" max="100000" value={i.qty} onChange={e => cart.setQty(i.id, e.target.value)} aria-label="Quantity" />
-                      <button type="button" onClick={() => cart.setQty(i.id, i.qty + 1)} aria-label="Increase quantity">+</button>
+                      <button type="button" onClick={() => cart.setQty(i.lineId || i.id, i.qty - 1)} aria-label="Decrease quantity">−</button>
+                      <input type="number" min="1" max="100000" value={i.qty} onChange={e => cart.setQty(i.lineId || i.id, e.target.value)} aria-label="Quantity" />
+                      <button type="button" onClick={() => cart.setQty(i.lineId || i.id, i.qty + 1)} aria-label="Increase quantity">+</button>
                     </div>
-                    <textarea maxLength={500} value={i.notes || ''} onChange={e => cart.setNotes(i.id, e.target.value)} placeholder="Customisation notes (size, colour, text, artwork link…)" aria-label={`Notes for ${i.name}`} />
-                    <button type="button" className="link-btn" style={{ marginTop: 8 }} onClick={() => cart.remove(i.id)}>Remove</button>
+                    <textarea maxLength={500} value={i.notes || ''} onChange={e => cart.setNotes(i.lineId || i.id, e.target.value)} placeholder="Customisation notes (size, colour, text, artwork link…)" aria-label={`Notes for ${i.name}`} />
+                    <button type="button" className="link-btn" style={{ marginTop: 8 }} onClick={() => cart.remove(i.lineId || i.id)}>Remove</button>
                   </div>
                   <div className="line-total">{lineText(i)}</div>
                 </article>

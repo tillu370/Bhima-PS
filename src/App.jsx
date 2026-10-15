@@ -12,6 +12,7 @@ import Info from './pages/Info.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 // Account and admin are only needed by a few visitors, so they load on demand.
+const Customize = lazy(() => import('./pages/Customize.jsx'));
 const Account = lazy(() => import('./pages/Account.jsx'));
 const Admin = lazy(() => import('./pages/Admin.jsx'));
 const Fallback = <section className="page-section"><div className="container"><div className="sk-block" style={{ minHeight: 260 }} /></div></section>;
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="product/:slug" element={<Product />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
+          <Route path="customize/:slug?" element={<Customize />} />
           <Route path="login" element={<Login />} />
           <Route path="account/:tab?" element={<Account />} />
           <Route path="admin/:tab?" element={<Admin />} />

@@ -70,6 +70,7 @@ export function Header() {
                 {cats.map(c => <Link key={c.slug} to={`/products?cat=${encodeURIComponent(c.slug)}`}>{c.name}</Link>)}
               </div>
             </div>
+            <Link to="/customize" className="nav-link nav-studio">Design Studio</Link>
             <Link to="/#for-business" className="nav-link">For Business</Link>
             <Link to="/#how-it-works" className="nav-link">Design Help</Link>
             <Link to="/#why-choose" className="nav-link">About Us</Link>
@@ -101,6 +102,7 @@ export function Header() {
             <input type="search" value={q} onChange={e => onChange(e.target.value)} placeholder="Search for products..." autoComplete="off" aria-label="Search products" />
           </form>
           <Link to="/products">All Products</Link>
+          <Link to="/customize">Design Studio</Link>
           <Link to="/#for-business">For Business</Link>
           <Link to="/#how-it-works">Design Help</Link>
           <Link to="/#why-choose">About Us</Link>

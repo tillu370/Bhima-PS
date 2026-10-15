@@ -30,18 +30,18 @@ export function CartDrawer() {
               <Link to="/products" className="btn btn-primary" onClick={close}>Explore Products</Link>
             </div>
           ) : cart.items.map(i => (
-            <div className="cart-item-row" key={i.id}>
+            <div className="cart-item-row" key={i.lineId || i.id}>
               <img className="cart-thumb" src={imgUrl(i.image)} alt="" />
               <div className="cart-item-main">
                 <Link className="cart-item-title" to={'/product/' + encodeURIComponent(i.slug)} onClick={close}>{i.name}</Link>
-                <div className="cart-item-price">{eachText(i)}</div>
+                <div className="cart-item-price">{eachText(i)}{i.design && <span className="custom-chip">Customised</span>}</div>
                 <div className="qty-stepper" role="group" aria-label={`Quantity for ${i.name}`}>
-                  <button type="button" onClick={() => cart.setQty(i.id, i.qty - 1)} aria-label="Decrease quantity">−</button>
+                  <button type="button" onClick={() => cart.setQty(i.lineId || i.id, i.qty - 1)} aria-label="Decrease quantity">−</button>
                   <span aria-live="polite">{i.qty}</span>
-                  <button type="button" onClick={() => cart.setQty(i.id, i.qty + 1)} aria-label="Increase quantity">+</button>
+                  <button type="button" onClick={() => cart.setQty(i.lineId || i.id, i.qty + 1)} aria-label="Increase quantity">+</button>
                 </div>
               </div>
-              <button className="cart-remove" onClick={() => cart.remove(i.id)} aria-label={`Remove ${i.name}`}>✕</button>
+              <button className="cart-remove" onClick={() => cart.remove(i.lineId || i.id)} aria-label={`Remove ${i.name}`}>✕</button>
             </div>
           ))}
         </div>
