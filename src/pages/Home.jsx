@@ -5,18 +5,21 @@ import { HomeProducts } from '../components/HomeProducts.jsx';
 import { FaqGrid } from '../components/FaqGrid.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
+import { useHeroParallax } from '../lib/useHeroParallax.js';
 
 // Home page sections (markup converted from the original static page).
 export default function Home() {
   const go = useNavigate();
   const { openEnquiry } = useUi();
   const kd = fn => e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } };
+  useHeroParallax();
   useScrollReveal('.section-header, .category-card, .promo-card, .why-left, .why-card, .corporate-card, .step-card, .testimonials-grid, .testimonial-card, .bottom-cta-card');
   useEffect(() => { document.title = 'Bhima Print Solutions | Custom Printing for Every Idea'; }, []);
   return (
     <>
       {/* ==================== HERO SECTION ==================== */}
       <section className="hero-section">
+        <div className="hero-swatch" aria-hidden="true"><i className="c" /><i className="m" /><i className="y" /><i className="k" /><span>CMYK</span></div>
         <div className="hero-outer-container">
           {/* Left Column: Copy, CTAs, Highlights with Curved Arrow */}
           <div className="hero-left-wrapper">
@@ -52,6 +55,10 @@ export default function Home() {
               </div>
 
               {/* 4 Service Highlights */}
+              <p className="hero-note" aria-hidden="true">
+                <svg viewBox="0 0 54 34" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 28C14 30 30 24 40 10" /><path d="M31 9l10 0-2 10" /></svg>
+                Ideas. Design. Print. Repeat.
+              </p>
               <div className="hero-trust-badges">
                 <div className="trust-badge-item">
                   <div className="badge-icon">
