@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { LogoMark } from './LogoMark.jsx';
 
 const KEY = 'bps_splash_seen';
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -29,11 +30,11 @@ export default function Splash() {
   return (
     <div className={'splash' + (phase === 'out' ? ' out' : '')} aria-hidden="true">
       <div className="splash-inner">
-        <div className="splash-mark"><span>B.</span></div>
+        <div className="splash-mark"><LogoMark size={96} id="spl" /></div>
         <div className="splash-name">
-          {'BHIMA PRINT'.split('').map((c, i) => <span key={i} style={{ '--i': i }}>{c === ' ' ? ' ' : c}</span>)}
+          {'BHIMA'.split('').map((c, i) => <span key={i} style={{ '--i': i }}>{c === ' ' ? ' ' : c}</span>)}
         </div>
-        <div className="splash-sub">SOLUTIONS</div>
+        <div className="splash-sub">PRINTING SOLUTIONS</div>
         <div className="splash-bar"><i /><i /><i /><i /></div>
       </div>
     </div>

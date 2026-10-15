@@ -27,9 +27,9 @@ export default function Product() {
       const { data, error: err } = await supabase.from('products')
         .select('id,slug,name,description,price_from,image_url,categories(slug,name)').eq('slug', slug).eq('is_active', true).maybeSingle();
       if (err) throw err;
-      if (!data) { setState('missing'); document.title = 'Product not found | Bhima Print Solutions'; return; }
+      if (!data) { setState('missing'); document.title = 'Product not found | Bhima Printing Solutions'; return; }
       setP(data); setState('ok');
-      document.title = data.name + ' | Bhima Print Solutions';
+      document.title = data.name + ' | Bhima Printing Solutions';
       if (data.categories) {
         const r = await supabase.from('products').select('id,slug,name,price_from,image_url,categories!inner(slug,name)')
           .eq('is_active', true).eq('categories.slug', data.categories.slug).neq('id', data.id).limit(4);

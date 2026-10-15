@@ -22,7 +22,7 @@ export default function Login() {
   const [signup, setSignup] = useState({ name: '', phone: '', email: '', password: '' });
   const [newPassword, setNewPassword] = useState('');
 
-  useEffect(() => { document.title = 'Log in or Sign up | Bhima Print Solutions'; }, []);
+  useEffect(() => { document.title = 'Log in or Sign up | Bhima Printing Solutions'; }, []);
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(evt => { if (evt === 'PASSWORD_RECOVERY') setRecovery(true); });
     return () => data.subscription.unsubscribe();

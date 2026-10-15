@@ -1,5 +1,5 @@
 -- ============================================================================
--- Bhima Print Solutions - complete Supabase setup
+-- Bhima Printing Solutions - complete Supabase setup
 -- Run this ONCE in: Supabase Dashboard > SQL Editor > New query > paste > Run.
 -- Safe to re-run (it skips or replaces what already exists).
 -- ============================================================================

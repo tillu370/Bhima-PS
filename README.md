@@ -1,4 +1,4 @@
-# Bhima Print Solutions
+# Bhima Printing Solutions
 
 React website (Vite + React Router) backed by Supabase (Postgres, Auth, Storage).
 

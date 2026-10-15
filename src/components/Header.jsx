@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useCategories } from '../lib/data.js';
+import { LogoMark, Wordmark } from './LogoMark.jsx';
 
 const STATIC_CATS = [
   { slug: 'business-cards', name: 'Business Cards' }, { slug: 'apparel', name: 'T-Shirts & Apparel' },
@@ -54,9 +55,9 @@ export function Header() {
     <>
       <header className={'main-header' + (scrolled ? ' scrolled' : '')}>
         <div className="container nav-container">
-          <Link to="/" className="brand-logo" aria-label="Bhima Print Solutions home">
-            <div className="logo-mark"><span className="letter-b">B.</span></div>
-            <div className="logo-text"><span className="brand-name">BHIMA PRINT</span><span className="brand-sub">SOLUTIONS</span></div>
+          <Link to="/" className="brand-logo" aria-label="Bhima Printing Solutions home">
+            <div className="logo-mark"><LogoMark id="hdr" /></div>
+            <Wordmark />
           </Link>
 
           <nav className="nav-links" aria-label="Main">

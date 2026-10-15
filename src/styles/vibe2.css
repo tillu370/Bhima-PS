@@ -254,3 +254,24 @@
   .hero-section { min-height: calc(62vw * 0.5625 + 24px); }
   .hero-section::before { width: 62vw; }
 }
+
+/* ---------- brand: logomark + two-line wordmark ---------- */
+.logo-mark { width: auto; height: auto; background: none; box-shadow: none; border-radius: 0; display: flex; }
+.logo-svg { display: block; filter: drop-shadow(0 6px 12px rgba(11, 27, 63, .28)); transition: transform .3s var(--ease); }
+.brand-logo:hover .logo-svg { transform: rotate(-6deg) scale(1.05); }
+.brand-logo { gap: 12px; }
+.logo-text { display: flex; flex-direction: column; justify-content: center; line-height: 1; }
+.brand-name { font-family: var(--font-heading); font-weight: 900; font-size: 1.55rem; letter-spacing: .08em; color: var(--ink); line-height: .95; }
+.brand-sub { margin-top: 5px; font-size: .6rem; font-weight: 700; letter-spacing: .26em; color: var(--teal); white-space: nowrap; position: relative; padding-top: 5px; }
+.brand-sub::before { content: ""; position: absolute; left: 0; top: 0; width: 28px; height: 2px; border-radius: 2px; background: var(--mustard); }
+.main-footer .brand-name { color: #fff; }
+.main-footer .brand-sub { color: #8fd8d3; }
+.main-footer .logo-svg { filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .4)); }
+@media (max-width: 480px) { .brand-name { font-size: 1.3rem; } .brand-sub { font-size: .52rem; letter-spacing: .2em; } .logo-svg { width: 40px; height: 40px; } }
+@media (max-width: 380px) { .brand-sub { display: block !important; font-size: .46rem; } }
+
+/* splash uses the same mark */
+.splash-mark { background: none; box-shadow: none; width: auto; height: auto; border-radius: 0; filter: drop-shadow(0 16px 30px rgba(11, 27, 63, .35)); }
+.splash-mark .logo-svg { filter: none; }
+.splash-name { font-size: 2.6rem; letter-spacing: .14em; }
+.splash-sub { letter-spacing: .38em; color: var(--teal); font-size: .75rem; }

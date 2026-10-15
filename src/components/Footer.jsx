@@ -1,22 +1,18 @@
 import { A } from './A.jsx';
+import { LogoMark, Wordmark } from './LogoMark.jsx';
 import { whatsappUrl } from '../lib/config.js';
 
 export function Footer() {
   return (
     <footer className="main-footer" id="footer">
-        <div className="footer-wordmark" aria-hidden="true">BHIMA PRINT</div>
+        <div className="footer-wordmark" aria-hidden="true">BHIMA</div>
         
         <div className="container footer-grid">
           {/* Col 1: Brand Info */}
           <div className="footer-brand-col">
             <div className="brand-logo footer-logo">
-              <div className="logo-mark">
-                <span className="letter-b">B.</span>
-              </div>
-              <div className="logo-text">
-                <span className="brand-name">BHIMA PRINT</span>
-                <span className="brand-sub">SOLUTIONS</span>
-              </div>
+              <div className="logo-mark"><LogoMark id="ftr" /></div>
+              <Wordmark />
             </div>
             <p className="footer-desc">
               Ideas into print. Serving businesses, creators and communities with high-quality, customised printing solutions.
@@ -25,7 +21,7 @@ export function Footer() {
               <A href="#" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
               </A>
-              <A href={whatsappUrl('Hello Bhima Print Solutions')} aria-label="WhatsApp">
+              <A href={whatsappUrl('Hello Bhima Printing Solutions')} aria-label="WhatsApp">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.979-.275-.101-.476-.15-.677.15-.2.301-.777.979-.953 1.18-.176.2-.351.226-.652.075-.301-.151-1.272-.469-2.423-1.496-.897-.8-1.503-1.789-1.68-2.09-.176-.301-.019-.464.132-.614.136-.135.301-.351.452-.527.15-.176.2-.301.301-.502.101-.201.05-.377-.025-.527-.075-.151-.677-1.632-.928-2.235-.245-.587-.494-.507-.677-.517l-.578-.01c-.2 0-.527.075-.803.377s-1.054 1.029-1.054 2.509 1.079 2.911 1.229 3.112c.151.201 2.124 3.243 5.144 4.549.718.311 1.279.497 1.716.636.722.23 1.378.197 1.898.12.579-.087 1.78-.727 2.031-1.43.251-.703.251-1.305.176-1.43-.075-.126-.276-.201-.577-.352zM12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.662 1.434 5.176L2 22l4.981-1.397C8.423 21.492 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
               </A>
               <A href="#" aria-label="LinkedIn">
@@ -51,7 +47,7 @@ export function Footer() {
             <ul>
               <li><A href="/#faqs">FAQs</A></li>
               <li><A href="/#how-it-works">Design Help</A></li>
-              <li><A href={whatsappUrl('Hello Bhima Print Solutions, I would like an update on my order.')}>Order Help (WhatsApp)</A></li>
+              <li><A href={whatsappUrl('Hello Bhima Printing Solutions, I would like an update on my order.')}>Order Help (WhatsApp)</A></li>
               <li><A href="/info/shipping">Shipping &amp; Delivery</A></li>
             </ul>
           </div>
@@ -79,7 +75,7 @@ export function Footer() {
         {/* Copyright Sub-footer */}
         <div className="sub-footer">
           <div className="container sub-footer-content">
-            <p>© {new Date().getFullYear()} Bhima Print Solutions. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Bhima Printing Solutions. All rights reserved.</p>
             <A href="#" className="to-top" aria-label="Back to top" onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Back to top <span aria-hidden="true">↑</span></A>
             <div className="sub-footer-links">
               <A href="/info/privacy">Privacy Policy</A>

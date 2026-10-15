@@ -14,7 +14,7 @@ export default function Home() {
   const kd = fn => e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } };
   useHeroParallax();
   useScrollReveal('.section-header, .category-card, .promo-card, .why-left, .why-card, .corporate-card, .step-card, .testimonials-grid, .testimonial-card, .bottom-cta-card');
-  useEffect(() => { document.title = 'Bhima Print Solutions | Custom Printing for Every Idea'; }, []);
+  useEffect(() => { document.title = 'Bhima Printing Solutions | Custom Printing for Every Idea'; }, []);
   return (
     <>
       {/* ==================== HERO SECTION ==================== */}
@@ -92,7 +92,7 @@ export default function Home() {
           {/* Right Column: Supplied bhima-hero.png with Carousel Controls */}
           <div className="hero-right-wrapper">
             <div className="hero-image-stage">
-              <img src="/images/bhima-hero.png" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
+              <img src="/images/bhima-hero.png" alt="Bhima Printing Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
           
               </div>
           </div>
@@ -260,7 +260,7 @@ export default function Home() {
       {/* ==================== BEST SELLING PRODUCTS ==================== */}
       <HomeProducts />
 
-      {/* ==================== WHY CHOOSE BHIMA PRINT SOLUTIONS ==================== */}
+      {/* ==================== WHY CHOOSE BHIMA PRINTING SOLUTIONS ==================== */}
       <section className="why-choose-section" id="why-choose">
         <div className="container why-container">
           <div className="why-left">
@@ -268,7 +268,7 @@ export default function Home() {
               <h2 className="why-heading">
               Why<br />
               Choose<br />
-              Bhima Print<br />
+              Bhima Printing<br />
               Solutions?
             </h2>
             <p className="why-desc">
