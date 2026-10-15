@@ -5,6 +5,7 @@ import { ProductCard, ProductSkeletons } from '../components/ProductCard.jsx';
 import { fetchCategories } from '../lib/data.js';
 import { supabase } from '../lib/supabase.js';
 import { errMsg } from '../lib/utils.js';
+import { useScrollReveal } from '../lib/useScrollReveal.js';
 
 export default function Products() {
   const [params, setParams] = useSearchParams();
@@ -50,6 +51,7 @@ export default function Products() {
   };
   const reset = () => setParams({});
 
+  useScrollReveal('.products-grid .product-card:not(.skeleton)', [state, cat, q, sort, list.length]);
   const current = cats.find(c => c.slug === cat);
   useEffect(() => { document.title = (current ? current.name : 'All Products') + ' | Bhima Print Solutions'; }, [current]);
 

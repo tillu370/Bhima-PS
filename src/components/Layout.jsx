@@ -34,13 +34,14 @@ function Toast() {
 }
 
 export default function Layout() {
+  const { pathname } = useLocation();
   return (
     <>
       <ScrollProgress />
       <a className="skip-link" href="#main">Skip to content</a>
       <TopBar />
       <Header />
-      <main id="main"><Outlet /></main>
+      <main id="main" key={pathname} className="page-enter"><Outlet /></main>
       <Footer />
       <CartDrawer />
       <EnquiryModal />

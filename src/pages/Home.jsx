@@ -36,8 +36,8 @@ export default function Home() {
               
               <div className="hero-eyebrow">YOUR IDEAS, OUR PRINT.</div>
               <h1 className="hero-title">
-                Make It Real<br />
-                <span className="highlight-teal squiggle">With Print.</span>
+                <span className="w" style={{ '--i': 0 }}>Make</span>{' '}<span className="w" style={{ '--i': 1 }}>It</span>{' '}<span className="w" style={{ '--i': 2 }}>Real</span><br />
+                <span className="highlight-teal squiggle"><span className="w" style={{ '--i': 3 }}>With</span>{' '}<span className="w" style={{ '--i': 4 }}>Print.</span></span>
               </h1>
               <p className="hero-desc">
                 Custom printing solutions for businesses, creators, <br />
