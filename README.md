@@ -13,7 +13,8 @@ npm run build    # production build in dist/
 ```
 
 Environment variables (optional, defaults are built in): see `.env.example`. Only public values:
-`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_WHATSAPP_NUMBER`
+`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_WHATSAPP_NUMBER`, and optionally
+`VITE_INSTAGRAM_URL`, `VITE_YOUTUBE_URL`, `VITE_LINKEDIN_URL` (a social icon is only shown when its URL is set)
 (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `WHATSAPP_NUMBER` work too).
 
 ## Project structure
@@ -21,12 +22,13 @@ Environment variables (optional, defaults are built in): see `.env.example`. Onl
 ```
 src/
   main.jsx, App.jsx        entry + routes
-  pages/                   Home, Products, Product, Cart, Checkout, Login, Account, Admin, Info, NotFound
+  pages/                   Home, Products, Product, Customize (design studio), Cart, Checkout, Login, Account, Admin, Info, NotFound
   components/              Layout, Header, Footer, TopBar, CartDrawer, EnquiryModal, ProductCard, ...
   context/                 AuthContext (session, role, wishlist), CartContext, UiContext (toast, modals)
-  lib/                     supabase client, config, utils, hooks
+  lib/                     supabase client, config, utils, hooks, mockups (product mock-up templates)
   styles/                  CSS (unchanged from the static site)
 public/images/             product and banner photos
+public/mockups/            product photos used as design-studio mock-ups (photo, -mask.png tint mask, -shade.jpg shading)
 supabase/schema.sql        database schema, RLS policies, starter data
 ```
 
@@ -37,6 +39,7 @@ supabase/schema.sql        database schema, RLS policies, starter data
 | `/` | Home. Featured products load from Supabase. |
 | `/products?cat=&q=` | Catalog with category filter, search, sort. |
 | `/product/:slug` | Product detail, quantity, wishlist, "Buy now", enquiry. |
+| `/customize/:slug?` | Design Studio: place a logo/photo/text/shapes on a product mock-up, change colours, style and print position, then add the design to the cart. |
 | `/cart` | Cart (stored in the browser), quantities, per-item notes. |
 | `/checkout` | WhatsApp checkout: opens WhatsApp with the order written out. No login, no payment. |
 | `/login` | Log in, sign up, forgot / reset password. |
@@ -59,6 +62,7 @@ Every table has Row Level Security:
 - Customers see only their own wishlist and enquiries. Admins see everything.
 - A user cannot change their own `role`.
 - Storage bucket `product-images`: public read, admin-only upload/delete.
+- Storage bucket `design-uploads`: anyone can upload images (max 5 MB) from the design studio, public read. Customers' preview images and original artwork are saved here so the order message can link to them. Uploads are anonymous, so consider requiring login if spam appears.
 
 ### Making someone an admin
 
@@ -77,7 +81,8 @@ update public.profiles set role = 'admin' where email = 'someone@example.com';
 
 ## Still needed before launch
 
-- Real social media URLs (footer and top bar links are `#`).
+- Real social media URLs (set `VITE_INSTAGRAM_URL`, `VITE_YOUTUBE_URL`, `VITE_LINKEDIN_URL`; until then the icons are hidden).
+- Real product photos for the design studio mock-ups. Mug, T-shirt (round neck front/pocket), bottle, pillow and the square frame use photos; the other products and variants use drawn mock-ups.
 - Review the Privacy Policy and Terms pages (`src/pages/Info.jsx`, marked as drafts).
 - Confirm the phone number and email shown in the footer.
 - Set the real WhatsApp number (`VITE_WHATSAPP_NUMBER`, format `91XXXXXXXXXX`). It currently uses the footer number +91 98765 43210, which looks like a placeholder.
