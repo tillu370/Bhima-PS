@@ -218,3 +218,28 @@
   .hero-left-wrapper { width: 46%; }
   .hero-sticker { left: 48%; }
 }
+
+/* ==========================================================================
+   HERO PHOTO v3: full photo anchored to the right edge of the screen (full-bleed),
+   nothing cropped, faded on its left and bottom edges. Text stays aligned with the logo.
+   ========================================================================== */
+@media (min-width: 1025px) {
+  .hero-outer-container::before { content: none; }
+  .hero-section { position: relative; }
+  .hero-section::before {
+    content: ""; position: absolute; z-index: 0; display: block; pointer-events: none;
+    top: 50%; right: 0; left: auto; bottom: auto; inset-inline-start: auto;
+    width: min(62vw, 1080px); aspect-ratio: 16 / 9; height: auto;
+    background: url("/images/bhima-hero.jpg") center / 100% 100% no-repeat;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, .5) 14%, #000 36%), linear-gradient(180deg, #000 80%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, .5) 14%, #000 36%), linear-gradient(180deg, #000 80%, transparent 100%);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+    transform: translate(calc(var(--mx, 0) * -10px), calc(-50% + var(--my, 0) * -6px));
+    transition: transform .25s ease-out;
+  }
+  .hero-sticker { left: 48%; top: 0; }
+  .hero-swatch { right: calc(var(--gutter) + 10px); bottom: 30px; }
+}
+@media (min-width: 1025px) and (max-width: 1180px) {
+  .hero-section::before { width: 58vw; }
+}
