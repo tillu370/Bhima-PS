@@ -19,7 +19,7 @@ export default function Checkout() {
   const [link, setLink] = useState('');
 
   useEffect(() => {
-    document.title = 'Checkout | Bhima Printing Solutions';
+    document.title = 'Checkout | Bhima Print Solutions';
     cart.refresh().catch(() => {}).finally(() => setReady(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -36,7 +36,7 @@ export default function Checkout() {
     if (!PHONE_RE.test(f.phone.trim())) return setError('Please enter a valid phone number.');
     const lines = cart.items.map((i, n) => `${n + 1}. ${i.name} × ${i.qty} (from ${money(i.price)} each)` + (i.notes ? `\n   Notes: ${i.notes}` : ''));
     const msg = [
-      'Hello Bhima Printing Solutions, I would like to order:', '',
+      'Hello Bhima Print Solutions, I would like to order:', '',
       ...lines, '',
       `Estimated total: from ${money(cart.subtotal)} (starting prices)`, '',
       `Name: ${f.name.trim()}`, `Phone: ${f.phone.trim()}`,

@@ -37,7 +37,7 @@ export function FloatingActions() {
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15" /></svg>
       </button>
-      <a className="fab fab-wa" href={whatsappUrl('Hello Bhima Printing Solutions')} target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
+      <a className="fab fab-wa" href={whatsappUrl('Hello Bhima Print Solutions')} target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d={WA_ICON} /></svg>
         <span className="fab-tip">Chat on WhatsApp</span>
       </a>

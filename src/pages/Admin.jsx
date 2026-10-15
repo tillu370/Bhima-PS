@@ -353,7 +353,7 @@ export default function Admin() {
   const tab = TABS.includes(tabParam) ? tabParam : 'overview';
   const navigate = useNavigate();
   const { user, isAdmin, ready } = useAuth();
-  useEffect(() => { document.title = 'Admin | Bhima Printing Solutions'; }, []);
+  useEffect(() => { document.title = 'Admin | Bhima Print Solutions'; }, []);
 
   const hero = <PageHero title="Admin Dashboard" subtitle="Manage enquiries, products and customers." />;
   if (!ready) return <>{hero}<PageSection><div className="sk-block" style={{ minHeight: 260 }} /></PageSection></>;

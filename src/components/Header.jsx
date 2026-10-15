@@ -55,7 +55,7 @@ export function Header() {
     <>
       <header className={'main-header' + (scrolled ? ' scrolled' : '')}>
         <div className="container nav-container">
-          <Link to="/" className="brand-logo" aria-label="Bhima Printing Solutions home">
+          <Link to="/" className="brand-logo" aria-label="Bhima Print Solutions home">
             <div className="logo-mark"><LogoMark id="hdr" /></div>
             <Wordmark />
           </Link>

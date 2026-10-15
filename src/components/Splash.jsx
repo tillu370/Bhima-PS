@@ -34,7 +34,7 @@ export default function Splash() {
         <div className="splash-name">
           {'BHIMA'.split('').map((c, i) => <span key={i} style={{ '--i': i }}>{c === ' ' ? ' ' : c}</span>)}
         </div>
-        <div className="splash-sub">PRINTING SOLUTIONS</div>
+        <div className="splash-sub">PRINT SOLUTIONS</div>
         <div className="splash-bar"><i /><i /><i /><i /></div>
       </div>
     </div>

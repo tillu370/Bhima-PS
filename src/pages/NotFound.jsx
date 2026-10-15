@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageHero, PageSection, StateBox } from '../components/PageHero.jsx';
 
 export default function NotFound() {
-  useEffect(() => { document.title = 'Page not found | Bhima Printing Solutions'; }, []);
+  useEffect(() => { document.title = 'Page not found | Bhima Print Solutions'; }, []);
   return (
     <>
       <PageHero title="Page not found" />

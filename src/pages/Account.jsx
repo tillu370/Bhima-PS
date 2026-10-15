@@ -121,7 +121,7 @@ export default function Account() {
   const tab = TABS.includes(tabParam) ? tabParam : 'wishlist';
   const navigate = useNavigate();
   const { user, isAdmin, ready, signOut } = useAuth();
-  useEffect(() => { document.title = 'My Account | Bhima Printing Solutions'; }, []);
+  useEffect(() => { document.title = 'My Account | Bhima Print Solutions'; }, []);
 
   if (!ready) return <><PageHero title="My Account" /><PageSection><div className="sk-block" style={{ minHeight: 260 }} /></PageSection></>;
   if (!user) {

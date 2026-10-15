@@ -1,8 +1,8 @@
-// Bhima Printing Solutions logomark: a geometric "B" on a navy-to-teal tile with a mustard
+// Bhima Print Solutions logomark: a geometric "B" on a navy-to-teal tile with a mustard
 // full stop (the print "dot"), echoing the brand's CMYK / halftone motif.
 export function LogoMark({ size = 46, id = 'lm' }) {
   return (
-    <svg className="logo-svg" width={size} height={size} viewBox="0 0 48 48" role="img" aria-label="Bhima Printing Solutions logo">
+    <svg className="logo-svg" width={size} height={size} viewBox="0 0 48 48" role="img" aria-label="Bhima Print Solutions logo">
       <defs>
         <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#0b1b3f" />
@@ -18,12 +18,12 @@ export function LogoMark({ size = 46, id = 'lm' }) {
   );
 }
 
-// Two-line wordmark: BHIMA over PRINTING SOLUTIONS.
+// Two-line wordmark: BHIMA over PRINT SOLUTIONS.
 export function Wordmark() {
   return (
     <div className="logo-text">
       <span className="brand-name">BHIMA</span>
-      <span className="brand-sub">PRINTING SOLUTIONS</span>
+      <span className="brand-sub">PRINT SOLUTIONS</span>
     </div>
   );
 }

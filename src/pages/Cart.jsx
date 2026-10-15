@@ -11,7 +11,7 @@ export default function Cart() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    document.title = 'Your Cart | Bhima Printing Solutions';
+    document.title = 'Your Cart | Bhima Print Solutions';
     cart.refresh().catch(() => toast("Couldn't refresh prices. Showing saved prices.", 'error')).finally(() => setReady(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

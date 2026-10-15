@@ -53,7 +53,7 @@ export default function Products() {
 
   useScrollReveal('.products-grid .product-card:not(.skeleton)', [state, cat, q, sort, list.length]);
   const current = cats.find(c => c.slug === cat);
-  useEffect(() => { document.title = (current ? current.name : 'All Products') + ' | Bhima Printing Solutions'; }, [current]);
+  useEffect(() => { document.title = (current ? current.name : 'All Products') + ' | Bhima Print Solutions'; }, [current]);
 
   return (
     <>

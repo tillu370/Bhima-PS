@@ -59,14 +59,14 @@ export default function Info() {
     }
   };
   const c = pages[page] || { title: 'Page not found', body: <p>We could not find that page. <Link to="/">Go to the home page</Link>.</p> };
-  useEffect(() => { document.title = c.title + ' | Bhima Printing Solutions'; }, [c.title]);
+  useEffect(() => { document.title = c.title + ' | Bhima Print Solutions'; }, [c.title]);
 
   return (
     <>
       <PageHero title={c.title} />
       <PageSection>
         <div className="prose">
-          {c.draft && <div className="draft-banner"><strong>Draft:</strong> this page describes how the website currently works. Please have it reviewed and completed by Bhima Printing Solutions (and legal advice if needed) before launch.</div>}
+          {c.draft && <div className="draft-banner"><strong>Draft:</strong> this page describes how the website currently works. Please have it reviewed and completed by Bhima Print Solutions (and legal advice if needed) before launch.</div>}
           {c.body}
         </div>
       </PageSection>
