@@ -243,3 +243,14 @@
 @media (min-width: 1025px) and (max-width: 1180px) {
   .hero-section::before { width: 58vw; }
 }
+
+/* Hero photo: bigger (v4). The section grows with the photo so nothing is cropped. */
+@media (min-width: 1181px) {
+  .hero-section { min-height: calc(min(74vw, 1300px) * 0.5625 + 24px); }
+  .hero-section::before { width: min(74vw, 1300px); }
+  .hero-sticker { left: calc(100% - min(74vw, 1300px) + 270px); }
+}
+@media (min-width: 1025px) and (max-width: 1180px) {
+  .hero-section { min-height: calc(62vw * 0.5625 + 24px); }
+  .hero-section::before { width: 62vw; }
+}
