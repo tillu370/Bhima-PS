@@ -1,6 +1,6 @@
 # Bhima Print Solutions
 
-Static website (HTML, CSS, vanilla JS) backed by Supabase (Postgres, Auth, Storage).
+React website (Vite + React Router) backed by Supabase (Postgres, Auth, Storage).
 
 ## Run locally
 
@@ -78,7 +78,7 @@ update public.profiles set role = 'admin' where email = 'someone@example.com';
 ## Still needed before launch
 
 - Real social media URLs (footer and top bar links are `#`).
-- Review `info.html` Privacy Policy and Terms (marked as drafts).
+- Review the Privacy Policy and Terms pages (`src/pages/Info.jsx`, marked as drafts).
 - Confirm the phone number and email shown in the footer.
 - Set the real WhatsApp number (`VITE_WHATSAPP_NUMBER`, format `91XXXXXXXXXX`). It currently uses the footer number +91 98765 43210, which looks like a placeholder.
 - Online payments are not implemented.
