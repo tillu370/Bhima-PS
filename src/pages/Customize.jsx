@@ -50,7 +50,10 @@ function Picker() {
           <div className="picker-grid">
             {products.map(p => (
               <Link className="picker-card" to={'/customize/' + encodeURIComponent(p.slug)} key={p.id}>
-                <div className="picker-mock" dangerouslySetInnerHTML={{ __html: templateFor(p.slug).base(startColour(p.slug)) }} />
+                <div className="picker-mock">
+                  <div className="mockup-base" dangerouslySetInnerHTML={{ __html: templateFor(p.slug).base(startColour(p.slug)) }} />
+                  <div className="mockup-overlay" dangerouslySetInnerHTML={{ __html: templateFor(p.slug).overlay(startColour(p.slug)) }} />
+                </div>
                 <strong>{p.name}</strong>
                 <span>Start designing →</span>
               </Link>
