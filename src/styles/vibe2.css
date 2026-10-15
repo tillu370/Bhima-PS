@@ -158,3 +158,38 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-eyebrow, .hero-title, .hero-desc, .hero-buttons, .hero-note, .hero-trust-badges, .hero-swatch, .fab-wa::before { animation: none !important; }
 }
+
+/* ==========================================================================
+   HERO: centred composition (desktop). Text column and photo sit inside the same
+   centred container as the header, so both sides have equal margins at any width.
+   ========================================================================== */
+@media (min-width: 1025px) {
+  .hero-section { height: auto; min-height: 600px; padding: 40px 0 56px; background: linear-gradient(180deg, #fffdf8 0%, #fff 100%); }
+  .hero-section::before { content: none; }
+  .hero-section::after { display: block; }
+
+  .hero-outer-container { position: relative; height: auto; min-height: 504px; max-width: 1280px; padding: 0 var(--gutter); display: flex; align-items: center; }
+  /* the photo: rounded card pinned to the container's right edge */
+  .hero-outer-container::before {
+    content: ""; position: absolute; z-index: 0; top: 0; bottom: 0; right: var(--gutter); width: 52%;
+    border-radius: 32px; box-shadow: 0 28px 60px rgba(11, 27, 63, .22);
+    background: url("/images/bhima-hero.jpg") calc(50% + var(--mx, 0) * 14%) 50% / cover no-repeat;
+    transition: background-position .25s ease-out;
+  }
+  .hero-left-wrapper { position: relative; z-index: 2; height: auto; width: 44%; max-width: none; align-items: center; padding: 0; }
+  .hero-curved-arrow { display: none; }
+  .hero-left-content { margin: 0; max-width: 100%; padding-right: 28px; }
+  .hero-title { font-size: clamp(3rem, 4.5vw, 4.6rem); }
+  .hero-desc { max-width: 100%; }
+  .hero-buttons { flex-wrap: wrap; }
+  .hero-trust-badges { position: static; display: grid; grid-template-columns: repeat(2, auto); justify-content: start; gap: 12px 28px; margin: 8px 0 0; }
+
+  /* sticker + swatch ride on the photo corners */
+  .hero-sticker { position: absolute; z-index: 3; left: calc(48% - 40px); right: auto; top: -22px; }
+  .hero-swatch { z-index: 3; right: calc(var(--gutter) + 22px); bottom: 24px; }
+}
+@media (min-width: 1025px) and (max-width: 1180px) {
+  .hero-trust-badges { grid-template-columns: 1fr 1fr; }
+  .hero-left-wrapper { width: 47%; }
+  .hero-outer-container::before { width: 49%; }
+}

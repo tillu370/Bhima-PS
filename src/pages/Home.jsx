@@ -19,8 +19,9 @@ export default function Home() {
     <>
       {/* ==================== HERO SECTION ==================== */}
       <section className="hero-section">
-        <div className="hero-swatch" aria-hidden="true"><i className="c" /><i className="m" /><i className="y" /><i className="k" /><span>CMYK</span></div>
         <div className="hero-outer-container">
+          <div className="hero-sticker" aria-hidden="true">Made to<br />order</div>
+          <div className="hero-swatch" aria-hidden="true"><i className="c" /><i className="m" /><i className="y" /><i className="k" /><span>CMYK</span></div>
           {/* Left Column: Copy, CTAs, Highlights with Curved Arrow */}
           <div className="hero-left-wrapper">
             {/* Curved Doodle Arrow on far left */}
@@ -32,14 +33,14 @@ export default function Home() {
             </div>
 
             <div className="hero-left-content">
-              <div className="hero-sticker" aria-hidden="true">Made to<br />order</div>
+              
               <div className="hero-eyebrow">YOUR IDEAS, OUR PRINT.</div>
               <h1 className="hero-title">
                 Make It Real<br />
                 <span className="highlight-teal squiggle">With Print.</span>
               </h1>
               <p className="hero-desc">
-                Custom printing solutions for businesses, creators,<br />
+                Custom printing solutions for businesses, creators, <br />
                 celebrations and everything in between.
               </p>
 
