@@ -130,7 +130,7 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   const { toast } = useUi();
   const [f, setF] = useState({
     name: p ? p.name : '', slug: p ? p.slug : '', category_id: p ? p.category_id : (cats[0] ? cats[0].id : ''),
-    price: p ? String(p.price_from) : '', sort_order: p ? p.sort_order : 0, description: p ? p.description || '' : '',
+    price: p && p.price_from != null ? String(p.price_from) : '', sort_order: p ? p.sort_order : 0, description: p ? p.description || '' : '',
     image_url: p ? p.image_url || '' : '', is_active: p ? p.is_active : true, is_featured: p ? p.is_featured : false
   });
   const [file, setFile] = useState(null);
@@ -150,10 +150,10 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   const submit = async e => {
     e.preventDefault();
     setError('');
-    const price = parseFloat(f.price);
+    const price = f.price.trim() === '' ? null : parseFloat(f.price);
     if (f.name.trim().length < 2) return setError('Please enter a product name.');
     if (!SLUG_RE.test(f.slug)) return setError('Slug may only contain lowercase letters, numbers and hyphens.');
-    if (!Number.isFinite(price) || price < 0) return setError('Please enter a valid price.');
+    if (price !== null && (!Number.isFinite(price) || price < 0)) return setError('Enter a valid price, or leave it empty for "price on request".');
     setBusy(true);
     let image_url = f.image_url.trim() || null;
     if (file) {
@@ -185,7 +185,7 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
             <select id="pCat" value={f.category_id} onChange={set('category_id')}>{cats.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
         </div>
         <div className="field-row">
-          <div className="field"><label htmlFor="pPrice">Starting price (₹) *</label><input id="pPrice" type="number" min="0" step="0.01" required value={f.price} onChange={set('price')} /></div>
+          <div className="field"><label htmlFor="pPrice">Starting price (₹)</label><input id="pPrice" type="number" min="0" step="0.01" value={f.price} onChange={set('price')} placeholder="Empty = price on request" /></div>
           <div className="field"><label htmlFor="pOrder">Sort order</label><input id="pOrder" type="number" value={f.sort_order} onChange={set('sort_order')} /></div>
         </div>
         <div className="field"><label htmlFor="pDesc">Description</label><textarea id="pDesc" maxLength={2000} value={f.description} onChange={set('description')} /></div>
@@ -242,7 +242,7 @@ function Products() {
                       <td data-label=""><img className="table-img" src={imgUrl(p.image_url)} alt="" /></td>
                       <td data-label="Name"><strong>{p.name}</strong><br /><small style={{ color: '#64748b' }}>/{p.slug}</small></td>
                       <td data-label="Category">{p.categories ? p.categories.name : '-'}</td>
-                      <td data-label="From">{money(p.price_from)}</td>
+                      <td data-label="From">{p.price_from == null ? 'On request' : money(p.price_from)}</td>
                       <td data-label="Status"><span className={'badge ' + (p.is_active ? 'on' : 'off')}>{p.is_active ? 'Active' : 'Hidden'}</span>{p.is_featured && <> <span className="badge confirmed">Featured</span></>}</td>
                       <td data-label=""><div className="row-actions"><button className="btn btn-secondary btn-sm" onClick={() => setEditing(p)}>Edit</button><button className="btn btn-danger btn-sm" onClick={() => remove(p)}>Delete</button></div></td>
                     </tr>
@@ -260,14 +260,14 @@ function Products() {
 
 function CategoryForm({ category: c, onClose, onSaved }) {
   const { toast } = useUi();
-  const [f, setF] = useState({ name: c ? c.name : '', slug: c ? c.slug : '', description: c ? c.description || '' : '', sort_order: c ? c.sort_order : 0, is_active: c ? c.is_active : true });
+  const [f, setF] = useState({ name: c ? c.name : '', slug: c ? c.slug : '', description: c ? c.description || '' : '', image_url: c ? c.image_url || '' : '', sort_order: c ? c.sort_order : 0, is_active: c ? c.is_active : true });
   const [error, setError] = useState('');
   const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const submit = async e => {
     e.preventDefault();
     setError('');
     if (f.name.trim().length < 2 || !SLUG_RE.test(f.slug)) return setError('Enter a name and a valid slug (lowercase letters, numbers, hyphens).');
-    const row = { name: f.name.trim(), slug: f.slug, description: f.description.trim() || null, sort_order: parseInt(f.sort_order, 10) || 0, is_active: f.is_active };
+    const row = { name: f.name.trim(), slug: f.slug, description: f.description.trim() || null, image_url: f.image_url.trim() || null, sort_order: parseInt(f.sort_order, 10) || 0, is_active: f.is_active };
     const { error: err } = c ? await supabase.from('categories').update(row).eq('id', c.id) : await supabase.from('categories').insert(row);
     if (err) return setError(err.code === '23505' ? 'That slug is already used.' : err.message);
     toast('Category saved');
@@ -280,6 +280,7 @@ function CategoryForm({ category: c, onClose, onSaved }) {
         <div className="field"><label htmlFor="cName">Name *</label><input id="cName" required maxLength={80} value={f.name} onChange={e => setF(cur => ({ ...cur, name: e.target.value, slug: c ? cur.slug : slugify(e.target.value) }))} /></div>
         <div className="field"><label htmlFor="cSlug">URL slug *</label><input id="cSlug" required maxLength={60} value={f.slug} onChange={set('slug')} /></div>
         <div className="field"><label htmlFor="cDesc">Description</label><input id="cDesc" maxLength={200} value={f.description} onChange={set('description')} /></div>
+        <div className="field"><label htmlFor="cImg">Tile image URL (optional)</label><input id="cImg" value={f.image_url} onChange={set('image_url')} placeholder="https://… or /images/…" /></div>
         <div className="field"><label htmlFor="cOrder">Sort order</label><input id="cOrder" type="number" value={f.sort_order} onChange={set('sort_order')} /></div>
         <div className="check-row"><label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Visible in store</label></div>
         <button className="btn btn-primary btn-block" type="submit">{c ? 'Save changes' : 'Create category'}</button>

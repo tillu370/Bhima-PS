@@ -4,11 +4,12 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useCategories } from '../lib/data.js';
+import { LogoMark, Wordmark } from './LogoMark.jsx';
 
 const STATIC_CATS = [
-  { slug: 'business-cards', name: 'Business Cards' }, { slug: 'apparel', name: 'T-Shirts & Apparel' },
-  { slug: 'gifts', name: 'Gifts & Drinkware' }, { slug: 'packaging', name: 'Packaging' },
-  { slug: 'stationery', name: 'Stationery' }, { slug: 'signage', name: 'Signage & Banners' }
+  { slug: 'mugs-bottles', name: 'Mugs & Bottles' }, { slug: 'apparel-cushions', name: 'T-Shirts & Pillows' },
+  { slug: 'frames-clocks', name: 'Photo Frames & Clocks' }, { slug: 'laser-wood', name: 'Laser & Wood Engraving' },
+  { slug: 'keychains-magnets', name: 'Key Chains, Magnets & Badges' }, { slug: 'corporate-gifts', name: 'Corporate & Office Gifts' }
 ];
 
 export function Header() {
@@ -55,8 +56,8 @@ export function Header() {
       <header className={'main-header' + (scrolled ? ' scrolled' : '')}>
         <div className="container nav-container">
           <Link to="/" className="brand-logo" aria-label="Bhima Print Solutions home">
-            <div className="logo-mark"><span className="letter-b">B.</span></div>
-            <div className="logo-text"><span className="brand-name">BHIMA PRINT</span><span className="brand-sub">SOLUTIONS</span></div>
+            <div className="logo-mark"><LogoMark id="hdr" /></div>
+            <Wordmark />
           </Link>
 
           <nav className="nav-links" aria-label="Main">

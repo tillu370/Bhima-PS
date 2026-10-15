@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 
 // Fades sections in as they scroll into view. Skipped for reduced-motion users.
-export function useScrollReveal(selector) {
+// Several components can use it at once, so the root class is reference-counted.
+let users = 0;
+export function useScrollReveal(selector, deps = []) {
   useEffect(() => {
     if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
     const root = document.documentElement;
+    users += 1;
     root.classList.add('js-reveal');
     const timers = [];
     const io = new IntersectionObserver(entries => entries.forEach(en => {
@@ -24,7 +27,9 @@ export function useScrollReveal(selector) {
       io.disconnect();
       timers.forEach(clearTimeout);
       els.forEach(el => { el.classList.remove('reveal', 'in'); el.style.removeProperty('--d'); });
-      root.classList.remove('js-reveal');
+      users -= 1;
+      if (users <= 0) { users = 0; root.classList.remove('js-reveal'); }
     };
-  }, [selector]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selector, ...deps]);
 }

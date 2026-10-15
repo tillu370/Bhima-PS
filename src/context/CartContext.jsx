@@ -32,7 +32,7 @@ export function CartProvider({ children }) {
       const hit = cur.find(i => i.id === p.id);
       const next = hit
         ? cur.map(i => (i.id === p.id ? { ...i, qty: Math.min(100000, i.qty + q) } : i))
-        : [...cur, { id: p.id, slug: p.slug, name: p.name, price: Number(p.price_from), image: p.image_url || '', qty: q, notes: '' }];
+        : [...cur, { id: p.id, slug: p.slug, name: p.name, price: p.price_from == null ? null : Number(p.price_from), image: p.image_url || '', qty: q, notes: '' }];
       try { localStorage.setItem(KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
       return next;
     });
@@ -51,7 +51,7 @@ export function CartProvider({ children }) {
     const byId = new Map(data.map(p => [p.id, p]));
     const fresh = cur.filter(i => byId.get(i.id) && byId.get(i.id).is_active).map(i => {
       const p = byId.get(i.id);
-      return { ...i, name: p.name, slug: p.slug, price: Number(p.price_from), image: p.image_url || '' };
+      return { ...i, name: p.name, slug: p.slug, price: p.price_from == null ? null : Number(p.price_from), image: p.image_url || '' };
     });
     if (JSON.stringify(fresh) !== JSON.stringify(cur)) persist(fresh);
     return fresh;
@@ -60,7 +60,9 @@ export function CartProvider({ children }) {
   const value = useMemo(() => ({
     items,
     count: items.reduce((n, i) => n + i.qty, 0),
-    subtotal: items.reduce((n, i) => n + i.qty * i.price, 0),
+    subtotal: items.reduce((n, i) => n + (i.price == null ? 0 : i.qty * i.price), 0),
+    hasUnpriced: items.some(i => i.price == null),
+    hasPriced: items.some(i => i.price != null),
     add, setQty, setNotes, remove, clear, refresh
   }), [items, add, setQty, setNotes, remove, clear, refresh]);
 

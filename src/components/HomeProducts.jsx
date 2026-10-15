@@ -4,6 +4,7 @@ import { ProductCard, ProductSkeletons } from './ProductCard.jsx';
 import { fetchCategories } from '../lib/data.js';
 import { supabase } from '../lib/supabase.js';
 import { errMsg } from '../lib/utils.js';
+import { useScrollReveal } from '../lib/useScrollReveal.js';
 
 // "Best Selling Products" section on the home page: featured products from Supabase.
 export function HomeProducts() {
@@ -29,6 +30,7 @@ export function HomeProducts() {
 
   const shown = products.filter(p => active === 'all' || (p.categories && p.categories.slug === active));
 
+  useScrollReveal('.products-section .product-card:not(.skeleton)', [state, active, products.length]);
   return (
     <section className="products-section" id="products">
       <div className="container">

@@ -2,15 +2,20 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { A } from '../components/A.jsx';
 import { HomeProducts } from '../components/HomeProducts.jsx';
+import { HomeCategories } from '../components/HomeCategories.jsx';
 import { FaqGrid } from '../components/FaqGrid.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
+import { useHeroParallax } from '../lib/useHeroParallax.js';
+
+const MARQUEE = ['Mug Printing', 'T Shirt Printing', 'Pillow Printing', 'Photo Frames', 'LED Frames', 'Photo Wall Clocks', 'Wood Engraving', 'Laser Gifts', 'Photo Key Chains', 'Corporate Gift Sets', 'Customised Pens', 'Name Boards', 'Water Bottles', 'Photo Badges'];
 
 // Home page sections (markup converted from the original static page).
 export default function Home() {
   const go = useNavigate();
   const { openEnquiry } = useUi();
   const kd = fn => e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } };
+  useHeroParallax();
   useScrollReveal('.section-header, .category-card, .promo-card, .why-left, .why-card, .corporate-card, .step-card, .testimonials-grid, .testimonial-card, .bottom-cta-card');
   useEffect(() => { document.title = 'Bhima Print Solutions | Custom Printing for Every Idea'; }, []);
   return (
@@ -18,6 +23,8 @@ export default function Home() {
       {/* ==================== HERO SECTION ==================== */}
       <section className="hero-section">
         <div className="hero-outer-container">
+          <div className="hero-sticker" aria-hidden="true">Made to<br />order</div>
+          <div className="hero-swatch" aria-hidden="true"><i className="c" /><i className="m" /><i className="y" /><i className="k" /><span>CMYK</span></div>
           {/* Left Column: Copy, CTAs, Highlights with Curved Arrow */}
           <div className="hero-left-wrapper">
             {/* Curved Doodle Arrow on far left */}
@@ -29,14 +36,14 @@ export default function Home() {
             </div>
 
             <div className="hero-left-content">
-              <div className="hero-sticker" aria-hidden="true">Made to<br />order</div>
+              
               <div className="hero-eyebrow">YOUR IDEAS, OUR PRINT.</div>
               <h1 className="hero-title">
-                Make It Real<br />
-                <span className="highlight-teal squiggle">With Print.</span>
+                <span className="w" style={{ '--i': 0 }}>Make</span>{' '}<span className="w" style={{ '--i': 1 }}>It</span>{' '}<span className="w" style={{ '--i': 2 }}>Real</span><br />
+                <span className="highlight-teal squiggle"><span className="w" style={{ '--i': 3 }}>With</span>{' '}<span className="w" style={{ '--i': 4 }}>Print.</span></span>
               </h1>
               <p className="hero-desc">
-                Custom printing solutions for businesses, creators,<br />
+                Custom printing solutions for businesses, creators, <br />
                 celebrations and everything in between.
               </p>
 
@@ -52,6 +59,10 @@ export default function Home() {
               </div>
 
               {/* 4 Service Highlights */}
+              <p className="hero-note" aria-hidden="true">
+                <svg viewBox="0 0 54 34" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 28C14 30 30 24 40 10" /><path d="M31 9l10 0-2 10" /></svg>
+                Ideas. Design. Print. Repeat.
+              </p>
               <div className="hero-trust-badges">
                 <div className="trust-badge-item">
                   <div className="badge-icon">
@@ -93,8 +104,7 @@ export default function Home() {
 
       <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
-          <span>Business Cards</span><i>✦</i><span>T-Shirts &amp; Apparel</span><i>✦</i><span>Mugs &amp; Drinkware</span><i>✦</i><span>Packaging</span><i>✦</i><span>Stationery</span><i>✦</i><span>Corporate Gifts</span><i>✦</i><span>Signage &amp; Banners</span><i>✦</i><span>Photo Gifts</span><i>✦</i>
-          <span>Business Cards</span><i>✦</i><span>T-Shirts &amp; Apparel</span><i>✦</i><span>Mugs &amp; Drinkware</span><i>✦</i><span>Packaging</span><i>✦</i><span>Stationery</span><i>✦</i><span>Corporate Gifts</span><i>✦</i><span>Signage &amp; Banners</span><i>✦</i><span>Photo Gifts</span><i>✦</i>
+          {[0, 1].map(n => MARQUEE.map(t => <span key={n + t} className="marquee-item">{t}<i>✦</i></span>))}
         </div>
       </div>
 
@@ -114,103 +124,8 @@ export default function Home() {
           </div>
 
           {/* 8 Categories Grid */}
-          <div className="categories-grid">
-            {/* 1. Business Cards */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=business-cards')} onKeyDown={kd(() => go('/products?cat=business-cards'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/prod_biz_cards.jpg" alt="Business Cards" />
-              </div>
-              <h3 className="category-name">Business Cards</h3>
-              <p className="category-desc">Make every introduction count</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-
-            {/* 2. T-Shirts & Apparel */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=apparel')} onKeyDown={kd(() => go('/products?cat=apparel'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/prod_folded_tees.jpg" alt="T-Shirts & Apparel" />
-              </div>
-              <h3 className="category-name">T-Shirts & Apparel</h3>
-              <p className="category-desc">Custom wear for your team</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-
-            {/* 3. Mugs & Drinkware */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=gifts')} onKeyDown={kd(() => go('/products?cat=gifts'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/prod_personalised_mug.jpg" alt="Mugs & Drinkware" />
-              </div>
-              <h3 className="category-name">Mugs & Drinkware</h3>
-              <p className="category-desc">Personalised gifts for every occasion</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-
-            {/* 4. Packaging */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=packaging')} onKeyDown={kd(() => go('/products?cat=packaging'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/prod_pkg_box.jpg" alt="Packaging" />
-              </div>
-              <h3 className="category-name">Packaging</h3>
-              <p className="category-desc">Boxes, labels, stickers & tape</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-
-            {/* 5. Stationery */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=stationery')} onKeyDown={kd(() => go('/products?cat=stationery'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/prod_spiral_notebook.jpg" alt="Stationery" />
-              </div>
-              <h3 className="category-name">Stationery</h3>
-              <p className="category-desc">Notebooks, flyers, calendars</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-
-            {/* 6. Corporate Gifts */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=gifts')} onKeyDown={kd(() => go('/products?cat=gifts'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/corp_merchandise_set.jpg" alt="Corporate Gifts" />
-              </div>
-              <h3 className="category-name">Corporate Gifts</h3>
-              <p className="category-desc">Build stronger business relationships</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-
-            {/* 7. Signage & Banners */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=signage')} onKeyDown={kd(() => go('/products?cat=signage'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/prod_rollup_banner.jpg" alt="Signage & Banners" />
-              </div>
-              <h3 className="category-name">Signage & Banners</h3>
-              <p className="category-desc">Boards, standees, rollup displays</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-
-            {/* 8. Photo Gifts */}
-            <div className="category-card" role="link" tabIndex={0} onClick={() => go('/products?cat=gifts')} onKeyDown={kd(() => go('/products?cat=gifts'))}>
-              <div className="category-img-container">
-                <img loading="lazy" decoding="async" src="/images/prod_photo_frame.jpg" alt="Photo Gifts" />
-              </div>
-              <h3 className="category-name">Photo Gifts</h3>
-              <p className="category-desc">Turn memories into something real</p>
-              <div className="category-arrow-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            </div>
-          </div>
+          <HomeCategories />
+        
         </div>
       </section>
 
@@ -222,7 +137,7 @@ export default function Home() {
             <div className="promo-content">
               <h2 className="promo-title">Custom<br />T-Shirts</h2>
               <p className="promo-desc">For teams, events, colleges and brands.</p>
-              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=apparel')}>
+              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=apparel-cushions')}>
                 Explore Apparel
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </button>
@@ -237,7 +152,7 @@ export default function Home() {
             <div className="promo-content">
               <h2 className="promo-title">Personalised<br />Gifts</h2>
               <p className="promo-desc">Make every moment extra special.</p>
-              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=gifts')}>
+              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=frames-clocks')}>
                 Explore Gifts
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </button>
@@ -321,7 +236,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================== PRINTING SOLUTIONS FOR YOUR BUSINESS ==================== */}
+      {/* ==================== PRINT SOLUTIONS FOR YOUR BUSINESS ==================== */}
       <section className="corporate-banner-section" id="for-business">
         <div className="container">
           <div className="corporate-card">

@@ -225,3 +225,19 @@
   .data-table td .row-actions { justify-content: flex-end; clear: both; padding-top: 4px; }
   .data-table td .badge { margin-left: 4px; }
 }
+
+/* ---------- mobile v3: full hero photo, calmer floating buttons ---------- */
+@media (max-width: 1024px) {
+  .hero-image-stage { aspect-ratio: 16 / 9 !important; border-radius: 20px; }
+  .hero-product-img { object-fit: cover; }
+}
+@media (max-width: 640px) {
+  .fab-stack { right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); gap: 8px; }
+  .fab { width: 46px; height: 46px; box-shadow: 0 6px 16px rgba(11, 27, 63, .28); }
+  .fab svg { width: 24px; height: 24px; }
+  .fab-top { display: none; }
+  .fab-wa::before { display: none; }
+  /* keep the last content clear of the floating button */
+  .main-footer { padding-bottom: 8px; }
+  .to-top { margin-bottom: 52px; }
+}

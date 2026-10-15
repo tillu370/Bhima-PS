@@ -8,6 +8,8 @@ import { UiProvider } from './context/UiContext.jsx';
 import './styles/style.css';
 import './styles/polish.css';
 import './styles/vibe.css';
+import './styles/vibe2.css';
+import './styles/animations.css';
 import './styles/pages.css';
 import './styles/mobile.css';
 

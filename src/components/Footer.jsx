@@ -1,22 +1,18 @@
 import { A } from './A.jsx';
+import { LogoMark, Wordmark } from './LogoMark.jsx';
 import { whatsappUrl } from '../lib/config.js';
 
 export function Footer() {
   return (
     <footer className="main-footer" id="footer">
-        <div className="footer-wordmark" aria-hidden="true">BHIMA PRINT</div>
+        <div className="footer-wordmark" aria-hidden="true">BHIMA</div>
         
         <div className="container footer-grid">
           {/* Col 1: Brand Info */}
           <div className="footer-brand-col">
             <div className="brand-logo footer-logo">
-              <div className="logo-mark">
-                <span className="letter-b">B.</span>
-              </div>
-              <div className="logo-text">
-                <span className="brand-name">BHIMA PRINT</span>
-                <span className="brand-sub">SOLUTIONS</span>
-              </div>
+              <div className="logo-mark"><LogoMark id="ftr" /></div>
+              <Wordmark />
             </div>
             <p className="footer-desc">
               Ideas into print. Serving businesses, creators and communities with high-quality, customised printing solutions.

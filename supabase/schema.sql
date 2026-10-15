@@ -73,6 +73,7 @@ create table if not exists public.categories (
   slug text not null unique,
   name text not null,
   description text,
+  image_url text,
   sort_order int not null default 0,
   is_active boolean not null default true
 );
@@ -90,7 +91,7 @@ create table if not exists public.products (
   category_id uuid not null references public.categories(id) on delete restrict,
   name text not null check (char_length(name) between 2 and 120),
   description text,
-  price_from numeric(10,2) not null check (price_from >= 0),
+  price_from numeric(10,2) check (price_from is null or price_from >= 0), -- null = "ask for price"
   image_url text,
   is_active boolean not null default true,
   is_featured boolean not null default false,
@@ -160,30 +161,46 @@ drop policy if exists "product images admin delete" on storage.objects;
 create policy "product images admin delete" on storage.objects for delete to authenticated
   using (bucket_id = 'product-images' and public.is_admin());
 
--- ---------- starter data ----------
-insert into public.categories (slug, name, description, sort_order) values
- ('business-cards','Business Cards','Make every introduction count',1),
- ('apparel','T-Shirts & Apparel','Custom wear for your team',2),
- ('gifts','Gifts & Drinkware','Personalised gifts for every occasion',3),
- ('packaging','Packaging','Boxes, labels, stickers & tape',4),
- ('stationery','Stationery','Notebooks, flyers, calendars',5),
- ('signage','Signage & Banners','Boards, standees, rollup displays',6)
-on conflict (slug) do nothing;
+-- ---------- starter data (only inserted when the tables are empty) ----------
+do $seed$
+begin
+  if not exists (select 1 from public.categories) then
+    insert into public.categories (slug, name, description, sort_order, image_url) values
+     ('mugs-bottles','Mugs & Bottles','Mugs and water bottles with your photo or design',1,'/images/prod_personalised_mug.jpg'),
+     ('apparel-cushions','T-Shirts & Pillows','T-shirts and pillows, personalised',2,'/images/prod_folded_tees.jpg'),
+     ('frames-clocks','Photo Frames & Clocks','Photo, LED and wood frames, wall clocks',3,'/images/prod_photo_frame.jpg'),
+     ('laser-wood','Laser & Wood Engraving','Engraved wood, laser gifts, key chains, name boards',4,null),
+     ('keychains-magnets','Key Chains, Magnets & Badges','Photo key chains, fridge magnets, photo badges',5,null),
+     ('corporate-gifts','Corporate & Office Gifts','Gift sets, pens, pen stands, wallet cards, leather',6,'/images/corp_merchandise_set.jpg');
 
-insert into public.products (slug, category_id, name, description, price_from, image_url, is_featured, sort_order)
-select v.slug, c.id, v.name, v.descr, v.price, v.img, true, v.ord
-from (values
- ('premium-business-cards','business-cards','Premium Business Cards','Business cards printed on quality card stock. Share your finished design, or ask our team to help you create one. Tell us the quantity and finish you want when you place your request.',499,'./images/prod_biz_cards.jpg',1),
- ('custom-t-shirts','apparel','Custom T-Shirts','Custom printed t-shirts for teams, events, colleges and brands. Share your design and the sizes you need, and we will confirm the details with you.',299,'./images/prod_folded_tees.jpg',2),
- ('personalised-mugs','gifts','Personalised Mugs','Mugs printed with your photo, name or message. A simple personalised gift for birthdays, anniversaries and corporate gifting.',249,'./images/prod_personalised_mug.jpg',3),
- ('custom-packaging-boxes','packaging','Custom Packaging Boxes','Branded packaging boxes for your products. Tell us the size, quantity and artwork and we will get back with the details.',699,'./images/prod_pkg_box.jpg',4),
- ('flyers-brochures','stationery','Flyers & Brochures','Flyers and brochures for promotions, events and business information. Share your artwork or ask for design help.',299,'./images/prod_flyers_brochures.jpg',5),
- ('spiral-notebooks','stationery','Spiral Notebooks','Spiral notebooks with a custom cover for offices, events and gifting.',249,'./images/prod_spiral_notebook.jpg',6),
- ('photo-frames','gifts','Photo Frames','Photo frames personalised with your pictures, a thoughtful gift for family and friends.',299,'./images/prod_photo_frame.jpg',7),
- ('roll-up-banners','signage','Roll-Up Banners','Portable roll-up banners for shops, exhibitions and events. Share your artwork and size requirements.',1299,'./images/prod_rollup_banner.jpg',8)
-) as v(slug,cat,name,descr,price,img,ord)
-join public.categories c on c.slug = v.cat
-on conflict (slug) do nothing;
+    insert into public.products (slug, category_id, name, description, price_from, image_url, is_featured, sort_order)
+    select v.slug, c.id, v.name, v.descr, null, v.img, v.feat, v.ord
+    from (values
+     ('mug-printing','mugs-bottles','Mug Printing','Mugs printed with your photo, name or design. A simple personalised gift for birthdays and special occasions. Tell us the quantity and we will share the price.','/images/prod_personalised_mug.jpg',true,1),
+     ('water-bottles','mugs-bottles','Water Bottles','Water bottles personalised with a name, photo or logo. Tell us the quantity you need and we will share the price.',null,false,2),
+     ('t-shirt-printing','apparel-cushions','T Shirt Printing','T-shirts printed with your design, for teams, events and gifts. Tell us the sizes and quantity and we will share the price.','/images/prod_folded_tees.jpg',true,3),
+     ('pillow-printing','apparel-cushions','Pillow Printing','Pillows printed with your photos or a message. Share your picture and the quantity and we will share the price.',null,false,4),
+     ('photo-frames','frames-clocks','Photo Frames','Photo frames with your pictures printed in. Share your photos and the size you want and we will share the price.','/images/prod_photo_frame.jpg',true,5),
+     ('led-frames','frames-clocks','LED Frames','LED photo frames that light up your picture. Share your photo and the size you need and we will share the price.',null,true,6),
+     ('wood-photo-frames','frames-clocks','Wood Photo Frames','Wooden photo frames with your picture. Tell us the size and how many you need and we will share the price.',null,false,7),
+     ('photo-wall-clocks','frames-clocks','Photo Wall Clocks','Wall clocks with your photo on the dial. A personal gift or room decoration. Tell us the quantity and we will share the price.',null,false,8),
+     ('wood-engraving','laser-wood','Wood Engraving','Names, designs and messages engraved on wood. Share your design and the item you want engraved and we will share the price.',null,true,9),
+     ('laser-gifts','laser-wood','Laser Gifts','Gift items engraved with a laser: names, dates and designs. Tell us what you have in mind and we will share the price.',null,false,10),
+     ('laser-key-chains','laser-wood','Laser Key Chains','Key chains engraved with a laser. Send us the name or design you want and the quantity and we will share the price.',null,false,11),
+     ('name-boards','laser-wood','Name Boards','Name boards for desks, doors and homes. Send us the name and style you want and we will share the price.',null,false,12),
+     ('photo-key-chains','keychains-magnets','Photo Key Chains','Key chains with your photo. A small, personal gift. Share your picture and the quantity and we will share the price.',null,true,13),
+     ('photo-fridge-magnets','keychains-magnets','Photo Fridge Magnets','Fridge magnets with your photos. A small keepsake or gift. Share your pictures and the quantity and we will share the price.',null,false,14),
+     ('photo-badges','keychains-magnets','Photo Badges','Badges with your photo, for events, teams and gifts. Tell us the size and quantity and we will share the price.',null,false,15),
+     ('corporate-gift-sets','corporate-gifts','Corporate Gift Sets','Gift sets for employees, clients and events. Tell us your budget and quantity and we will suggest options and share the price.','/images/corp_merchandise_set.jpg',true,16),
+     ('customised-pens','corporate-gifts','Customised Pens','Pens customised with a name or logo, for gifting and promotions. Tell us the quantity and we will share the price.',null,true,17),
+     ('pen-stands','corporate-gifts','Pen Stands','Pen stands customised for offices and gifting. Share your name or logo and the quantity and we will share the price.',null,false,18),
+     ('wallet-cards','corporate-gifts','Wallet Cards','Wallet cards with your photo or details. Share your design and the quantity and we will share the price.',null,false,19),
+     ('leather-products','corporate-gifts','Leather Products','Leather products personalised for gifting. Ask us about the items and customisation available and we will share the price.',null,false,20)
+    ) as v(slug,cat,name,descr,img,feat,ord)
+    join public.categories c on c.slug = v.cat;
+
+  end if;
+end $seed$;
 
 -- Admin: anyone who signs up with this email becomes an admin. Change or add emails as needed.
 insert into public.admin_emails (email) values ('lakshmisrinivas1849@gmail.com') on conflict do nothing;

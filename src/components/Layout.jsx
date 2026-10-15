@@ -5,6 +5,7 @@ import { Header } from './Header.jsx';
 import { Footer } from './Footer.jsx';
 import { CartDrawer } from './CartDrawer.jsx';
 import { EnquiryModal } from './EnquiryModal.jsx';
+import { FloatingActions, ScrollProgress } from './FloatingActions.jsx';
 import { useUi } from '../context/UiContext.jsx';
 
 // On route change: jump to the #hash target if there is one, otherwise to the top.
@@ -33,15 +34,18 @@ function Toast() {
 }
 
 export default function Layout() {
+  const { pathname } = useLocation();
   return (
     <>
+      <ScrollProgress />
       <a className="skip-link" href="#main">Skip to content</a>
       <TopBar />
       <Header />
-      <main id="main"><Outlet /></main>
+      <main id="main" key={pathname} className="page-enter"><Outlet /></main>
       <Footer />
       <CartDrawer />
       <EnquiryModal />
+      <FloatingActions />
       <Toast />
       <ScrollManager />
     </>

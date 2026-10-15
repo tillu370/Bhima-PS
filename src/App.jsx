@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
+import Splash from './components/Splash.jsx';
 import Home from './pages/Home.jsx';
 import Products from './pages/Products.jsx';
 import Product from './pages/Product.jsx';
@@ -17,6 +18,8 @@ const Fallback = <section className="page-section"><div className="container"><d
 
 export default function App() {
   return (
+    <>
+    <Splash />
     <Suspense fallback={Fallback}>
       <Routes>
         <Route element={<Layout />}>
@@ -33,5 +36,6 @@ export default function App() {
         </Route>
       </Routes>
     </Suspense>
+    </>
   );
 }
