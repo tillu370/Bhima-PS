@@ -75,9 +75,18 @@ update public.profiles set role = 'admin' where email = 'someone@example.com';
 
 ### Things to configure in the Supabase dashboard
 
-- **Auth > Providers > Email**: "Confirm email" is on by default, so new users must click the email link before logging in. Turn it off for easier testing.
-- **Auth > URL Configuration**: set the Site URL and add your live site URL to Redirect URLs, otherwise the password-reset email link will not return to the site.
-- Built-in Supabase email has a low hourly limit. Configure custom SMTP before launch.
+These are dashboard settings, not code, so they cannot be checked from this repo — verify each one by actually
+clicking through the flow (sign up, log in, reset password) with a real inbox before launch:
+
+- **Auth > Providers > Email > "Confirm email"**: on by default, so a new account cannot log in until the
+  confirmation link is clicked. Decide whether you want that for launch, or turn it off for easier testing.
+- **Auth > URL Configuration**: set *Site URL* to the live domain and add it to *Redirect URLs* — otherwise the
+  "reset password" and "confirm email" links in the email open the wrong (or a blank) page.
+- **Auth > Emails > SMTP Settings**: Supabase's built-in mailer has a low hourly limit (a handful of emails/hour)
+  and can land in spam. Configure a custom SMTP provider (Resend, SendGrid, etc.) before relying on sign-up or
+  password-reset emails in production.
+- After changing any of the above, actually sign up with a real email, click the confirmation link, then use
+  "Forgot password" and confirm the reset email arrives and its link lands back on the live site.
 
 ## Still needed before launch
 
@@ -87,6 +96,8 @@ update public.profiles set role = 'admin' where email = 'someone@example.com';
 - Confirm the phone number and email shown in the footer.
 - Set the real WhatsApp number (`VITE_WHATSAPP_NUMBER`, format `91XXXXXXXXXX`). It currently uses the footer number +91 98765 43210, which looks like a placeholder.
 - Online payments are not implemented.
+- `public/robots.txt` and `public/sitemap.xml` use the placeholder `https://your-domain-here.com` — replace it with the real live domain once the site is deployed to it. The sitemap lists only static pages; product pages come from the database and are not generated into it.
+- `index.html`'s Open Graph / Twitter card tags use `/images/bhima-hero.jpg` as the share preview image; replace with a dedicated 1200×630 banner if you want a nicer link preview on WhatsApp/Facebook.
 
 ## Deploy on Vercel
 

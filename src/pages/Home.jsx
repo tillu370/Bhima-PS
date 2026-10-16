@@ -95,7 +95,7 @@ export default function Home() {
           {/* Right Column: Supplied bhima-hero.png with Carousel Controls */}
           <div className="hero-right-wrapper">
             <div className="hero-image-stage">
-              <img src="/images/bhima-hero.png" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
+              <img src="/images/bhima-hero.jpg" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
           
               </div>
           </div>
@@ -143,7 +143,7 @@ export default function Home() {
               </button>
             </div>
             <div className="promo-visual">
-              <img loading="lazy" decoding="async" src="/images/custom_tshirts_promo.jpg" alt="Custom T-Shirts Mockup" className="promo-img" />
+              <img loading="lazy" decoding="async" src="/images/prod_folded_tees.jpg" alt="Custom T-Shirts Mockup" className="promo-img" />
             </div>
           </div>
 
@@ -158,7 +158,7 @@ export default function Home() {
               </button>
             </div>
             <div className="promo-visual">
-              <img loading="lazy" decoding="async" src="/images/personalised_gifts_promo.jpg" alt="Personalised Mugs and Frames" className="promo-img" />
+              <img loading="lazy" decoding="async" src="/images/prod_photo_frame.jpg" alt="Personalised Mugs and Frames" className="promo-img" />
             </div>
           </div>
         </div>

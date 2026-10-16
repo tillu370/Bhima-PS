@@ -20,12 +20,12 @@ export const hasPrice = v => v !== null && v !== undefined && v !== '';
 export const priceText = v => (hasPrice(v) ? money(v) : 'On request');
 
 export const CATEGORY_DEFAULT_IMAGES = {
-  'mugs-bottles': '/images/mugs-bottles.png',
-  'apparel-cushions': '/images/apparel-cushions.png',
-  'frames-clocks': '/images/frames-clocks.png',
-  'laser-wood': '/images/laser-wood.png',
-  'keychains-magnets': '/images/keychains-magnets.png',
-  'corporate-gifts': '/images/corporate-gifts.png',
+  'mugs-bottles': '/images/prod_personalised_mug.jpg',
+  'apparel-cushions': '/images/prod_folded_tees.jpg',
+  'frames-clocks': '/images/prod_photo_frame.jpg',
+  'laser-wood': '/images/laser-wood.jpg',
+  'keychains-magnets': '/images/keychains-magnets.jpg',
+  'corporate-gifts': '/images/corp_merchandise_set.jpg',
 };
 
 // Product images are stored as "./images/x.jpg" (local) or full https URLs (uploaded to Supabase Storage).
