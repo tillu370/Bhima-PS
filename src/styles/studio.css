@@ -74,3 +74,13 @@
 .opt-group span { width: 100%; font-weight: 700; font-size: .85rem; }
 .opt-group button { border: 1px solid var(--border-light); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: .85rem; font-weight: 600; cursor: pointer; }
 .opt-group button.on { background: var(--dark-teal); color: #fff; border-color: var(--dark-teal); }
+
+/* Admin orders */
+.order-list { display: grid; gap: 16px; }
+.order-card { border: 1px solid var(--border-light); border-radius: 18px; padding: 16px; background: #fff; }
+.order-card header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+.order-card .muted { color: var(--text-muted); font-size: .85rem; }
+.order-items { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 10px; }
+.order-items li { display: flex; gap: 12px; align-items: flex-start; }
+.order-items img { width: 84px; height: 84px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border-light); background: #f1f5f9; }
+.order-items .link-btn { display: inline-block; margin-right: 12px; }

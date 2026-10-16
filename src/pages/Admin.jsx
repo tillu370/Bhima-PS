@@ -7,7 +7,8 @@ import { supabase } from '../lib/supabase.js';
 import { useDialog } from '../lib/useDialog.js';
 import { errMsg, fmtDate, imgUrl, money, slugify } from '../lib/utils.js';
 
-const TABS = ['overview', 'enquiries', 'products', 'categories', 'customers'];
+const TABS = ['overview', 'orders', 'enquiries', 'products', 'categories', 'customers'];
+const ORDER_STATUSES = ['new', 'contacted', 'confirmed', 'printing', 'delivered', 'cancelled'];
 const ENQ_STATUSES = ['new', 'contacted', 'closed'];
 const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -55,24 +56,97 @@ function Overview() {
       if (error) throw error;
       return c;
     };
-    const [newEnq, allEnq, prods, custs] = await Promise.all([
+    const [newEnq, allEnq, prods, custs, newOrders, allOrders] = await Promise.all([
       count('enquiries', q => q.eq('status', 'new')), count('enquiries'),
-      count('products', q => q.eq('is_active', true)), count('profiles', q => q.eq('role', 'customer'))
+      count('products', q => q.eq('is_active', true)), count('profiles', q => q.eq('role', 'customer')),
+      count('orders', q => q.eq('status', 'new')).catch(() => null), count('orders').catch(() => null)
     ]);
-    return { newEnq, allEnq, prods, custs };
+    return { newEnq, allEnq, prods, custs, newOrders, allOrders };
   }, []);
   return (
     <Async state={state}>{d => (
       <>
         <div className="stat-grid">
+          <div className="stat"><strong>{d.newOrders ?? '-'}</strong><span>New orders</span></div>
+          <div className="stat"><strong>{d.allOrders ?? '-'}</strong><span>Total orders</span></div>
           <div className="stat"><strong>{d.newEnq}</strong><span>New enquiries</span></div>
           <div className="stat"><strong>{d.allEnq}</strong><span>Total enquiries</span></div>
           <div className="stat"><strong>{d.prods}</strong><span>Active products</span></div>
           <div className="stat"><strong>{d.custs}</strong><span>Customers</span></div>
         </div>
-        <p style={{ color: '#475569' }}>Orders are placed on WhatsApp, so they are not tracked here. Enquiries from the website form arrive under <strong>Enquiries</strong>.</p>
+        {d.allOrders === null
+          ? <p className="form-error">The orders table is missing. Run <code>supabase/migrations/2026-10-orders.sql</code> in the Supabase SQL Editor.</p>
+          : <p style={{ color: '#475569' }}>Customers send orders on WhatsApp; each one is also saved under <strong>Orders</strong> with the customer's design. Enquiries from the website form arrive under <strong>Enquiries</strong>.</p>}
       </>
     )}</Async>
+  );
+}
+
+function Orders() {
+  const { toast } = useUi();
+  const state = useLoad(async () => must(await supabase.from('orders').select('*').order('created_at', { ascending: false })), []);
+  const [filter, setFilter] = useState('');
+  const [open, setOpen] = useState(null);
+
+  const update = async (o, patch, msg) => {
+    const { error } = await supabase.from('orders').update(patch).eq('id', o.id);
+    if (error) { toast(error.message, 'error'); return false; }
+    state.setData(rows => rows.map(r => (r.id === o.id ? { ...r, ...patch } : r)));
+    toast(msg || 'Order updated');
+    return true;
+  };
+  return (
+    <Async state={state}>{rows => {
+      const list = rows.filter(o => !filter || o.status === filter);
+      return (
+        <>
+          <div className="admin-filters">
+            <select value={filter} onChange={e => setFilter(e.target.value)} aria-label="Filter by status">
+              <option value="">All statuses</option>{ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          {!list.length ? <div className="state-box"><h3>No orders yet</h3><p>Orders appear here when a customer sends their cart from the Checkout page.</p></div> : (
+            <div className="order-list">
+              {list.map(o => (
+                <article className="order-card" key={o.id}>
+                  <header>
+                    <div>
+                      <strong>{o.ref}</strong> <span className={'badge ' + (o.status === 'delivered' || o.status === 'confirmed' ? 'confirmed' : '')}>{o.status}</span>
+                      <div className="muted">{fmtDate(o.created_at)}</div>
+                    </div>
+                    <select value={o.status} onChange={e => update(o, { status: e.target.value })} aria-label={`Status for order ${o.ref}`}>
+                      {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </header>
+                  <p><strong>{o.name}</strong> · <a href={`tel:${o.phone}`}>{o.phone}</a> · <a href={`https://wa.me/${o.phone.replace(/\D/g, '').replace(/^(\d{10})$/, '91$1')}`} target="_blank" rel="noopener noreferrer">WhatsApp</a></p>
+                  {o.address && <p className="muted">{o.address}</p>}
+                  {o.notes && <p className="muted">Notes: {o.notes}</p>}
+                  <ul className="order-items">
+                    {(o.items || []).map((i, n) => (
+                      <li key={n}>
+                        {i.design && <a href={i.design.preview} target="_blank" rel="noopener noreferrer"><img src={i.design.preview} alt={`Design for ${i.name}`} loading="lazy" /></a>}
+                        <div>
+                          <strong>{i.name}</strong> × {i.qty}
+                          {i.design && <div className="muted">{i.design.colourName} · {i.design.template}{i.design.background ? ` · background ${i.design.background}` : ''}</div>}
+                          {i.design && i.design.texts && i.design.texts.length > 0 && <div className="muted">Text: {i.design.texts.map(t => `"${t.text}" (${t.font})`).join(', ')}</div>}
+                          {i.design && i.design.assets && i.design.assets.map((u, k) => <a key={k} className="link-btn" href={u} target="_blank" rel="noopener noreferrer" download>Original file {k + 1}</a>)}
+                          {i.notes && <div className="muted">Item notes: {i.notes}</div>}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  {o.est_total != null && <p className="muted">Estimated total: {money(o.est_total)} (priced items only)</p>}
+                  <label className="field"><span>Internal notes (customers cannot see this)</span>
+                    <textarea rows={2} maxLength={2000} defaultValue={o.admin_notes || ''} onBlur={e => { if (e.target.value !== (o.admin_notes || '')) update(o, { admin_notes: e.target.value || null }, 'Notes saved'); }} />
+                  </label>
+                </article>
+              ))}
+            </div>
+          )}
+          {open}
+        </>
+      );
+    }}</Async>
   );
 }
 
@@ -356,12 +430,12 @@ export default function Admin() {
   const { user, isAdmin, ready } = useAuth();
   useEffect(() => { document.title = 'Admin | Bhima Print Solutions'; }, []);
 
-  const hero = <PageHero title="Admin Dashboard" subtitle="Manage enquiries, products and customers." />;
+  const hero = <PageHero title="Admin Dashboard" subtitle="Manage orders, enquiries, products and customers." />;
   if (!ready) return <>{hero}<PageSection><div className="sk-block" style={{ minHeight: 260 }} /></PageSection></>;
   if (!user) return <>{hero}<PageSection><StateBox title="Admin login required" action={<Link className="btn btn-primary" to="/login?next=/admin">Log in</Link>}>Log in with an admin account.</StateBox></PageSection></>;
   if (!isAdmin) return <>{hero}<PageSection><StateBox title="Access denied" action={<Link className="btn btn-primary" to="/account">Go to My Account</Link>}>This account does not have admin access.</StateBox></PageSection></>;
 
-  const View = { overview: Overview, enquiries: Enquiries, products: Products, categories: Categories, customers: Customers }[tab];
+  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, products: Products, categories: Categories, customers: Customers }[tab];
   return (
     <>
       {hero}
