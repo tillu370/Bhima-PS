@@ -75,6 +75,12 @@
 .opt-group button { border: 1px solid var(--border-light); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: .85rem; font-weight: 600; cursor: pointer; }
 .opt-group button.on { background: var(--dark-teal); color: #fff; border-color: var(--dark-teal); }
 
+.studio-draft-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.stage-toolbar { display: flex; justify-content: flex-end; gap: 8px; margin: 0 auto 10px; max-width: 560px; }
+.stage-toolbar button { border: 1px solid var(--border-light); background: #fff; border-radius: 10px; padding: 6px 12px; font-size: .82rem; font-weight: 600; cursor: pointer; }
+.stage-toolbar button:disabled { opacity: .4; cursor: default; }
+.stage-toolbar button:not(:disabled):hover { background: var(--dark-teal-light); }
+
 /* Admin orders */
 .order-list { display: grid; gap: 16px; }
 .order-card { border: 1px solid var(--border-light); border-radius: 18px; padding: 16px; background: #fff; }

@@ -5,7 +5,7 @@ import { PageHero, PageSection, StateBox } from '../components/PageHero.jsx';
 import { ProductSkeletons } from '../components/ProductCard.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
-import { colourName, paletteForSlug, startColour, templateFor, VB } from '../lib/mockups.js';
+import { colourName, contrastText, paletteForSlug, startColour, templateFor, VB } from '../lib/mockups.js';
 import { supabase } from '../lib/supabase.js';
 import { errMsg } from '../lib/utils.js';
 
@@ -99,9 +99,15 @@ function Studio({ slug }) {
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+  const [draft, setDraft] = useState(null); // a saved design found for this product, offered before it is loaded
 
   const canvasEl = useRef(null);
   const areaRef = useRef(null);
+  const historyRef = useRef([]); // stack of canvas JSON snapshots, oldest first
+  const histIdxRef = useRef(-1); // index of the current snapshot
+  const restoringRef = useRef(false); // true while undo/redo/draft-load is applying a snapshot (skip re-recording it)
   const fab = useRef(null);
   const files = useRef(new Map()); // fabric image object -> original File
 
@@ -137,6 +143,39 @@ function Studio({ slug }) {
     });
   }, []);
 
+  /* ---- undo / redo: a stack of canvas snapshots (not pushed while a snapshot is being restored) */
+  const snapshot = useCallback(() => {
+    const c = fab.current;
+    if (!c || restoringRef.current) return;
+    const json = JSON.stringify(c.toJSON(['selectable']));
+    const next = historyRef.current.slice(0, histIdxRef.current + 1);
+    if (next[next.length - 1] === json) return;
+    next.push(json);
+    if (next.length > 50) next.shift();
+    historyRef.current = next;
+    histIdxRef.current = next.length - 1;
+    setCanUndo(histIdxRef.current > 0);
+    setCanRedo(false);
+  }, []);
+  const applyHistory = useCallback(idx => {
+    const c = fab.current;
+    const json = historyRef.current[idx];
+    if (!c || json == null) return;
+    restoringRef.current = true;
+    c.loadFromJSON(JSON.parse(json)).then(() => {
+      c.requestRenderAll();
+      restoringRef.current = false;
+      histIdxRef.current = idx;
+      setCanUndo(idx > 0);
+      setCanRedo(idx < historyRef.current.length - 1);
+      sync();
+    });
+  }, [sync]);
+  const undo = () => applyHistory(Math.max(0, histIdxRef.current - 1));
+  const redo = () => applyHistory(Math.min(historyRef.current.length - 1, histIdxRef.current + 1));
+
+  const draftKey = `bps_draft_${slug}`;
+
   /* ---- create the fabric canvas once the stage is on screen */
   useEffect(() => {
     if (state !== 'ok' || !canvasEl.current) return undefined;
@@ -144,6 +183,12 @@ function Studio({ slug }) {
     fab.current = c;
     ['selection:created', 'selection:updated', 'selection:cleared', 'object:modified', 'object:added', 'object:removed', 'text:changed']
       .forEach(ev => c.on(ev, sync));
+    ['object:modified', 'object:added', 'object:removed', 'text:changed'].forEach(ev => c.on(ev, snapshot));
+    historyRef.current = []; histIdxRef.current = -1; restoringRef.current = false;
+    snapshot(); // baseline: an empty canvas, so the first real change can still be undone
+    setCanUndo(false); setCanRedo(false);
+    // offer a previously saved draft for this product, instead of loading it automatically
+    try { setDraft(localStorage.getItem(draftKey) ? JSON.parse(localStorage.getItem(draftKey)) : null); } catch (e) { setDraft(null); }
     const fit = () => {
       const a = areaRef.current;
       if (a && fab.current) fab.current.setDimensions({ width: a.clientWidth + 'px', height: a.clientHeight + 'px' }, { cssOnly: true });
@@ -152,6 +197,11 @@ function Studio({ slug }) {
     const ro = new ResizeObserver(fit);
     ro.observe(areaRef.current);
     const onKey = e => {
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
+        if (e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
+        if (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey)) { e.preventDefault(); redo(); return; }
+      }
       const o = c.getActiveObject();
       if (!o || o.isEditing) return;
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
@@ -165,7 +215,7 @@ function Studio({ slug }) {
       fab.current = null;
       files.current.clear();
     };
-  }, [state, baseTpl, sync]);
+  }, [state, baseTpl, sync, snapshot, draftKey]);
 
   /* switching style or placement changes the print area: resize the canvas and carry the design across */
   useEffect(() => {
@@ -201,7 +251,8 @@ function Studio({ slug }) {
     sync();
   };
   const addText = () => {
-    place(new IText('Your text', { fontFamily: 'Outfit', fontSize: Math.max(18, Math.round(tpl.area.w / 6)), fontWeight: 'bold', fill: '#111827', textAlign: 'center', originX: 'center', originY: 'center' }));
+    // Dark text is invisible on a navy mug or a black bottle, so pick light or dark ink to match the current colour.
+    place(new IText('Your text', { fontFamily: 'Outfit', fontSize: Math.max(18, Math.round(tpl.area.w / 6)), fontWeight: 'bold', fill: contrastText(colour), textAlign: 'center', originX: 'center', originY: 'center' }));
     setTab('text');
   };
   const addImage = async file => {
@@ -209,8 +260,14 @@ function Studio({ slug }) {
     if (!/^image\/(png|jpe?g|webp|gif)$/.test(file.type)) { toast('Please choose a PNG, JPG, WebP or GIF image.', 'error'); return; }
     if (file.size > MAX_UPLOAD) { toast('That image is larger than 5 MB. Please choose a smaller one.', 'error'); return; }
     try {
-      const url = URL.createObjectURL(file);
-      const img = await FabricImage.fromURL(url, { crossOrigin: 'anonymous' });
+      // A data URL (not a blob: URL) so the image is embedded when the canvas is saved as a draft or for undo/redo.
+      const dataUrl = await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => reject(new Error('Could not read the file.'));
+        r.readAsDataURL(file);
+      });
+      const img = await FabricImage.fromURL(dataUrl, { crossOrigin: 'anonymous' });
       img.scaleToWidth(Math.min(tpl.area.w * 0.7, img.width));
       if (img.getScaledHeight() > tpl.area.h * 0.9) img.scaleToHeight(tpl.area.h * 0.9);
       files.current.set(img, file);
@@ -328,6 +385,7 @@ function Studio({ slug }) {
       cart.addCustom(product, Math.max(1, parseInt(qty, 10) || 1), notes, {
         preview: previewUrl, assets, colour, colourName: colourName(colour), background: bg, texts, template: tpl.label
       });
+      try { localStorage.removeItem(draftKey); } catch (e2) { /* ignore */ }
       toast('Your design was added to the cart');
       navigate(goCheckout ? '/checkout' : '/cart');
     } catch (e) {
@@ -335,6 +393,37 @@ function Studio({ slug }) {
     }
     setBusy('');
   };
+
+  /* ---- save the design in this browser so it can be picked up again later */
+  const saveDraft = () => {
+    const c = fab.current;
+    if (!c || !c.getObjects().length) { toast('Add something to your design first.', 'error'); return; }
+    try {
+      localStorage.setItem(draftKey, JSON.stringify({ opt, colour, bg, qty, notes, json: c.toJSON(['selectable']) }));
+      setDraft(JSON.parse(localStorage.getItem(draftKey)));
+      toast('Design saved. Come back to this product any time to continue it.');
+    } catch (e) {
+      toast('This design is too large to save in the browser. Download the preview instead.', 'error');
+    }
+  };
+  const loadDraft = () => {
+    if (!draft) return;
+    setOpt(draft.opt || defaultOpts(baseTpl)); setColour(draft.colour || startColour(slug)); setBg(draft.bg ?? null);
+    if (draft.qty) setQty(draft.qty);
+    if (draft.notes) setNotes(draft.notes);
+    const c = fab.current;
+    if (c && draft.json) {
+      restoringRef.current = true;
+      c.loadFromJSON(draft.json).then(() => {
+        c.requestRenderAll();
+        restoringRef.current = false;
+        snapshot();
+        sync();
+      });
+    }
+    setDraft(null);
+  };
+  const discardDraft = () => { try { localStorage.removeItem(draftKey); } catch (e) { /* ignore */ } setDraft(null); };
 
   /* ---- render */
   if (state === 'loading') return <><PageHero crumbs={[{ label: 'Home', to: '/' }, { label: 'Design Studio', to: '/customize' }, { label: '…' }]} /><PageSection><div className="sk-block" style={{ minHeight: 420 }} /></PageSection></>;
@@ -350,9 +439,20 @@ function Studio({ slug }) {
       <PageHero title={'Design your ' + product.name} subtitle="Add your logo, photo or text, change the colours, then add it to your cart. We confirm the price and finalise the artwork on WhatsApp."
         crumbs={[{ label: 'Home', to: '/' }, { label: 'Design Studio', to: '/customize' }, { label: product.name }]} />
       <PageSection>
+        {draft && (
+          <div className="draft-banner studio-draft-banner">
+            <strong>You have a saved design</strong> for this product from an earlier visit.
+            <button type="button" className="btn btn-secondary btn-sm" onClick={loadDraft}>Continue it</button>
+            <button type="button" className="link-btn" onClick={discardDraft}>Discard</button>
+          </div>
+        )}
         <div className="studio">
           {/* ------------------------------------------------ stage */}
           <div className="studio-stage">
+            <div className="stage-toolbar">
+              <button type="button" onClick={undo} disabled={!canUndo} aria-label="Undo">↺ Undo</button>
+              <button type="button" onClick={redo} disabled={!canRedo} aria-label="Redo">↻ Redo</button>
+            </div>
             <div className="mockup" style={{ aspectRatio: '1 / 1' }}>
               {tpl.photo && <img className="mockup-photo" src={tpl.photo} alt="" />}
               {tpl.photo && tpl.mask && !isWhite(colour) && <div className="mockup-tint" style={{ background: colour, WebkitMaskImage: `url(${tpl.mask})`, maskImage: `url(${tpl.mask})` }} />}
@@ -483,6 +583,7 @@ function Studio({ slug }) {
               <div className="order-links">
                 <button type="button" className="link-btn" disabled={!!busy} onClick={() => addToCart(true)}>Add &amp; order on WhatsApp</button>
                 <button type="button" className="link-btn" disabled={!!busy} onClick={download}>{busy === 'download' ? 'Preparing…' : 'Download preview'}</button>
+                <button type="button" className="link-btn" disabled={!!busy} onClick={saveDraft}>Save design for later</button>
               </div>
               <p className="hint-text">Your design preview and image files are saved so we can print exactly what you see. Final artwork is confirmed with you on WhatsApp.</p>
             </div>

@@ -326,3 +326,12 @@ export const COLOUR_NAMES = {
   '#b98a58': 'Oak', '#8a5a3c': 'Walnut', '#5b3a24': 'Dark wood', '#f3e5d0': 'Cream', '#d4af37': 'Gold', '#b45309': 'Tan', '#7f1d1d': 'Maroon'
 };
 export const colourName = hex => COLOUR_NAMES[hex.toLowerCase()] || hex.toUpperCase();
+
+// Picks readable text/shape ink for a given product colour, so default text isn't invisible on dark mugs/bottles.
+export function contrastText(hex) {
+  const h = hex.replace('#', '');
+  const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.55 ? '#111827' : '#ffffff';
+}
