@@ -19,14 +19,9 @@ export const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
 export const hasPrice = v => v !== null && v !== undefined && v !== '';
 export const priceText = v => (hasPrice(v) ? money(v) : 'On request');
 
-export const CATEGORY_DEFAULT_IMAGES = {
-  'mugs-bottles': '/images/prod_personalised_mug.jpg',
-  'apparel-cushions': '/images/prod_folded_tees.jpg',
-  'frames-clocks': '/images/prod_photo_frame.jpg',
-  'laser-wood': '/images/laser-wood.jpg',
-  'keychains-magnets': '/images/keychains-magnets.jpg',
-  'corporate-gifts': '/images/corp_merchandise_set.jpg',
-};
+// Images were removed from the site (new ones are coming); every product/category falls back to
+// PLACEHOLDER_IMG below until this is filled in again.
+export const CATEGORY_DEFAULT_IMAGES = {};
 
 // Product images are stored as "./images/x.jpg" (local) or full https URLs (uploaded to Supabase Storage).
 export const imgUrl = (u, fallbackCategorySlug) => {
