@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PageHero, PageSection, StateBox } from '../components/PageHero.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -47,7 +47,7 @@ function Async({ state, children }) {
 const must = res => { if (res.error) throw res.error; return res.data; };
 
 /* ---------------------------------------------------------------------- views */
-function Overview() {
+function Overview({ goTab }) {
   const state = useLoad(async () => {
     const count = async (table, f) => {
       let q = supabase.from(table).select('*', { count: 'exact', head: true });
@@ -67,12 +67,12 @@ function Overview() {
     <Async state={state}>{d => (
       <>
         <div className="stat-grid">
-          <div className="stat"><strong>{d.newOrders ?? '-'}</strong><span>New orders</span></div>
-          <div className="stat"><strong>{d.allOrders ?? '-'}</strong><span>Total orders</span></div>
-          <div className="stat"><strong>{d.newEnq}</strong><span>New enquiries</span></div>
-          <div className="stat"><strong>{d.allEnq}</strong><span>Total enquiries</span></div>
-          <div className="stat"><strong>{d.prods}</strong><span>Active products</span></div>
-          <div className="stat"><strong>{d.custs}</strong><span>Customers</span></div>
+          <button type="button" className="stat stat-link" onClick={() => goTab('orders')}><strong>{d.newOrders ?? '-'}</strong><span>New orders</span></button>
+          <button type="button" className="stat stat-link" onClick={() => goTab('orders')}><strong>{d.allOrders ?? '-'}</strong><span>Total orders</span></button>
+          <button type="button" className="stat stat-link" onClick={() => goTab('enquiries')}><strong>{d.newEnq}</strong><span>New enquiries</span></button>
+          <button type="button" className="stat stat-link" onClick={() => goTab('enquiries')}><strong>{d.allEnq}</strong><span>Total enquiries</span></button>
+          <button type="button" className="stat stat-link" onClick={() => goTab('products')}><strong>{d.prods}</strong><span>Active products</span></button>
+          <button type="button" className="stat stat-link" onClick={() => goTab('customers')}><strong>{d.custs}</strong><span>Customers</span></button>
         </div>
         {d.allOrders === null
           ? <p className="form-error">The orders table is missing. Run <code>supabase/migrations/2026-10-orders.sql</code> in the Supabase SQL Editor.</p>
@@ -86,6 +86,7 @@ function Orders() {
   const { toast } = useUi();
   const state = useLoad(async () => must(await supabase.from('orders').select('*').order('created_at', { ascending: false })), []);
   const [filter, setFilter] = useState('');
+  const [q, setQ] = useState('');
   const [open, setOpen] = useState(null);
 
   const update = async (o, patch, msg) => {
@@ -97,15 +98,19 @@ function Orders() {
   };
   return (
     <Async state={state}>{rows => {
-      const list = rows.filter(o => !filter || o.status === filter);
+      const needle = q.trim().toLowerCase();
+      const list = rows.filter(o => (!filter || o.status === filter)
+        && (!needle || [o.ref, o.name, o.phone].some(v => (v || '').toLowerCase().includes(needle))));
       return (
         <>
           <div className="admin-filters">
+            <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by order ref, name or phone…" aria-label="Search orders" />
             <select value={filter} onChange={e => setFilter(e.target.value)} aria-label="Filter by status">
               <option value="">All statuses</option>{ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-          {!list.length ? <div className="state-box"><h3>No orders yet</h3><p>Orders appear here when a customer sends their cart from the Checkout page.</p></div> : (
+          {!rows.length ? <div className="state-box"><h3>No orders yet</h3><p>Orders appear here when a customer sends their cart from the Checkout page.</p></div>
+           : !list.length ? <div className="state-box"><h3>No orders match</h3><p>Try a different search word or status.</p></div> : (
             <div className="order-list">
               {list.map(o => (
                 <article className="order-card" key={o.id}>
@@ -154,6 +159,7 @@ function Enquiries() {
   const { toast } = useUi();
   const state = useLoad(async () => must(await supabase.from('enquiries').select('*').order('created_at', { ascending: false })), []);
   const [filter, setFilter] = useState('');
+  const [q, setQ] = useState('');
 
   const setStatus = async (q, status) => {
     const { error } = await supabase.from('enquiries').update({ status }).eq('id', q.id);
@@ -163,15 +169,19 @@ function Enquiries() {
   };
   return (
     <Async state={state}>{rows => {
-      const list = rows.filter(q => !filter || q.status === filter);
+      const needle = q.trim().toLowerCase();
+      const list = rows.filter(r => (!filter || r.status === filter)
+        && (!needle || [r.name, r.phone, r.email, r.enquiry_type, r.product_interest].some(v => (v || '').toLowerCase().includes(needle))));
       return (
         <>
           <div className="admin-filters">
+            <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, phone, email or product…" aria-label="Search enquiries" />
             <select value={filter} onChange={e => setFilter(e.target.value)} aria-label="Filter by status">
               <option value="">All statuses</option>{ENQ_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-          {!list.length ? <div className="state-box"><h3>No enquiries found</h3></div> : (
+          {!rows.length ? <div className="state-box"><h3>No enquiries yet</h3></div>
+           : !list.length ? <div className="state-box"><h3>No enquiries match</h3><p>Try a different search word or status.</p></div> : (
             <div className="table-wrap">
               <table className="data-table">
                 <thead><tr><th>Date</th><th>From</th><th>Type / product</th><th>Qty</th><th>Message</th><th>Status</th></tr></thead>
@@ -290,6 +300,7 @@ function Products() {
     return { cats: must(c), products: must(p) };
   }, []);
   const [editing, setEditing] = useState(undefined); // undefined = closed, null = new, object = edit
+  const [q, setQ] = useState('');
 
   const remove = async p => {
     if (!window.confirm(`Delete "${p.name}"? You can also just hide it instead.`)) return;
@@ -304,14 +315,24 @@ function Products() {
   return (
     <>
       <div className="panel-head"><h2>Products</h2><button className="btn btn-primary btn-sm" onClick={() => setEditing(null)}>Add product</button></div>
-      <Async state={state}>{({ cats, products }) => (
+      <Async state={state}>{({ cats, products }) => {
+        const needle = q.trim().toLowerCase();
+        const list = products.filter(p => !needle || [p.name, p.slug, p.categories?.name].some(v => (v || '').toLowerCase().includes(needle)));
+        return (
         <>
-          {!products.length ? <div className="state-box"><h3>No products yet</h3></div> : (
+          {products.length > 0 && (
+            <div className="admin-filters">
+              <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, slug or category…" aria-label="Search products" />
+              <span className="admin-filter-count">{list.length} of {products.length}</span>
+            </div>
+          )}
+          {!products.length ? <div className="state-box"><h3>No products yet</h3></div>
+           : !list.length ? <div className="state-box"><h3>No products match</h3><p>Try a different search word.</p></div> : (
             <div className="table-wrap">
               <table className="data-table">
                 <thead><tr><th></th><th>Name</th><th>Category</th><th>From</th><th>Status</th><th></th></tr></thead>
                 <tbody>
-                  {products.map(p => (
+                  {list.map(p => (
                     <tr key={p.id}>
                       <td data-label=""><img className="table-img" src={imgUrl(p.image_url)} alt="" /></td>
                       <td data-label="Name"><strong>{p.name}</strong><br /><small style={{ color: '#64748b' }}>/{p.slug}</small></td>
@@ -327,7 +348,8 @@ function Products() {
           )}
           {editing !== undefined && <ProductForm product={editing} cats={cats} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); state.reload(); }} />}
         </>
-      )}</Async>
+      );
+      }}</Async>
     </>
   );
 }
@@ -367,6 +389,7 @@ function Categories() {
   const { toast } = useUi();
   const state = useLoad(async () => must(await supabase.from('categories').select('*').order('sort_order')), []);
   const [editing, setEditing] = useState(undefined);
+  const [q, setQ] = useState('');
   const remove = async c => {
     if (!window.confirm(`Delete category "${c.name}"? This only works if it has no products.`)) return;
     const { error } = await supabase.from('categories').delete().eq('id', c.id);
@@ -377,13 +400,23 @@ function Categories() {
   return (
     <>
       <div className="panel-head"><h2>Categories</h2><button className="btn btn-primary btn-sm" onClick={() => setEditing(null)}>Add category</button></div>
-      <Async state={state}>{rows => (
+      <Async state={state}>{rows => {
+        const needle = q.trim().toLowerCase();
+        const list = rows.filter(c => !needle || [c.name, c.slug].some(v => (v || '').toLowerCase().includes(needle)));
+        return (
         <>
+          {rows.length > 0 && (
+            <div className="admin-filters">
+              <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name or slug…" aria-label="Search categories" />
+            </div>
+          )}
+          {!list.length && <div className="state-box"><h3>No categories match</h3><p>Try a different search word.</p></div>}
+          {!!list.length && (
           <div className="table-wrap">
             <table className="data-table">
               <thead><tr><th>Name</th><th>Slug</th><th>Order</th><th>Status</th><th></th></tr></thead>
               <tbody>
-                {rows.map(c => (
+                {list.map(c => (
                   <tr key={c.id}>
                     <td data-label="Name"><strong>{c.name}</strong><br /><small style={{ color: '#64748b' }}>{c.description}</small></td>
                     <td data-label="Slug">{c.slug}</td><td data-label="Order">{c.sort_order}</td>
@@ -394,40 +427,79 @@ function Categories() {
               </tbody>
             </table>
           </div>
+          )}
           {editing !== undefined && <CategoryForm category={editing} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); state.reload(); }} />}
         </>
-      )}</Async>
+      );
+      }}</Async>
     </>
   );
 }
 
 function Customers() {
   const state = useLoad(async () => must(await supabase.from('profiles').select('*').order('created_at', { ascending: false })), []);
+  const [q, setQ] = useState('');
+  const [role, setRole] = useState('');
   return (
-    <Async state={state}>{rows => !rows.length ? <div className="state-box"><h3>No customers yet</h3></div> : (
-      <div className="table-wrap">
-        <table className="data-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th></tr></thead>
-          <tbody>
-            {rows.map(u => (
-              <tr key={u.id}>
-                <td data-label="Name">{u.full_name || '-'}</td><td data-label="Email">{u.email || '-'}</td><td data-label="Phone">{u.phone || '-'}</td>
-                <td data-label="Role"><span className={'badge ' + (u.role === 'admin' ? 'confirmed' : '')}>{u.role}</span></td><td data-label="Joined">{fmtDate(u.created_at)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )}</Async>
+    <Async state={state}>{rows => {
+      const needle = q.trim().toLowerCase();
+      const list = rows.filter(u => (!role || u.role === role)
+        && (!needle || [u.full_name, u.email, u.phone].some(v => (v || '').toLowerCase().includes(needle))));
+      return !rows.length ? <div className="state-box"><h3>No customers yet</h3></div> : (
+      <>
+        <div className="admin-filters">
+          <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, email or phone…" aria-label="Search customers" />
+          <select value={role} onChange={e => setRole(e.target.value)} aria-label="Filter by role">
+            <option value="">All roles</option><option value="customer">Customer</option><option value="admin">Admin</option>
+          </select>
+        </div>
+        {!list.length ? <div className="state-box"><h3>No customers match</h3><p>Try a different search word.</p></div> : (
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th></tr></thead>
+            <tbody>
+              {list.map(u => (
+                <tr key={u.id}>
+                  <td data-label="Name">{u.full_name || '-'}</td><td data-label="Email">{u.email || '-'}</td><td data-label="Phone">{u.phone || '-'}</td>
+                  <td data-label="Role"><span className={'badge ' + (u.role === 'admin' ? 'confirmed' : '')}>{u.role}</span></td><td data-label="Joined">{fmtDate(u.created_at)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        )}
+      </>
+      );
+    }}</Async>
   );
 }
 
 /* ----------------------------------------------------------------------- page */
+// Small "new" counts shown as a badge next to the Orders / Enquiries nav links, so admins can see
+// at a glance whether anything needs attention without opening each tab.
+function useNavCounts(ready) {
+  const [counts, setCounts] = useState({});
+  useEffect(() => {
+    if (!ready) return;
+    let on = true;
+    const count = async (table, f) => {
+      let q = supabase.from(table).select('*', { count: 'exact', head: true }).eq('status', 'new');
+      const { count: c, error } = await q;
+      return error ? null : c;
+    };
+    Promise.all([count('orders'), count('enquiries')]).then(([orders, enquiries]) => { if (on) setCounts({ orders, enquiries }); });
+    return () => { on = false; };
+  }, [ready]);
+  return counts;
+}
+
 export default function Admin() {
   const { tab: tabParam } = useParams();
   const tab = TABS.includes(tabParam) ? tabParam : 'overview';
   const navigate = useNavigate();
+  const goTab = useCallback(t => navigate('/admin/' + t), [navigate]);
   const { user, isAdmin, ready } = useAuth();
+  const navCounts = useNavCounts(isAdmin);
   useEffect(() => { document.title = 'Admin | Bhima Print Solutions'; }, []);
 
   const hero = <PageHero title="Admin Dashboard" subtitle="Manage orders, enquiries, products and customers." />;
@@ -442,12 +514,20 @@ export default function Admin() {
       <PageSection>
         <div className="dash">
           <nav className="dash-nav" role="tablist" aria-label="Admin sections">
-            {TABS.map(t => <button key={t} role="tab" aria-selected={tab === t} onClick={() => navigate('/admin/' + t)}>{t[0].toUpperCase() + t.slice(1)}</button>)}
+            {TABS.map(t => {
+              const n = (t === 'orders' || t === 'enquiries') ? navCounts[t] : null;
+              return (
+                <button key={t} role="tab" aria-selected={tab === t} onClick={() => goTab(t)}>
+                  {t[0].toUpperCase() + t.slice(1)}
+                  {!!n && <span className="count">{n}</span>}
+                </button>
+              );
+            })}
             <Link to="/account">My Account</Link>
           </nav>
           <div className="panel" role="tabpanel">
             {tab !== 'products' && tab !== 'categories' && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
-            <View key={tab} />
+            {tab === 'overview' ? <Overview goTab={goTab} key={tab} /> : <View key={tab} />}
           </div>
         </div>
       </PageSection>
