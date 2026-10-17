@@ -93,6 +93,7 @@ create table if not exists public.products (
   description text,
   price_from numeric(10,2) check (price_from is null or price_from >= 0), -- null = "ask for price"
   image_url text,
+  image_url_2 text, -- optional: shown on hover in the product grid instead of image_url
   is_active boolean not null default true,
   is_featured boolean not null default false,
   sort_order int not null default 0,

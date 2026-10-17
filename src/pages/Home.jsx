@@ -5,7 +5,6 @@ import { HomeProducts } from '../components/HomeProducts.jsx';
 import { HomeCategories } from '../components/HomeCategories.jsx';
 import { FaqGrid } from '../components/FaqGrid.jsx';
 import { useUi } from '../context/UiContext.jsx';
-import { PLACEHOLDER_IMG } from '../lib/utils.js';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
 import { useHeroParallax } from '../lib/useHeroParallax.js';
 
@@ -96,7 +95,7 @@ export default function Home() {
           {/* Right Column: Supplied bhima-hero.png with Carousel Controls */}
           <div className="hero-right-wrapper">
             <div className="hero-image-stage">
-              <img src={PLACEHOLDER_IMG} alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
+              <img src="/images/bhima-hero.jpg" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
           
               </div>
           </div>
@@ -144,7 +143,7 @@ export default function Home() {
               </button>
             </div>
             <div className="promo-visual">
-              <img loading="lazy" decoding="async" src={PLACEHOLDER_IMG} alt="Custom T-Shirts Mockup" className="promo-img" />
+              <img loading="lazy" decoding="async" src="/images/t-shirt-printing.jpg" alt="Custom T-Shirts Mockup" className="promo-img" />
             </div>
           </div>
 
@@ -159,7 +158,7 @@ export default function Home() {
               </button>
             </div>
             <div className="promo-visual">
-              <img loading="lazy" decoding="async" src={PLACEHOLDER_IMG} alt="Personalised Mugs and Frames" className="promo-img" />
+              <img loading="lazy" decoding="async" src="/images/cat-frames-clocks.jpg" alt="Personalised Mugs and Frames" className="promo-img" />
             </div>
           </div>
         </div>
@@ -278,7 +277,7 @@ export default function Home() {
 
             <div className="corp-right">
               <div className="corp-img-wrapper">
-                <img loading="lazy" decoding="async" src={PLACEHOLDER_IMG} alt="Corporate Merchandise Branding" className="corp-main-img" />
+                <img loading="lazy" decoding="async" src="/images/cat-corporate-gifts.jpg" alt="Corporate Merchandise Branding" className="corp-main-img" />
                 <div className="corp-badge"><strong>Bulk orders welcome</strong><span>Custom bulk orders · Dedicated support</span></div>
               </div>
             </div>

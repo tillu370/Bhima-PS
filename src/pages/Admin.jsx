@@ -215,7 +215,7 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   const [f, setF] = useState({
     name: p ? p.name : '', slug: p ? p.slug : '', category_id: p ? p.category_id : (cats[0] ? cats[0].id : ''),
     price: p && p.price_from != null ? String(p.price_from) : '', sort_order: p ? p.sort_order : 0, description: p ? p.description || '' : '',
-    image_url: p ? p.image_url || '' : '', is_active: p ? p.is_active : true, is_featured: p ? p.is_featured : false
+    image_url: p ? p.image_url || '' : '', image_url_2: p ? p.image_url_2 || '' : '', is_active: p ? p.is_active : true, is_featured: p ? p.is_featured : false
   });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -249,7 +249,7 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
     }
     const row = {
       name: f.name.trim(), slug: f.slug, category_id: f.category_id, price_from: price, sort_order: parseInt(f.sort_order, 10) || 0,
-      description: f.description.trim() || null, image_url, is_active: f.is_active, is_featured: f.is_featured
+      description: f.description.trim() || null, image_url, image_url_2: f.image_url_2.trim() || null, is_active: f.is_active, is_featured: f.is_featured
     };
     const { error: err } = p ? await supabase.from('products').update(row).eq('id', p.id) : await supabase.from('products').insert(row);
     setBusy(false);
@@ -279,6 +279,8 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
           <label htmlFor="pImgUrl" style={{ marginTop: 8 }}>…or image URL / path</label>
           <input id="pImgUrl" value={f.image_url} onChange={set('image_url')} />
           <img className="img-preview" src={preview || imgUrl(f.image_url)} alt="Preview" />
+          <label htmlFor="pImgUrl2" style={{ marginTop: 8 }}>Second image URL (shown on hover in the product grid, optional)</label>
+          <input id="pImgUrl2" value={f.image_url_2} onChange={set('image_url_2')} placeholder="https://… or /images/…" />
         </div>
         <div className="check-row">
           <label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Visible in store</label>

@@ -19,7 +19,7 @@ export function HomeProducts() {
     try {
       const [c, res] = await Promise.all([
         fetchCategories(),
-        supabase.from('products').select('id,slug,name,price_from,image_url,categories(slug,name)')
+        supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,categories(slug,name)')
           .eq('is_active', true).eq('is_featured', true).order('sort_order').limit(8)
       ]);
       if (res.error) throw res.error;
