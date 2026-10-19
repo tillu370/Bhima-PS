@@ -6,6 +6,7 @@ import { Footer } from './Footer.jsx';
 import { CartDrawer } from './CartDrawer.jsx';
 import { EnquiryModal } from './EnquiryModal.jsx';
 import { FloatingActions, ScrollProgress } from './FloatingActions.jsx';
+import { PastelCanvas } from './PastelCanvas.jsx';
 import { useUi } from '../context/UiContext.jsx';
 
 // On route change: jump to the #hash target if there is one, otherwise to the top.
@@ -37,6 +38,7 @@ export default function Layout() {
   const { pathname } = useLocation();
   return (
     <>
+      <PastelCanvas />
       <ScrollProgress />
       <a className="skip-link" href="#main">Skip to content</a>
       <TopBar />

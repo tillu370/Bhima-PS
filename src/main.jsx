@@ -13,6 +13,7 @@ import './styles/animations.css';
 import './styles/pages.css';
 import './styles/studio.css';
 import './styles/mobile.css';
+import './styles/pastel-theme.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -276,9 +276,7 @@
 .splash-name { font-size: 2.6rem; letter-spacing: .14em; }
 .splash-sub { letter-spacing: .38em; color: var(--teal); font-size: .75rem; }
 
-/* ---------- 6 category tiles + "price on request" ---------- */
+/* ---------- "price on request" ---------- */
 .marquee-item { display: inline-flex; align-items: center; gap: 28px; }
 .marquee-item i { color: var(--mustard); font-style: normal; }
-@media (min-width: 1200px) { .categories-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; } }
-@media (min-width: 1200px) { .category-card { padding: 12px 12px 18px; } .category-name { font-size: 1rem; } .category-desc { font-size: .84rem; } }
 .product-price strong.on-request { font-size: 1.2rem; background: linear-gradient(transparent 62%, rgba(15, 127, 122, .22) 62%); }

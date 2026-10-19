@@ -4,6 +4,10 @@ import { fetchCategories } from '../lib/data.js';
 import { imgUrl } from '../lib/utils.js';
 
 // Category tiles on the home page, driven by the `categories` table.
+// Only a single row's worth is shown here; the rest are one click away
+// via the "View All Categories" link, which opens the full list on /products.
+const HOME_PREVIEW_COUNT = 6;
+
 export function HomeCategories() {
   const go = useNavigate();
   const [cats, setCats] = useState(null);
@@ -17,13 +21,13 @@ export function HomeCategories() {
   if (!cats) {
     return (
       <div className="categories-grid" aria-hidden="true">
-        {Array.from({ length: 6 }, (_, i) => <div className="category-card skeleton" key={i}><div className="category-img-container" /><div className="sk-line" /></div>)}
+        {Array.from({ length: HOME_PREVIEW_COUNT }, (_, i) => <div className="category-card skeleton" key={i}><div className="category-img-container" /><div className="sk-line" /></div>)}
       </div>
     );
   }
   return (
     <div className="categories-grid">
-      {cats.map(c => {
+      {cats.slice(0, HOME_PREVIEW_COUNT).map(c => {
         const open = () => go('/products?cat=' + encodeURIComponent(c.slug));
         return (
           <div className="category-card" key={c.id} role="link" tabIndex={0} aria-label={`Browse ${c.name}`}
