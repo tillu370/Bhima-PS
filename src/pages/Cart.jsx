@@ -33,10 +33,10 @@ export default function Cart() {
                     <p className="muted">{eachText(i)}</p>
                     {i.design && (
                       <p className="custom-line">
-                        <span className="custom-chip">Customised</span> {i.design.colourName} {i.design.template.toLowerCase()}
-                        {i.design.texts.length > 0 && <>, text: {i.design.texts.map(t => `"${t.text}"`).join(", ")}</>}
-                        {i.design.assets.length > 0 && <>, {i.design.assets.length} uploaded file{i.design.assets.length > 1 ? "s" : ""}</>}
-                        {" · "}<a href={i.design.preview} target="_blank" rel="noopener noreferrer">View design</a>
+                        <span className="custom-chip">Customised</span>
+                        {i.design.sizes && Object.keys(i.design.sizes).length > 0 && <> {Object.entries(i.design.sizes).map(([s, n]) => `${s}×${n}`).join(', ')}</>}
+                        {i.design.assets?.length > 0 && <>{i.design.sizes ? ' · ' : ' '}{i.design.assets.length} uploaded file{i.design.assets.length > 1 ? 's' : ''}</>}
+                        {!i.design.assets?.length && !i.design.sizes && ' no files attached yet'}
                       </p>
                     )}
                     <div className="qty-stepper" role="group" aria-label={`Quantity for ${i.name}`} style={{ marginTop: 10 }}>

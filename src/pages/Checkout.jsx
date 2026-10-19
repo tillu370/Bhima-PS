@@ -13,11 +13,8 @@ const WA_ICON = 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.
 // `orders` table so the team can track it; if saving fails the WhatsApp message is still sent.
 const newRef = () => 'BPS-' + Array.from(crypto.getRandomValues(new Uint8Array(6)), b => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b % 32]).join('');
 const designLines = d =>
-  `\n   Customised design: ${d.colourName} ${d.template}` +
-  (d.background ? `, background ${d.background}` : '') +
-  (d.texts.length ? `\n   Text: ${d.texts.map(t => `"${t.text}" (${t.font})`).join(', ')}` : '') +
-  `\n   Design preview: ${d.preview}` +
-  (d.assets.length ? `\n   Uploaded files: ${d.assets.join(' , ')}` : '');
+  (d.sizes && Object.keys(d.sizes).length ? `\n   Sizes: ${Object.entries(d.sizes).map(([s, n]) => `${s} × ${n}`).join(', ')}` : '') +
+  (d.assets?.length ? `\n   Uploaded file${d.assets.length > 1 ? 's' : ''}: ${d.assets.join(' , ')}` : '\n   No file uploaded yet — we will follow up to collect the logo/design.');
 
 export default function Checkout() {
   const cart = useCart();

@@ -25,10 +25,9 @@ src/
   pages/                   Home, Products, Product, Customize (design studio), Cart, Checkout, Login, Account, Admin, Info, NotFound
   components/              Layout, Header, Footer, TopBar, CartDrawer, EnquiryModal, ProductCard, ...
   context/                 AuthContext (session, role, wishlist), CartContext, UiContext (toast, modals)
-  lib/                     supabase client, config, utils, hooks, mockups (product mock-up templates)
+  lib/                     supabase client, config, utils, hooks
   styles/                  CSS (unchanged from the static site)
 public/images/             product and banner photos
-public/mockups/            product photos used as design-studio mock-ups (photo, -mask.png tint mask, -shade.jpg shading)
 supabase/schema.sql        database schema, RLS policies, starter data
 ```
 
@@ -39,7 +38,7 @@ supabase/schema.sql        database schema, RLS policies, starter data
 | `/` | Home. Featured products load from Supabase. |
 | `/products?cat=&q=` | Catalog with category filter, search, sort. |
 | `/product/:slug` | Product detail, quantity, wishlist, "Buy now", enquiry. |
-| `/customize/:slug?` | Design Studio: place a logo/photo/text/shapes on a product mock-up, change colours, style and print position, then add the design to the cart. |
+| `/customize/:slug?` | Design Studio: upload a logo/design file, pick sizes (for apparel) or quantity, add notes, then add it to the cart. No live mock-up preview — our team confirms the artwork with the customer on WhatsApp. |
 | `/cart` | Cart (stored in the browser), quantities, per-item notes. |
 | `/checkout` | WhatsApp checkout: opens WhatsApp with the order written out. No login, no payment. |
 | `/login` | Log in, sign up, forgot / reset password. |
@@ -62,7 +61,7 @@ Every table has Row Level Security:
 - Customers see only their own wishlist and enquiries. Admins see everything.
 - A user cannot change their own `role`.
 - Storage bucket `product-images`: public read, admin-only upload/delete.
-- Storage bucket `design-uploads`: anyone can upload images (max 5 MB) from the design studio, public read. Customers' preview images and original artwork are saved here so the order message can link to them. Uploads are anonymous, so consider requiring login if spam appears.
+- Storage bucket `design-uploads`: anyone can upload images or PDFs (max 15 MB) from the design studio, public read. Customers' uploaded logos/artwork are saved here so the order message can link to them. Uploads are anonymous, so consider requiring login if spam appears.
 
 ### Making someone an admin
 
@@ -91,7 +90,6 @@ clicking through the flow (sign up, log in, reset password) with a real inbox be
 ## Still needed before launch
 
 - Real social media URLs (set `VITE_INSTAGRAM_URL`, `VITE_YOUTUBE_URL`, `VITE_LINKEDIN_URL`; until then the icons are hidden).
-- Real product photos for the design studio mock-ups. Mug, T-shirt (round neck front/pocket), bottle, pillow and the square frame use photos; the other products and variants use drawn mock-ups.
 - Review the Privacy Policy and Terms pages (`src/pages/Info.jsx`, marked as drafts).
 - Footer/contact phone and email are now +91 94918 11360 and bhimaxerox1@gmail.com.
 - Set the real WhatsApp number in production (`VITE_WHATSAPP_NUMBER`, format `91XXXXXXXXXX`) — currently 919491811360.
