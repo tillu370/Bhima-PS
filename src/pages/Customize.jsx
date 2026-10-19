@@ -116,7 +116,7 @@ function Studio({ slug }) {
     let on = true;
     setState('loading'); setOpt(defaultOpts(templateFor(slug))); setColour(startColour(slug)); setBg(null); setSel(null); setCount(0); setError('');
     Promise.all([
-      supabase.from('products').select('id,slug,name,description,price_from,image_url').eq('slug', slug).eq('is_active', true).maybeSingle(),
+      supabase.from('products').select('id,slug,name,description,price_from,image_url,categories(slug,name)').eq('slug', slug).eq('is_active', true).maybeSingle(),
       supabase.from('products').select('slug,name').eq('is_active', true).order('sort_order')
     ]).then(([p, list]) => {
       if (!on) return;

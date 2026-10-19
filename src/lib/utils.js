@@ -46,9 +46,27 @@ export const slugify = s =>
 export const PHONE_RE = /^[+0-9][0-9 +-]{6,18}$/;
 export const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
+// Bulk-quantity discount: a cart line's `discountTiers` is its category's
+// qty_discount_tiers ([{min_qty, percent}, …], or null/empty for none). The
+// highest tier the line's quantity qualifies for applies.
+export const bestDiscount = i => {
+  if (!i.discountTiers || !i.discountTiers.length) return null;
+  const hit = i.discountTiers.filter(t => i.qty >= t.min_qty).sort((a, b) => b.percent - a.percent)[0];
+  return hit || null;
+};
+export const unitPrice = i => {
+  if (!hasPrice(i.price)) return null;
+  const d = bestDiscount(i);
+  return d ? i.price * (1 - d.percent / 100) : i.price;
+};
+
 // Cart wording that works for priced items and "price on request" items.
-export const eachText = i => (hasPrice(i.price) ? `from ${money(i.price)} each` : 'Price on request');
-export const lineText = i => (hasPrice(i.price) ? `from ${money(i.qty * i.price)}` : 'On request');
+export const eachText = i => {
+  if (!hasPrice(i.price)) return 'Price on request';
+  const d = bestDiscount(i);
+  return d ? `${money(unitPrice(i))} each (${d.percent}% off)` : `from ${money(i.price)} each`;
+};
+export const lineText = i => (hasPrice(i.price) ? `from ${money(i.qty * unitPrice(i))}` : 'On request');
 export const totalText = cart => {
   if (!cart.hasPriced) return 'Price on request';
   return `from ${money(cart.subtotal)}` + (cart.hasUnpriced ? ' + items on request' : '');
