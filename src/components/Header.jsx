@@ -28,7 +28,14 @@ export function Header() {
   const [q, setQ] = useState(urlQ);
 
   useEffect(() => { if (onProducts) setQ(urlQ); }, [onProducts, urlQ]);
-  useEffect(() => { setMenu(false); }, [loc.pathname, loc.search]);
+  useEffect(() => {
+    setMenu(false);
+    // Clicking a link inside the "Products" dropdown navigates without a full page
+    // reload, so the clicked <a> keeps focus and :focus-within holds the (now very
+    // long, 20-category) dropdown open over the page it navigated to. Blurring it
+    // closes the dropdown as soon as the route actually changes.
+    if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+  }, [loc.pathname, loc.search]);
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 10);
     on();

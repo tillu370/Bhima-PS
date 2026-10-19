@@ -51,7 +51,7 @@ h1, h2, h3, h4 { color: var(--navy); }
 .nav-link { font-size: 1rem; padding: 8px 2px; color: var(--navy); }
 .nav-link:hover { color: var(--teal); }
 .nav-item.dropdown { padding-bottom: 0; }
-.dropdown-menu { top: calc(100% - 2px); padding: 8px; min-width: 220px; border-radius: 14px; }
+.dropdown-menu { top: calc(100% - 2px); padding: 8px; min-width: 220px; border-radius: 14px; max-height: min(70vh, 520px); overflow-y: auto; }
 .dropdown-menu a { padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; }
 .nav-item.dropdown:hover .dropdown-menu,
 .nav-item.dropdown:focus-within .dropdown-menu { display: flex; }
