@@ -286,6 +286,11 @@ footer,
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
+/* Logomark is taller than it is wide (full uncropped artwork); let the
+   container size to its content width instead of forcing a square box. */
+.logo-mark { width: auto !important; }
+.logo-svg { width: auto; }
+
 /* Header subtle translucency over pastel canvas */
 .main-header {
   background: rgba(255, 255, 255, 0.90) !important;

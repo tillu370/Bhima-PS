@@ -1,8 +1,9 @@
-// Bhima Print Solutions logomark: the CMYK-rainbow "print swoosh" crop of the
-// brand's illustrated B artwork (public/images/logo-mark.png).
+// Bhima Print Solutions logomark: the full illustrated CMYK "B" artwork
+// (public/images/logo-mark.png), shown uncropped at a fixed height with
+// its natural (taller-than-wide) aspect ratio.
 export function LogoMark({ size = 46 }) {
   return (
-    <img className="logo-svg" src="/images/logo-mark.png" width={size} height={size}
+    <img className="logo-svg" src="/images/logo-mark.png" height={size}
       alt="Bhima Print Solutions logo" />
   );
 }
