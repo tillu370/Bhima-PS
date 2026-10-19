@@ -25,13 +25,13 @@ export default function Product() {
     setState('loading'); setQty(1);
     try {
       const { data, error: err } = await supabase.from('products')
-        .select('id,slug,name,description,price_from,image_url,categories(slug,name)').eq('slug', slug).eq('is_active', true).maybeSingle();
+        .select('id,slug,name,description,price_from,image_url,categories(slug,name,image_url)').eq('slug', slug).eq('is_active', true).maybeSingle();
       if (err) throw err;
       if (!data) { setState('missing'); document.title = 'Product not found | Bhima Print Solutions'; return; }
       setP(data); setState('ok');
       document.title = data.name + ' | Bhima Print Solutions';
       if (data.categories) {
-        const r = await supabase.from('products').select('id,slug,name,price_from,image_url,categories!inner(slug,name)')
+        const r = await supabase.from('products').select('id,slug,name,price_from,image_url,categories!inner(slug,name,image_url)')
           .eq('is_active', true).eq('categories.slug', data.categories.slug).neq('id', data.id).limit(4);
         setRelated(r.data || []);
       } else setRelated([]);
@@ -60,7 +60,7 @@ export default function Product() {
         {state === 'ok' && p && (
           <>
             <div className="pd-grid">
-              <div className="pd-image"><img src={imgUrl(p.image_url, p.categories?.slug)} alt={p.name} /></div>
+              <div className="pd-image"><img src={imgUrl(p.image_url, p.categories?.image_url)} alt={p.name} /></div>
               <div className="pd-info">
                 {p.categories && <Link className="eyebrow" to={`/products?cat=${encodeURIComponent(p.categories.slug)}`}>{p.categories.name}</Link>}
                 <h1>{p.name}</h1>

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { fetchCategories } from '../lib/data.js';
 import { supabase } from '../lib/supabase.js';
-import { CATEGORY_DEFAULT_IMAGES, unitPrice } from '../lib/utils.js';
+import { unitPrice } from '../lib/utils.js';
 
 const CartContext = createContext(null);
 export const useCart = () => useContext(CartContext);
@@ -51,7 +51,7 @@ export function CartProvider({ children }) {
       const hit = cur.find(i => !i.design && i.id === p.id);
       const next = hit
         ? cur.map(i => (i === hit ? { ...i, qty: Math.min(100000, i.qty + q) } : i))
-        : [...cur, { id: p.id, lineId: p.id, slug: p.slug, name: p.name, price: p.price_from == null ? null : Number(p.price_from), image: p.image_url || (p.categories?.slug && CATEGORY_DEFAULT_IMAGES[p.categories.slug]) || '', qty: q, notes: '', categorySlug: p.categories?.slug || null }];
+        : [...cur, { id: p.id, lineId: p.id, slug: p.slug, name: p.name, price: p.price_from == null ? null : Number(p.price_from), image: p.image_url || p.categories?.image_url || '', qty: q, notes: '', categorySlug: p.categories?.slug || null }];
       try { localStorage.setItem(KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
       return next;
     });

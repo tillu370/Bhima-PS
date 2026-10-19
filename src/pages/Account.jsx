@@ -17,7 +17,7 @@ function Wishlist() {
   const load = useCallback(async () => {
     setError('');
     const { data, error: err } = await supabase.from('wishlist')
-      .select('product_id, products(id,slug,name,price_from,image_url,is_active,categories(slug,name))').order('created_at', { ascending: false });
+      .select('product_id, products(id,slug,name,price_from,image_url,is_active,categories(slug,name,image_url))').order('created_at', { ascending: false });
     if (err) { setError(errMsg(err)); return; }
     setProducts(data.map(r => r.products).filter(p => p && p.is_active));
   }, []);
