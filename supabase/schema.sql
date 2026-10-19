@@ -213,8 +213,11 @@ begin
   end if;
 end $seed$;
 
--- Admin: anyone who signs up with this email becomes an admin. Change or add emails as needed.
-insert into public.admin_emails (email) values ('lakshmisrinivas1849@gmail.com') on conflict do nothing;
+-- Admin: anyone who signs up with one of these emails becomes an admin. Change or add emails as needed.
+insert into public.admin_emails (email) values
+  ('lakshmisrinivas1849@gmail.com'),
+  ('bhimaxerox1@gmail.com')
+on conflict do nothing;
 
 -- If this email already has an account, promote it now.
 insert into public.profiles (id, email, role)
