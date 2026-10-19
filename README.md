@@ -93,8 +93,8 @@ clicking through the flow (sign up, log in, reset password) with a real inbox be
 - Real social media URLs (set `VITE_INSTAGRAM_URL`, `VITE_YOUTUBE_URL`, `VITE_LINKEDIN_URL`; until then the icons are hidden).
 - Real product photos for the design studio mock-ups. Mug, T-shirt (round neck front/pocket), bottle, pillow and the square frame use photos; the other products and variants use drawn mock-ups.
 - Review the Privacy Policy and Terms pages (`src/pages/Info.jsx`, marked as drafts).
-- Confirm the phone number and email shown in the footer.
-- Set the real WhatsApp number (`VITE_WHATSAPP_NUMBER`, format `91XXXXXXXXXX`). It currently uses the footer number +91 98765 43210, which looks like a placeholder.
+- Footer/contact phone and email are now +91 94918 11360 and bhimaxerox1@gmail.com.
+- Set the real WhatsApp number in production (`VITE_WHATSAPP_NUMBER`, format `91XXXXXXXXXX`) — currently 919491811360.
 - Online payments are not implemented.
 - `public/robots.txt` and `public/sitemap.xml` use the placeholder `https://your-domain-here.com` — replace it with the real live domain once the site is deployed to it. The sitemap lists only static pages; product pages come from the database and are not generated into it.
 - `index.html`'s Open Graph / Twitter card tags use `/images/bhima-hero.jpg` as the share preview image; replace with a dedicated 1200×630 banner if you want a nicer link preview on WhatsApp/Facebook.

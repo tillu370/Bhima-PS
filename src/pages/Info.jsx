@@ -20,7 +20,7 @@ export default function Info() {
           <h2>Charges and timelines</h2>
           <p>Delivery charges and the exact delivery time depend on the product, quantity and your location. Our team confirms them with you on WhatsApp when we confirm your order.</p>
           <h2>Questions?</h2>
-          <p>Call <a href="tel:+919876543210">+91 98765 43210</a> or email <a href="mailto:hello@bhimaprint.com">hello@bhimaprint.com</a>, or{' '}
+          <p>Call <a href="tel:+919491811360">+91 94918 11360</a> or email <a href="mailto:bhimaxerox1@gmail.com">bhimaxerox1@gmail.com</a>, or{' '}
             <a href="#enquiry" onClick={e => { e.preventDefault(); openEnquiry('Shipping & Delivery Question'); }}>send us an enquiry</a>.</p>
         </>
       )
@@ -37,7 +37,7 @@ export default function Info() {
           <h2>Where it is stored</h2>
           <p>Your data is stored in a Supabase database. Access is limited by database security rules: you can see your own account data, and authorised Bhima Print staff can see enquiries to respond to them.</p>
           <h2>Your choices</h2>
-          <p>You can update your name and phone number from <Link to="/account/profile">My Account</Link>. To ask us to delete your data, contact us at <a href="mailto:hello@bhimaprint.com">hello@bhimaprint.com</a>.</p>
+          <p>You can update your name and phone number from <Link to="/account/profile">My Account</Link>. To ask us to delete your data, contact us at <a href="mailto:bhimaxerox1@gmail.com">bhimaxerox1@gmail.com</a>.</p>
         </>
       )
     },
@@ -53,7 +53,7 @@ export default function Info() {
           <h2>Artwork</h2>
           <p>You are responsible for the artwork, text and images you provide and for having the right to print them.</p>
           <h2>Contact</h2>
-          <p>Questions about these terms: <a href="mailto:hello@bhimaprint.com">hello@bhimaprint.com</a>.</p>
+          <p>Questions about these terms: <a href="mailto:bhimaxerox1@gmail.com">bhimaxerox1@gmail.com</a>.</p>
         </>
       )
     }

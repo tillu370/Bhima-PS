@@ -82,7 +82,7 @@ export function EnquiryModal() {
             <div className="form-group"><label htmlFor="enqName">Your Name *</label>
               <input id="enqName" value={form.name} onChange={set('name')} required maxLength={100} placeholder="e.g. Anand Sharma" autoComplete="name" /></div>
             <div className="form-group"><label htmlFor="enqPhone">Phone Number *</label>
-              <input id="enqPhone" type="tel" value={form.phone} onChange={set('phone')} required maxLength={20} inputMode="tel" placeholder="+91 98765 43210" autoComplete="tel" /></div>
+              <input id="enqPhone" type="tel" value={form.phone} onChange={set('phone')} required maxLength={20} inputMode="tel" placeholder="+91 94918 11360" autoComplete="tel" /></div>
             <div className="form-group"><label htmlFor="enqEmail">Email Address</label>
               <input id="enqEmail" type="email" value={form.email} onChange={set('email')} maxLength={200} placeholder="yourname@company.com" autoComplete="email" /></div>
             <div className="form-group"><label htmlFor="enqProduct">Product of Interest</label>

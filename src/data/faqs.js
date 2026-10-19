@@ -30,6 +30,6 @@ export const FAQS = [
   },
   {
     "q": "How can I request a quote?",
-    "a": "You can click the \"Get a Quote\" or \"Start Your Enquiry\" buttons on our website, WhatsApp our team at +91 98765 43210, or send an email with your specifications."
+    "a": "You can click the \"Get a Quote\" or \"Start Your Enquiry\" buttons on our website, WhatsApp our team at +91 94918 11360, or send an email with your specifications."
   }
 ];
