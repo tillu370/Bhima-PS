@@ -27,6 +27,50 @@ function Modal({ title, onClose, children }) {
   );
 }
 
+// Drag-and-drop (or click-to-browse) image picker, shared by the product and
+// category forms. `file`/`preview` are lifted into the parent form so submit
+// can upload the picked file; `fallbackSrc` shows the image already saved.
+function ImageDropzone({ inputId, file, setFile, preview, setPreview, fallbackSrc }) {
+  const [over, setOver] = useState(false);
+  const pick = fl => {
+    if (!fl) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(fl.type)) return;
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(fl);
+    setPreview(URL.createObjectURL(fl));
+  };
+  const clear = e => {
+    e.stopPropagation();
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(null);
+    setPreview(null);
+  };
+  const open = () => document.getElementById(inputId).click();
+  const shown = preview || fallbackSrc;
+  return (
+    <div
+      className={'dropzone' + (over ? ' drag-over' : '') + (shown ? ' has-image' : '')}
+      role="button" tabIndex={0}
+      onClick={open}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}
+      onDragOver={e => { e.preventDefault(); setOver(true); }}
+      onDragLeave={() => setOver(false)}
+      onDrop={e => { e.preventDefault(); setOver(false); pick(e.dataTransfer.files && e.dataTransfer.files[0]); }}
+    >
+      <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={e => pick(e.target.files[0])} />
+      {shown
+        ? <img className="dropzone-preview" src={shown} alt="" />
+        : (
+          <div className="dropzone-empty">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 16V4M12 4l-4 4M12 4l4 4" /><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+            <span>Drag &amp; drop an image, or click to browse</span>
+          </div>
+        )}
+      {file && <div className="dropzone-filename"><span>{file.name}</span><button type="button" onClick={clear} aria-label="Remove selected image">✕</button></div>}
+    </div>
+  );
+}
+
 // Loads data with loading / error / retry states.
 function useLoad(fn, deps) {
   const [data, setData] = useState(null);
@@ -224,12 +268,6 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
 
   const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const onName = e => setF(cur => ({ ...cur, name: e.target.value, slug: p ? cur.slug : slugify(e.target.value) }));
-  const onFile = e => {
-    const fl = e.target.files[0];
-    setFile(fl || null);
-    if (preview) URL.revokeObjectURL(preview);
-    setPreview(fl ? URL.createObjectURL(fl) : null);
-  };
 
   const submit = async e => {
     e.preventDefault();
@@ -266,7 +304,10 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
         <div className="field-row">
           <div className="field"><label htmlFor="pSlug">URL slug *</label><input id="pSlug" required maxLength={80} value={f.slug} onChange={set('slug')} /></div>
           <div className="field"><label htmlFor="pCat">Category *</label>
-            <select id="pCat" value={f.category_id} onChange={set('category_id')}>{cats.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
+            <select id="pCat" value={f.category_id} onChange={set('category_id')}>
+              {[...cats].sort((a, b) => b.is_active - a.is_active || a.sort_order - b.sort_order)
+                .map(c => <option key={c.id} value={c.id}>{c.name}{!c.is_active ? ' (hidden)' : ''}</option>)}
+            </select></div>
         </div>
         <div className="field-row">
           <div className="field"><label htmlFor="pPrice">Starting price (₹)</label><input id="pPrice" type="number" min="0" step="0.01" value={f.price} onChange={set('price')} placeholder="Empty = price on request" /></div>
@@ -274,11 +315,10 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
         </div>
         <div className="field"><label htmlFor="pDesc">Description</label><textarea id="pDesc" maxLength={2000} value={f.description} onChange={set('description')} /></div>
         <div className="field">
-          <label htmlFor="pImgFile">Image (upload JPG, PNG or WebP, max 5 MB)</label>
-          <input id="pImgFile" type="file" accept="image/jpeg,image/png,image/webp" onChange={onFile} />
+          <label htmlFor="pImgFile">Image (drag &amp; drop, or browse — JPG, PNG or WebP, max 5 MB)</label>
+          <ImageDropzone inputId="pImgFile" file={file} setFile={setFile} preview={preview} setPreview={setPreview} fallbackSrc={f.image_url ? imgUrl(f.image_url) : null} />
           <label htmlFor="pImgUrl" style={{ marginTop: 8 }}>…or image URL / path</label>
           <input id="pImgUrl" value={f.image_url} onChange={set('image_url')} />
-          <img className="img-preview" src={preview || imgUrl(f.image_url)} alt="Preview" />
           <label htmlFor="pImgUrl2" style={{ marginTop: 8 }}>Second image URL (shown on hover in the product grid, optional)</label>
           <input id="pImgUrl2" value={f.image_url_2} onChange={set('image_url_2')} placeholder="https://… or /images/…" />
         </div>
@@ -359,14 +399,27 @@ function Products() {
 function CategoryForm({ category: c, onClose, onSaved }) {
   const { toast } = useUi();
   const [f, setF] = useState({ name: c ? c.name : '', slug: c ? c.slug : '', description: c ? c.description || '' : '', image_url: c ? c.image_url || '' : '', sort_order: c ? c.sort_order : 0, is_active: c ? c.is_active : true });
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const submit = async e => {
     e.preventDefault();
     setError('');
     if (f.name.trim().length < 2 || !SLUG_RE.test(f.slug)) return setError('Enter a name and a valid slug (lowercase letters, numbers, hyphens).');
-    const row = { name: f.name.trim(), slug: f.slug, description: f.description.trim() || null, image_url: f.image_url.trim() || null, sort_order: parseInt(f.sort_order, 10) || 0, is_active: f.is_active };
+    setBusy(true);
+    let image_url = f.image_url.trim() || null;
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { setBusy(false); return setError('Image is larger than 5 MB.'); }
+      const path = `categories/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+      const up = await supabase.storage.from('product-images').upload(path, file, { contentType: file.type });
+      if (up.error) { setBusy(false); return setError('Image upload failed: ' + up.error.message); }
+      image_url = supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    }
+    const row = { name: f.name.trim(), slug: f.slug, description: f.description.trim() || null, image_url, sort_order: parseInt(f.sort_order, 10) || 0, is_active: f.is_active };
     const { error: err } = c ? await supabase.from('categories').update(row).eq('id', c.id) : await supabase.from('categories').insert(row);
+    setBusy(false);
     if (err) return setError(err.code === '23505' ? 'That slug is already used.' : err.message);
     toast('Category saved');
     onSaved();
@@ -378,10 +431,15 @@ function CategoryForm({ category: c, onClose, onSaved }) {
         <div className="field"><label htmlFor="cName">Name *</label><input id="cName" required maxLength={80} value={f.name} onChange={e => setF(cur => ({ ...cur, name: e.target.value, slug: c ? cur.slug : slugify(e.target.value) }))} /></div>
         <div className="field"><label htmlFor="cSlug">URL slug *</label><input id="cSlug" required maxLength={60} value={f.slug} onChange={set('slug')} /></div>
         <div className="field"><label htmlFor="cDesc">Description</label><input id="cDesc" maxLength={200} value={f.description} onChange={set('description')} /></div>
-        <div className="field"><label htmlFor="cImg">Tile image URL (optional)</label><input id="cImg" value={f.image_url} onChange={set('image_url')} placeholder="https://… or /images/…" /></div>
+        <div className="field">
+          <label htmlFor="cImgFile">Tile image (drag &amp; drop, or browse — JPG, PNG or WebP, max 5 MB)</label>
+          <ImageDropzone inputId="cImgFile" file={file} setFile={setFile} preview={preview} setPreview={setPreview} fallbackSrc={f.image_url ? imgUrl(f.image_url, f.slug) : null} />
+          <label htmlFor="cImg" style={{ marginTop: 8 }}>…or image URL / path</label>
+          <input id="cImg" value={f.image_url} onChange={set('image_url')} placeholder="https://… or /images/…" />
+        </div>
         <div className="field"><label htmlFor="cOrder">Sort order</label><input id="cOrder" type="number" value={f.sort_order} onChange={set('sort_order')} /></div>
         <div className="check-row"><label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Visible in store</label></div>
-        <button className="btn btn-primary btn-block" type="submit">{c ? 'Save changes' : 'Create category'}</button>
+        <button className="btn btn-primary btn-block" type="submit" disabled={busy}>{busy ? 'Saving…' : c ? 'Save changes' : 'Create category'}</button>
       </form>
     </Modal>
   );
@@ -392,10 +450,13 @@ function Categories() {
   const state = useLoad(async () => must(await supabase.from('categories').select('*').order('sort_order')), []);
   const [editing, setEditing] = useState(undefined);
   const [q, setQ] = useState('');
+  const [filter, setFilter] = useState('');
   const remove = async c => {
     if (!window.confirm(`Delete category "${c.name}"? This only works if it has no products.`)) return;
     const { error } = await supabase.from('categories').delete().eq('id', c.id);
     if (error) return toast(error.code === '23503' ? 'This category still has products. Move or delete them first.' : error.message, 'error');
+    const m = (c.image_url || '').match(/\/product-images\/([^?]+)$/);
+    if (m) await supabase.storage.from('product-images').remove([decodeURIComponent(m[1])]);
     toast('Category deleted');
     state.reload();
   };
@@ -404,22 +465,30 @@ function Categories() {
       <div className="panel-head"><h2>Categories</h2><button className="btn btn-primary btn-sm" onClick={() => setEditing(null)}>Add category</button></div>
       <Async state={state}>{rows => {
         const needle = q.trim().toLowerCase();
-        const list = rows.filter(c => !needle || [c.name, c.slug].some(v => (v || '').toLowerCase().includes(needle)));
+        const list = rows.filter(c => (!filter || (filter === 'active' ? c.is_active : !c.is_active))
+          && (!needle || [c.name, c.slug].some(v => (v || '').toLowerCase().includes(needle))));
         return (
         <>
           {rows.length > 0 && (
             <div className="admin-filters">
               <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name or slug…" aria-label="Search categories" />
+              <select value={filter} onChange={e => setFilter(e.target.value)} aria-label="Filter by status">
+                <option value="">All statuses</option>
+                <option value="active">Active</option>
+                <option value="hidden">Hidden</option>
+              </select>
+              <span className="admin-filter-count">{list.length} of {rows.length}</span>
             </div>
           )}
-          {!list.length && <div className="state-box"><h3>No categories match</h3><p>Try a different search word.</p></div>}
+          {!list.length && <div className="state-box"><h3>No categories match</h3><p>Try a different search word or status.</p></div>}
           {!!list.length && (
           <div className="table-wrap">
             <table className="data-table">
-              <thead><tr><th>Name</th><th>Slug</th><th>Order</th><th>Status</th><th></th></tr></thead>
+              <thead><tr><th></th><th>Name</th><th>Slug</th><th>Order</th><th>Status</th><th></th></tr></thead>
               <tbody>
                 {list.map(c => (
                   <tr key={c.id}>
+                    <td data-label=""><img className="table-img" src={imgUrl(c.image_url, c.slug)} alt="" /></td>
                     <td data-label="Name"><strong>{c.name}</strong><br /><small style={{ color: '#64748b' }}>{c.description}</small></td>
                     <td data-label="Slug">{c.slug}</td><td data-label="Order">{c.sort_order}</td>
                     <td data-label="Status"><span className={'badge ' + (c.is_active ? 'on' : 'off')}>{c.is_active ? 'Active' : 'Hidden'}</span></td>

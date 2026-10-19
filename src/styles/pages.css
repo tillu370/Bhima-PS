@@ -173,6 +173,17 @@ a.product-img-box { display: block; }
 .check-row label { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
 .img-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 14px; background: #f1f5f9; margin-top: 8px; }
 
+.dropzone { position: relative; border: 2px dashed #cbd5e1; border-radius: 16px; background: #f8fafc; cursor: pointer; padding: 18px; min-height: 120px; display: flex; align-items: center; justify-content: center; transition: border-color .15s, background .15s; }
+.dropzone:hover, .dropzone:focus-visible { border-color: #94a3b8; }
+.dropzone.drag-over { border-color: var(--teal, #0f7f7a); background: #eefcfa; }
+.dropzone.has-image { padding: 10px; }
+.dropzone-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #64748b; font-size: .88rem; text-align: center; }
+.dropzone-preview { width: 100%; max-height: 180px; object-fit: contain; border-radius: 10px; }
+.dropzone-filename { position: absolute; left: 10px; right: 10px; bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgba(15, 23, 42, .78); color: #fff; font-size: .76rem; padding: 4px 6px 4px 10px; border-radius: 999px; }
+.dropzone-filename span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dropzone-filename button { background: rgba(255, 255, 255, .18); border-radius: 50%; width: 20px; height: 20px; line-height: 1; color: #fff; flex: none; }
+.dropzone-filename button:hover { background: rgba(255, 255, 255, .32); }
+
 /* ---------- info pages ---------- */
 .prose { max-width: 800px; margin: 0 auto; color: #334155; line-height: 1.8; font-size: 1.05rem; }
 .prose h2 { font-family: var(--font-heading); color: var(--ink); margin: 28px 0 8px; font-size: 1.4rem; }
