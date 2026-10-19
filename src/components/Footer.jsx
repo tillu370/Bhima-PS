@@ -66,7 +66,9 @@ export function Footer() {
               </li>
               <li>
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span>Visakhapatnam, India</span>
+                <A href="https://maps.google.com/?q=Bhima+Xerox+Opp+Shanti+Kalyana+Mandapam+Pendurthi+Visakhapatnam+531173">
+                  Bhima Xerox, Opp. Shanti Kalyana Mandapam,<br />Behind Denim Jeans, Pendurthi, Visakhapatnam, AP 531173
+                </A>
               </li>
             </ul>
           </div>
