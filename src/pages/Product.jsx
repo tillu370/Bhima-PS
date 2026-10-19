@@ -6,7 +6,95 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
-import { errMsg, hasPrice, imgUrl, money } from '../lib/utils.js';
+import { errMsg, fmtDate, hasPrice, imgUrl, money } from '../lib/utils.js';
+
+const Stars = ({ value, size = 16 }) => (
+  <span className="stars" aria-hidden="true">
+    {Array.from({ length: 5 }, (_, i) => (
+      <svg key={i} viewBox="0 0 24 24" width={size} height={size} fill={i < Math.round(value) ? '#f7a81b' : 'none'} stroke="#f7a81b" strokeWidth="1.5">
+        <path d="M12 2.5l2.9 6.6 7.1.7-5.4 4.8 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.8 7.1-.7z" />
+      </svg>
+    ))}
+  </span>
+);
+
+function Reviews({ productId, productName }) {
+  const { user, profile } = useAuth();
+  const { toast } = useUi();
+  const [rows, setRows] = useState(null);
+  const [error, setError] = useState('');
+  const [form, setForm] = useState({ name: '', rating: 5, comment: '' });
+  const [showForm, setShowForm] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const load = useCallback(async () => {
+    const { data, error: err } = await supabase.from('reviews').select('*').eq('product_id', productId).eq('status', 'approved').order('created_at', { ascending: false });
+    if (err) { setError(errMsg(err)); setRows([]); return; }
+    setRows(data || []);
+  }, [productId]);
+  useEffect(() => { setRows(null); setSent(false); load(); }, [load]);
+  useEffect(() => { if (profile?.full_name) setForm(f => ({ ...f, name: f.name || profile.full_name })); }, [profile]);
+
+  const avg = rows && rows.length ? rows.reduce((n, r) => n + r.rating, 0) / rows.length : 0;
+
+  const submit = async e => {
+    e.preventDefault();
+    setError('');
+    if (form.name.trim().length < 2) return setError('Please enter your name.');
+    if (!form.comment.trim()) return setError('Please write a few words about the product.');
+    setBusy(true);
+    const { error: err } = await supabase.from('reviews').insert({
+      product_id: productId, user_id: user ? user.id : null, name: form.name.trim(), rating: form.rating, comment: form.comment.trim().slice(0, 2000)
+    });
+    setBusy(false);
+    if (err) return setError('We could not save your review: ' + errMsg(err));
+    setSent(true); setShowForm(false); setForm({ name: form.name, rating: 5, comment: '' });
+    toast('Thanks! Your review will appear after we approve it.');
+  };
+
+  return (
+    <section className="reviews-section">
+      <div className="reviews-head">
+        <h2>Reviews{rows && rows.length ? <> <Stars value={avg} size={18} /> <span className="reviews-avg">{avg.toFixed(1)} ({rows.length})</span></> : null}</h2>
+        {!showForm && <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowForm(true)}>Write a review</button>}
+      </div>
+      {sent && <p className="form-ok">Thanks! Your review is awaiting approval and will show up here soon.</p>}
+      {showForm && (
+        <form className="review-form" onSubmit={submit} noValidate>
+          {error && <p className="form-error" role="alert">{error}</p>}
+          <div className="field"><label htmlFor="rvName">Your name *</label><input id="rvName" required maxLength={100} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+          <div className="field"><label>Rating *</label>
+            <div className="rating-picker" role="radiogroup" aria-label="Rating">
+              {[1, 2, 3, 4, 5].map(n => (
+                <button type="button" key={n} role="radio" aria-checked={form.rating === n} onClick={() => setForm(f => ({ ...f, rating: n }))} aria-label={`${n} star${n > 1 ? 's' : ''}`}>
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill={n <= form.rating ? '#f7a81b' : 'none'} stroke="#f7a81b" strokeWidth="1.5"><path d="M12 2.5l2.9 6.6 7.1.7-5.4 4.8 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.8 7.1-.7z" /></svg>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="field"><label htmlFor="rvComment">Your review *</label><textarea id="rvComment" required maxLength={2000} rows={3} placeholder={`What did you think of ${productName}?`} value={form.comment} onChange={e => setForm(f => ({ ...f, comment: e.target.value }))} /></div>
+          <div className="row-inline" style={{ gap: 10 }}>
+            <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? 'Sending…' : 'Submit review'}</button>
+            <button className="link-btn" type="button" onClick={() => setShowForm(false)}>Cancel</button>
+          </div>
+        </form>
+      )}
+      {rows === null && <div className="sk-block" style={{ minHeight: 100 }} />}
+      {rows && rows.length === 0 && !showForm && <p className="muted">No reviews yet. Be the first to share what you think.</p>}
+      {rows && rows.length > 0 && (
+        <ul className="review-list">
+          {rows.map(r => (
+            <li key={r.id} className="review-item">
+              <div className="review-item-head"><Stars value={r.rating} /><strong>{r.name}</strong><span className="muted">{fmtDate(r.created_at)}</span></div>
+              {r.comment && <p>{r.comment}</p>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
 export default function Product() {
   const { slug } = useParams();
@@ -87,6 +175,7 @@ export default function Product() {
                 </div>
               </div>
             </div>
+            <Reviews productId={p.id} productName={p.name} />
             {related.length > 0 && (
               <section className="related">
                 <h2>You might also like</h2>

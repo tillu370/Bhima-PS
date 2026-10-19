@@ -7,9 +7,10 @@ import { supabase } from '../lib/supabase.js';
 import { useDialog } from '../lib/useDialog.js';
 import { errMsg, fmtDate, imgUrl, money, slugify } from '../lib/utils.js';
 
-const TABS = ['overview', 'orders', 'enquiries', 'products', 'categories', 'customers'];
+const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers'];
 const ORDER_STATUSES = ['new', 'contacted', 'confirmed', 'printing', 'delivered', 'cancelled'];
 const ENQ_STATUSES = ['new', 'contacted', 'closed'];
+const REVIEW_STATUSES = ['pending', 'approved', 'rejected'];
 const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 /* ----------------------------------------------------------------- shared bits */
@@ -507,6 +508,67 @@ function Categories() {
   );
 }
 
+function Reviews() {
+  const { toast } = useUi();
+  const state = useLoad(async () => must(await supabase.from('reviews').select('*, products(name,slug)').order('created_at', { ascending: false })), []);
+  const [filter, setFilter] = useState('pending');
+  const [q, setQ] = useState('');
+
+  const setStatus = async (r, status) => {
+    const { error } = await supabase.from('reviews').update({ status }).eq('id', r.id);
+    if (error) { toast(error.message, 'error'); return; }
+    state.setData(rows => rows.map(x => (x.id === r.id ? { ...x, status } : x)));
+    toast(status === 'approved' ? 'Review approved — now visible on the product page' : 'Review updated');
+  };
+  const remove = async r => {
+    if (!window.confirm(`Delete this review from "${r.name}"?`)) return;
+    const { error } = await supabase.from('reviews').delete().eq('id', r.id);
+    if (error) { toast(error.message, 'error'); return; }
+    state.setData(rows => rows.filter(x => x.id !== r.id));
+    toast('Review deleted');
+  };
+
+  return (
+    <Async state={state}>{rows => {
+      const needle = q.trim().toLowerCase();
+      const list = rows.filter(r => (!filter || r.status === filter)
+        && (!needle || [r.name, r.comment, r.products?.name].some(v => (v || '').toLowerCase().includes(needle))));
+      return (
+        <>
+          <div className="admin-filters">
+            <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, product or text…" aria-label="Search reviews" />
+            <select value={filter} onChange={e => setFilter(e.target.value)} aria-label="Filter by status">
+              <option value="">All statuses</option>{REVIEW_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          {!rows.length ? <div className="state-box"><h3>No reviews yet</h3><p>Customer reviews submitted on a product page land here for approval.</p></div>
+           : !list.length ? <div className="state-box"><h3>No reviews match</h3><p>Try a different search word or status.</p></div> : (
+            <ul className="review-list admin-review-list">
+              {list.map(r => (
+                <li className="review-item" key={r.id}>
+                  <div className="review-item-head">
+                    <span className={'badge ' + (r.status === 'approved' ? 'confirmed' : r.status === 'rejected' ? 'cancelled' : 'new')}>{r.status}</span>
+                    <strong>{r.name}</strong>
+                    <span>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                    {r.products && <Link to={'/product/' + r.products.slug} target="_blank">{r.products.name}</Link>}
+                    <span className="muted">{fmtDate(r.created_at)}</span>
+                  </div>
+                  {r.comment && <p>{r.comment}</p>}
+                  <div className="row-actions">
+                    {r.status !== 'approved' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(r, 'approved')}>Approve</button>}
+                    {r.status !== 'rejected' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(r, 'rejected')}>Reject</button>}
+                    <button className="btn btn-danger btn-sm" onClick={() => remove(r)}>Delete</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      );
+    }}</Async>
+  );
+}
+
 function Customers() {
   const state = useLoad(async () => must(await supabase.from('profiles').select('*').order('created_at', { ascending: false })), []);
   const [q, setQ] = useState('');
@@ -553,12 +615,12 @@ function useNavCounts(ready) {
   useEffect(() => {
     if (!ready) return;
     let on = true;
-    const count = async (table, f) => {
-      let q = supabase.from(table).select('*', { count: 'exact', head: true }).eq('status', 'new');
-      const { count: c, error } = await q;
+    const count = async (table, status) => {
+      const { count: c, error } = await supabase.from(table).select('*', { count: 'exact', head: true }).eq('status', status);
       return error ? null : c;
     };
-    Promise.all([count('orders'), count('enquiries')]).then(([orders, enquiries]) => { if (on) setCounts({ orders, enquiries }); });
+    Promise.all([count('orders', 'new'), count('enquiries', 'new'), count('reviews', 'pending')])
+      .then(([orders, enquiries, reviews]) => { if (on) setCounts({ orders, enquiries, reviews }); });
     return () => { on = false; };
   }, [ready]);
   return counts;
@@ -578,7 +640,7 @@ export default function Admin() {
   if (!user) return <>{hero}<PageSection><StateBox title="Admin login required" action={<Link className="btn btn-primary" to="/login?next=/admin">Log in</Link>}>Log in with an admin account.</StateBox></PageSection></>;
   if (!isAdmin) return <>{hero}<PageSection><StateBox title="Access denied" action={<Link className="btn btn-primary" to="/account">Go to My Account</Link>}>This account does not have admin access.</StateBox></PageSection></>;
 
-  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, products: Products, categories: Categories, customers: Customers }[tab];
+  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers }[tab];
   return (
     <>
       {hero}
@@ -586,7 +648,7 @@ export default function Admin() {
         <div className="dash">
           <nav className="dash-nav" role="tablist" aria-label="Admin sections">
             {TABS.map(t => {
-              const n = (t === 'orders' || t === 'enquiries') ? navCounts[t] : null;
+              const n = (t === 'orders' || t === 'enquiries' || t === 'reviews') ? navCounts[t] : null;
               return (
                 <button key={t} role="tab" aria-selected={tab === t} onClick={() => goTab(t)}>
                   {t[0].toUpperCase() + t.slice(1)}
