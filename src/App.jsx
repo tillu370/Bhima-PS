@@ -4,6 +4,7 @@ import Layout from './components/Layout.jsx';
 import Splash from './components/Splash.jsx';
 import Home from './pages/Home.jsx';
 import Products from './pages/Products.jsx';
+import Categories from './pages/Categories.jsx';
 import Product from './pages/Product.jsx';
 import Cart from './pages/Cart.jsx';
 import Checkout from './pages/Checkout.jsx';
@@ -26,6 +27,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="products" element={<Products />} />
+          <Route path="categories" element={<Categories />} />
           <Route path="product/:slug" element={<Product />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
