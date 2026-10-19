@@ -19,13 +19,27 @@ export const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
 export const hasPrice = v => v !== null && v !== undefined && v !== '';
 export const priceText = v => (hasPrice(v) ? money(v) : 'On request');
 
+// Keyed by category slug (matches the `categories` table — one per product group).
+// Only needed for a product that has no image of its own; most do, so this is a rare fallback.
 export const CATEGORY_DEFAULT_IMAGES = {
-  'mugs-bottles': '/images/cat-mugs-bottles.jpg',
-  'apparel-cushions': '/images/cat-apparel-cushions.jpg',
-  'frames-clocks': '/images/cat-frames-clocks.jpg',
-  'laser-wood': '/images/cat-laser-wood.jpg',
-  'keychains-magnets': '/images/cat-keychains-magnets.jpg',
-  'corporate-gifts': '/images/cat-corporate-gifts.jpg',
+  'mugs': '/images/mug-printing.jpg',
+  'bottles': '/images/water-bottles.jpg',
+  't-shirts': '/images/t-shirt-printing.jpg',
+  'pillows': '/images/pillow-printing.jpg',
+  'photo-frames': '/images/photo-frames.jpg',
+  'led-frames': '/images/led-frames.jpg',
+  'wall-clocks': '/images/photo-wall-clocks.jpg',
+  'wood-engraving': '/images/wood-engraving.jpg',
+  'laser-gifts': '/images/laser-gifts.jpg',
+  'name-boards': '/images/name-boards.jpg',
+  'key-chains': '/images/photo-key-chains.jpg',
+  'fridge-magnets': '/images/photo-fridge-magnets.jpg',
+  'badges': '/images/photo-badges.jpg',
+  'corporate-gift-sets': '/images/corporate-gift-sets.jpg',
+  'customised-pens': '/images/customised-pens.jpg',
+  'pen-stands': '/images/pen-stands.jpg',
+  'wallet-cards': '/images/wallet-cards.jpg',
+  'leather-products': '/images/leather-products.jpg',
 };
 
 // Product images are stored as "./images/x.jpg" (local) or full https URLs (uploaded to Supabase Storage).

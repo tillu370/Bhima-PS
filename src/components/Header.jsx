@@ -6,10 +6,11 @@ import { useUi } from '../context/UiContext.jsx';
 import { useCategories } from '../lib/data.js';
 import { LogoMark, Wordmark } from './LogoMark.jsx';
 
+// Shown only for the brief moment before the real categories load from the database (or if that load fails).
 const STATIC_CATS = [
-  { slug: 'mugs-bottles', name: 'Mugs & Bottles' }, { slug: 'apparel-cushions', name: 'T-Shirts & Pillows' },
-  { slug: 'frames-clocks', name: 'Photo Frames & Clocks' }, { slug: 'laser-wood', name: 'Laser & Wood Engraving' },
-  { slug: 'keychains-magnets', name: 'Key Chains, Magnets & Badges' }, { slug: 'corporate-gifts', name: 'Corporate & Office Gifts' }
+  { slug: 'mugs', name: 'Mugs' }, { slug: 'bottles', name: 'Bottles' },
+  { slug: 't-shirts', name: 'T-Shirts' }, { slug: 'pillows', name: 'Pillows' },
+  { slug: 'photo-frames', name: 'Photo Frames' }, { slug: 'led-frames', name: 'LED Frames' }
 ];
 
 export function Header() {

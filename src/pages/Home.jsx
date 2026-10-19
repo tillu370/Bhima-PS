@@ -137,7 +137,7 @@ export default function Home() {
             <div className="promo-content">
               <h2 className="promo-title">Custom<br />T-Shirts</h2>
               <p className="promo-desc">For teams, events, colleges and brands.</p>
-              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=apparel-cushions')}>
+              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=t-shirts')}>
                 Explore Apparel
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </button>
@@ -152,7 +152,7 @@ export default function Home() {
             <div className="promo-content">
               <h2 className="promo-title">Personalised<br />Gifts</h2>
               <p className="promo-desc">Make every moment extra special.</p>
-              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=frames-clocks')}>
+              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=photo-frames')}>
                 Explore Gifts
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </button>
