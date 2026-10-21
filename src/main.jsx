@@ -14,6 +14,7 @@ import './styles/pages.css';
 import './styles/studio.css';
 import './styles/mobile.css';
 import './styles/pastel-theme.css';
+import './styles/deal.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

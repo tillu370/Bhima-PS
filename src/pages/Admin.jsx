@@ -6,8 +6,9 @@ import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
 import { useDialog } from '../lib/useDialog.js';
 import { errMsg, fmtDate, imgUrl, money, slugify } from '../lib/utils.js';
+import { fetchCurrentDeal, saveDeal, DEFAULT_DEAL } from '../lib/dealData.js';
 
-const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers'];
+const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal'];
 const ORDER_STATUSES = ['new', 'contacted', 'confirmed', 'printing', 'delivered', 'cancelled'];
 const ENQ_STATUSES = ['new', 'contacted', 'closed'];
 const REVIEW_STATUSES = ['pending', 'approved', 'rejected'];
@@ -607,6 +608,439 @@ function Customers() {
   );
 }
 
+function DealManager() {
+  const { toast } = useUi();
+  const [deal, setDeal] = useState(DEFAULT_DEAL);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    Promise.all([
+      fetchCurrentDeal(),
+      supabase.from('products').select('id,slug,name,description,price_from,image_url').eq('is_active', true).order('sort_order')
+    ]).then(([d, pRes]) => {
+      if (!alive) return;
+      if (d) setDeal(d);
+      if (pRes.data) setProducts(pRes.data);
+      setLoading(false);
+    }).catch(err => {
+      if (!alive) return;
+      setLoading(false);
+    });
+    return () => { alive = false; };
+  }, []);
+
+  const setField = (field, val) => {
+    setDeal(prev => ({ ...prev, [field]: val }));
+  };
+
+  const applyPreset = preset => {
+    setDeal(prev => ({
+      ...prev,
+      ...preset,
+      is_active: true
+    }));
+    setFile(null);
+    setPreview(null);
+    toast(`Preset applied: "${preset.title}". Click "Save & Update Deal" to publish.`);
+  };
+
+  const handleProductSelect = e => {
+    const slug = e.target.value;
+    if (!slug) return;
+    const p = products.find(item => item.slug === slug);
+    if (!p) return;
+    const origPrice = p.price_from ? Number(p.price_from) : 300;
+    const dealPrice = Math.round(origPrice * 0.75);
+    setDeal(prev => ({
+      ...prev,
+      product_slug: p.slug,
+      title: p.name,
+      subtitle: p.description || prev.subtitle,
+      image_url: p.image_url || prev.image_url,
+      original_price: origPrice,
+      deal_price: dealPrice,
+      discount_tag: '25% OFF',
+      banner_note: '⚡ Special Limited Offer for Today Only!'
+    }));
+    setPreview(null);
+    setFile(null);
+    toast(`Auto-filled details from "${p.name}"!`);
+  };
+
+  const handleSave = async e => {
+    e.preventDefault();
+    setSaving(true);
+    let finalImageUrl = deal.image_url;
+
+    if (file) {
+      try {
+        const ext = file.name.split('.').pop();
+        const path = 'deal-' + Date.now() + '.' + ext;
+        const { error: uploadError } = await supabase.storage.from('products').upload(path, file, { cacheControl: '3600', upsert: true });
+        if (!uploadError) {
+          const { data: pubData } = supabase.storage.from('products').getPublicUrl(path);
+          finalImageUrl = pubData.publicUrl;
+        }
+      } catch (err) {
+        console.warn('Image upload error:', err);
+      }
+    }
+
+    const payload = {
+      ...deal,
+      image_url: finalImageUrl,
+      original_price: deal.original_price ? Number(deal.original_price) : null,
+      deal_price: deal.deal_price ? Number(deal.deal_price) : 0
+    };
+
+    const res = await saveDeal(payload);
+    setSaving(false);
+    if (res.warning) {
+      toast('Deal saved locally! Note: Run migration in Supabase SQL editor for remote database sync.', 'error');
+    } else {
+      toast('🔥 Deal of the Day successfully updated and live on website!');
+    }
+  };
+
+  if (loading) return <div className="sk-block" style={{ minHeight: 240 }} />;
+
+  const origNum = Number(deal.original_price) || 0;
+  const dealNum = Number(deal.deal_price) || 0;
+  const hasSavings = origNum > dealNum;
+  const savings = hasSavings ? origNum - dealNum : 0;
+  const displayImage = preview || deal.image_url;
+
+  return (
+    <div className="deal-manager-wrapper">
+      <div className="panel-head">
+        <div>
+          <h2>Deal of the Day Manager</h2>
+          <p className="muted" style={{ margin: '4px 0 0 0' }}>Configure today's blinking popup deal shown across the website. Change it daily with 1 click!</p>
+        </div>
+        <span className={'badge ' + (deal.is_active ? 'confirmed' : 'cancelled')}>
+          {deal.is_active ? '● LIVE ON SITE' : '○ POPUP DISABLED'}
+        </span>
+      </div>
+
+      <div className="deal-presets-box">
+        <div className="deal-presets-title">⚡ Quick Daily Presets (Click to Load):</div>
+        <div className="deal-presets-list">
+          <button
+            type="button"
+            className="deal-preset-btn"
+            onClick={() => applyPreset({
+              title: 'Custom Ceramic Magic Mug',
+              subtitle: 'Reveal special memories with heat-activated photo printing. Color changing glossy mug!',
+              original_price: 350,
+              deal_price: 249,
+              discount_tag: '30% OFF',
+              image_url: '/images/mug-printing.jpg',
+              product_slug: 'mug-printing',
+              banner_note: '⚡ Limited Stock for Today Only!'
+            })}
+          >
+            ☕ Magic Mug (₹249)
+          </button>
+          <button
+            type="button"
+            className="deal-preset-btn"
+            onClick={() => applyPreset({
+              title: 'Personalised Photo T-Shirt',
+              subtitle: 'Breathable 100% cotton fabric with vibrant multi-colour fade-proof digital printing.',
+              original_price: 499,
+              deal_price: 349,
+              discount_tag: '30% OFF',
+              image_url: '/images/t-shirt-printing.jpg',
+              product_slug: 't-shirt-printing',
+              banner_note: '⚡ Limited Stock for Today Only!'
+            })}
+          >
+            👕 Custom T-Shirt (₹349)
+          </button>
+          <button
+            type="button"
+            className="deal-preset-btn"
+            onClick={() => applyPreset({
+              title: 'Illuminated LED Photo Frame',
+              subtitle: 'Bright ambient LED glow frame that highlights your memories with warm light.',
+              original_price: 850,
+              deal_price: 599,
+              discount_tag: '30% OFF',
+              image_url: '/images/led-frames.jpg',
+              product_slug: 'led-frames',
+              banner_note: '⚡ High Demand Item for Today!'
+            })}
+          >
+            🖼️ LED Frame (₹599)
+          </button>
+          <button
+            type="button"
+            className="deal-preset-btn"
+            onClick={() => applyPreset({
+              title: 'Personalised Photo Wall Clock',
+              subtitle: 'Custom dial with family, couple or corporate photo. Silent quartz sweep movement.',
+              original_price: 650,
+              deal_price: 449,
+              discount_tag: '30% OFF',
+              image_url: '/images/photo-wall-clocks.jpg',
+              product_slug: 'photo-wall-clocks',
+              banner_note: '⚡ Special One-Day Discount!'
+            })}
+          >
+            ⏰ Wall Clock (₹449)
+          </button>
+          <button
+            type="button"
+            className="deal-preset-btn"
+            onClick={() => applyPreset({
+              title: 'Personalised Stainless Steel Water Bottle',
+              subtitle: 'Double wall insulated bottle with laser engraved or color printed custom name & photo.',
+              original_price: 550,
+              deal_price: 399,
+              discount_tag: '27% OFF',
+              image_url: '/images/water-bottles.jpg',
+              product_slug: 'water-bottles',
+              banner_note: '⚡ Limited Daily Stock!'
+            })}
+          >
+            💧 Water Bottle (₹399)
+          </button>
+        </div>
+      </div>
+
+      <div className="deal-admin-grid">
+        <form className="deal-admin-form" onSubmit={handleSave}>
+          <div className="deal-toggle-row">
+            <div>
+              <div className="deal-toggle-label">Enable Deal Popup on Website</div>
+              <small className="muted">Shows blinking popup and floating deal trigger on all pages</small>
+            </div>
+            <label className="deal-switch" aria-label="Toggle Deal of the Day">
+              <input
+                type="checkbox"
+                checked={!!deal.is_active}
+                onChange={e => setField('is_active', e.target.checked)}
+              />
+              <span className="deal-slider" />
+            </label>
+          </div>
+
+          <div className="field">
+            <label htmlFor="dealProductSelect">Choose from Catalog Products (Auto-Fill):</label>
+            <select id="dealProductSelect" onChange={handleProductSelect} value={deal.product_slug || ''}>
+              <option value="">-- Select a product to auto-fill details --</option>
+              {products.map(p => (
+                <option key={p.slug} value={p.slug}>
+                  {p.name} {p.price_from ? `(from ${money(p.price_from)})` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="field-row">
+            <div className="field">
+              <label htmlFor="dealBadge">Blinking Badge Label</label>
+              <input
+                id="dealBadge"
+                value={deal.badge_text || ''}
+                onChange={e => setField('badge_text', e.target.value)}
+                placeholder="🔥 DEAL OF THE DAY"
+                required
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="dealDiscount">Discount Tag</label>
+              <input
+                id="dealDiscount"
+                value={deal.discount_tag || ''}
+                onChange={e => setField('discount_tag', e.target.value)}
+                placeholder="30% OFF"
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label htmlFor="dealTitle">Deal Headline / Title *</label>
+            <input
+              id="dealTitle"
+              value={deal.title || ''}
+              onChange={e => setField('title', e.target.value)}
+              placeholder="e.g. Custom Ceramic Magic Mug"
+              required
+            />
+          </div>
+
+          <div className="field">
+            <label htmlFor="dealSubtitle">Short Description / Subtitle</label>
+            <textarea
+              id="dealSubtitle"
+              rows={2}
+              value={deal.subtitle || ''}
+              onChange={e => setField('subtitle', e.target.value)}
+              placeholder="Describe the product and the special offer..."
+            />
+          </div>
+
+          <div className="field-row">
+            <div className="field">
+              <label htmlFor="dealOrigPrice">Original Price (₹)</label>
+              <input
+                id="dealOrigPrice"
+                type="number"
+                min="0"
+                step="1"
+                value={deal.original_price ?? ''}
+                onChange={e => setField('original_price', e.target.value)}
+                placeholder="350"
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="dealPrice">Deal Price (₹) *</label>
+              <input
+                id="dealPrice"
+                type="number"
+                min="0"
+                step="1"
+                value={deal.deal_price ?? ''}
+                onChange={e => setField('deal_price', e.target.value)}
+                placeholder="249"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label>Deal Image</label>
+            <ImageDropzone
+              inputId="dealImgFile"
+              file={file}
+              setFile={setFile}
+              preview={preview}
+              setPreview={setPreview}
+              fallbackSrc={imgUrl(deal.image_url)}
+            />
+            <input
+              type="text"
+              style={{ marginTop: 8 }}
+              value={deal.image_url || ''}
+              onChange={e => setField('image_url', e.target.value)}
+              placeholder="Or paste image URL (e.g. /images/mug-printing.jpg)"
+            />
+          </div>
+
+          <div className="field">
+            <label htmlFor="dealBannerNote">Urgency Note</label>
+            <input
+              id="dealBannerNote"
+              value={deal.banner_note || ''}
+              onChange={e => setField('banner_note', e.target.value)}
+              placeholder="⚡ Limited Stock for Today Only!"
+            />
+          </div>
+
+          <div className="field-row">
+            <div className="field">
+              <label htmlFor="dealBtnText">Button Label</label>
+              <input
+                id="dealBtnText"
+                value={deal.button_text || ''}
+                onChange={e => setField('button_text', e.target.value)}
+                placeholder="Claim Deal on WhatsApp"
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="dealSlug">Linked Product Slug</label>
+              <input
+                id="dealSlug"
+                value={deal.product_slug || ''}
+                onChange={e => setField('product_slug', e.target.value)}
+                placeholder="mug-printing"
+              />
+            </div>
+          </div>
+
+          <div style={{ marginTop: 8 }}>
+            <button className="btn btn-primary btn-block" type="submit" disabled={saving}>
+              {saving ? 'Saving...' : '💾 Save & Update Deal of the Day'}
+            </button>
+          </div>
+        </form>
+
+        <div className="deal-preview-wrap">
+          <div className="deal-preview-title">
+            <span>👁️ Live Popup Preview</span>
+          </div>
+
+          <div className="deal-preview-box">
+            <div className="deal-modal-top-badge" style={{ marginBottom: 16 }}>
+              <span className="deal-blinking-pill">
+                <span className="deal-blinking-dot" />
+                <span className="deal-blinking-text">{deal.badge_text || '🔥 DEAL OF THE DAY'}</span>
+                <span className="deal-shimmer-sweep" />
+              </span>
+              <span className="deal-timer-hint">⏰ Today Only</span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div className="deal-modal-media" style={{ width: '100%', height: 180 }}>
+                <img
+                  src={imgUrl(displayImage)}
+                  alt={deal.title}
+                  className="deal-product-img"
+                />
+                {deal.discount_tag && (
+                  <div className="deal-discount-sticker">
+                    <span>{deal.discount_tag}</span>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '0 0 4px 0', color: '#0b1b3f' }}>
+                  {deal.title || 'Untitled Deal'}
+                </h4>
+                <p style={{ fontSize: '0.82rem', color: '#475569', margin: '0 0 10px 0', lineHeight: 1.4 }}>
+                  {deal.subtitle}
+                </p>
+
+                <div className="deal-price-card" style={{ padding: '8px 12px', marginBottom: 10 }}>
+                  <div className="deal-price-main">
+                    <span className="deal-price-label">Today:</span>
+                    <strong className="deal-current-price" style={{ fontSize: '1.3rem' }}>{money(deal.deal_price || 0)}</strong>
+                    {deal.original_price && (
+                      <span className="deal-orig-price">{money(deal.original_price)}</span>
+                    )}
+                  </div>
+                  {hasSavings && (
+                    <div className="deal-savings-badge">
+                      Save {money(savings)}
+                    </div>
+                  )}
+                </div>
+
+                {deal.banner_note && (
+                  <div className="deal-urgency-note" style={{ marginBottom: 10, fontSize: '0.78rem' }}>
+                    {deal.banner_note}
+                  </div>
+                )}
+
+                <button type="button" className="btn btn-deal-claim" style={{ pointerEvents: 'none' }}>
+                  <span>{deal.button_text || 'Claim Deal on WhatsApp'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ----------------------------------------------------------------------- page */
 // Small "new" counts shown as a badge next to the Orders / Enquiries nav links, so admins can see
 // at a glance whether anything needs attention without opening each tab.
@@ -635,12 +1069,12 @@ export default function Admin() {
   const navCounts = useNavCounts(isAdmin);
   useEffect(() => { document.title = 'Admin | Bhima Print Solutions'; }, []);
 
-  const hero = <PageHero title="Admin Dashboard" subtitle="Manage orders, enquiries, products and customers." />;
+  const hero = <PageHero title="Admin Dashboard" subtitle="Manage orders, enquiries, products, customers and daily deals." />;
   if (!ready) return <>{hero}<PageSection><div className="sk-block" style={{ minHeight: 260 }} /></PageSection></>;
   if (!user) return <>{hero}<PageSection><StateBox title="Admin login required" action={<Link className="btn btn-primary" to="/login?next=/admin">Log in</Link>}>Log in with an admin account.</StateBox></PageSection></>;
   if (!isAdmin) return <>{hero}<PageSection><StateBox title="Access denied" action={<Link className="btn btn-primary" to="/account">Go to My Account</Link>}>This account does not have admin access.</StateBox></PageSection></>;
 
-  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers }[tab];
+  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers, deal: DealManager }[tab];
   return (
     <>
       {hero}
@@ -649,9 +1083,10 @@ export default function Admin() {
           <nav className="dash-nav" role="tablist" aria-label="Admin sections">
             {TABS.map(t => {
               const n = (t === 'orders' || t === 'enquiries' || t === 'reviews') ? navCounts[t] : null;
+              const label = t === 'deal' ? 'Deal of the Day 🔥' : (t[0].toUpperCase() + t.slice(1));
               return (
                 <button key={t} role="tab" aria-selected={tab === t} onClick={() => goTab(t)}>
-                  {t[0].toUpperCase() + t.slice(1)}
+                  {label}
                   {!!n && <span className="count">{n}</span>}
                 </button>
               );
@@ -659,7 +1094,7 @@ export default function Admin() {
             <Link to="/account">My Account</Link>
           </nav>
           <div className="panel" role="tabpanel">
-            {tab !== 'products' && tab !== 'categories' && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
+            {tab !== 'products' && tab !== 'categories' && tab !== 'deal' && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
             {tab === 'overview' ? <Overview goTab={goTab} key={tab} /> : <View key={tab} />}
           </div>
         </div>
