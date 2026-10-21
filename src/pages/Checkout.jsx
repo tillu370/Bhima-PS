@@ -13,6 +13,7 @@ const WA_ICON = 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.
 // `orders` table so the team can track it; if saving fails the WhatsApp message is still sent.
 const newRef = () => 'BPS-' + Array.from(crypto.getRandomValues(new Uint8Array(6)), b => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b % 32]).join('');
 const designLines = d =>
+  (d.color ? `\n   Colour: ${d.color.name} (${d.color.hex})` : '') +
   (d.sizes && Object.keys(d.sizes).length ? `\n   Sizes: ${Object.entries(d.sizes).map(([s, n]) => `${s} × ${n}`).join(', ')}` : '') +
   (d.assets?.length ? `\n   Uploaded file${d.assets.length > 1 ? 's' : ''}: ${d.assets.join(' , ')}` : '\n   No file uploaded yet — we will follow up to collect the logo/design.');
 
@@ -96,7 +97,7 @@ export default function Checkout() {
             </form>
             <aside className="summary-card">
               <h2>Your items</h2>
-              {cart.items.map(i => <div className="mini-item" key={i.lineId || i.id}><span>{i.name}{i.design ? " (customised)" : ""} × {i.qty}</span><span>{lineText(i)}</span></div>)}
+              {cart.items.map(i => <div className="mini-item" key={i.lineId || i.id}><span>{i.name}{i.design ? (i.design.color ? ` (${i.design.color.name})` : " (customised)") : ""} × {i.qty}</span><span>{lineText(i)}</span></div>)}
               <div className="sum-row total"><span>Estimated total</span><span style={{ textAlign: 'right' }}>{totalText(cart)}</span></div>
               <p className="summary-note">This opens WhatsApp with your order already written. Press Send there. We reply with the price, delivery and payment details before we start printing. No payment is taken on this website.</p>
               {link && (

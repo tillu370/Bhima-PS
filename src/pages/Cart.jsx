@@ -34,9 +34,15 @@ export default function Cart() {
                     {i.design && (
                       <p className="custom-line">
                         <span className="custom-chip">Customised</span>
-                        {i.design.sizes && Object.keys(i.design.sizes).length > 0 && <> {Object.entries(i.design.sizes).map(([s, n]) => `${s}×${n}`).join(', ')}</>}
-                        {i.design.assets?.length > 0 && <>{i.design.sizes ? ' · ' : ' '}{i.design.assets.length} uploaded file{i.design.assets.length > 1 ? 's' : ''}</>}
-                        {!i.design.assets?.length && !i.design.sizes && ' no files attached yet'}
+                        {i.design.color && (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginLeft: 6, padding: '2px 8px', borderRadius: 999, background: '#f1f5f9', fontSize: '.75rem', fontWeight: 600 }}>
+                            <span style={{ width: 10, height: 10, borderRadius: '50%', background: i.design.color.hex, display: 'inline-block', border: '1px solid rgba(0,0,0,0.15)' }} />
+                            {i.design.color.name} ({i.design.color.hex})
+                          </span>
+                        )}
+                        {i.design.sizes && Object.keys(i.design.sizes).length > 0 && <> {i.design.color ? '· ' : ''}{Object.entries(i.design.sizes).map(([s, n]) => `${s}×${n}`).join(', ')}</>}
+                        {i.design.assets?.length > 0 && <>{i.design.sizes || i.design.color ? ' · ' : ' '}{i.design.assets.length} uploaded file{i.design.assets.length > 1 ? 's' : ''}</>}
+                        {!i.design.assets?.length && !i.design.sizes && !i.design.color && ' no files attached yet'}
                       </p>
                     )}
                     <div className="qty-stepper" role="group" aria-label={`Quantity for ${i.name}`} style={{ marginTop: 10 }}>

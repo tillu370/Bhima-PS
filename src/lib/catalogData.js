@@ -9,7 +9,7 @@ export const INDIVIDUAL_CATEGORIES = [
     slug: 'mugs',
     name: 'Mugs',
     description: 'Mugs printed with your photo, name or design',
-    image_url: '/images/mug-printing.jpg',
+    image_url: '/images/mugs/classic-white-photo-mug.jpg',
     sort_order: 1,
     is_active: true
   },
@@ -171,6 +171,17 @@ export const INDIVIDUAL_CATEGORIES = [
 // Product slug to individual category mapping
 export const PRODUCT_TO_CATEGORY = {
   'mug-printing': { slug: 'mugs', name: 'Mugs' },
+  'classic-white-photo-mug': { slug: 'mugs', name: 'Mugs' },
+  'magic-color-changing-mug': { slug: 'mugs', name: 'Mugs' },
+  'red-heart-handle-mug': { slug: 'mugs', name: 'Mugs' },
+  'rose-petals-heart-handle-mug': { slug: 'mugs', name: 'Mugs' },
+  'couple-heart-handle-mug': { slug: 'mugs', name: 'Mugs' },
+  'romantic-floral-couple-mug': { slug: 'mugs', name: 'Mugs' },
+  'dual-tone-inside-color-mug': { slug: 'mugs', name: 'Mugs' },
+  'frosted-glass-doodle-mug': { slug: 'mugs', name: 'Mugs' },
+  'frosted-gradient-glass-mugs': { slug: 'mugs', name: 'Mugs' },
+  'ceramic-jar-mug-mirror-lid': { slug: 'mugs', name: 'Mugs' },
+  'glitter-sparkle-magic-mug': { slug: 'mugs', name: 'Mugs' },
   'water-bottles': { slug: 'bottles', name: 'Bottles' },
   't-shirt-printing': { slug: 't-shirts', name: 'T-Shirts' },
   'pillow-printing': { slug: 'pillows', name: 'Pillows' },

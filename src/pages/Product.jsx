@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
 import { errMsg, fmtDate, hasPrice, imgUrl, money } from '../lib/utils.js';
+import { TSHIRT_COLORS } from '../data/tshirtColors.js';
 
 const Stars = ({ value, size = 16 }) => (
   <span className="stars" aria-hidden="true">
@@ -108,6 +109,7 @@ export default function Product() {
   const [error, setError] = useState('');
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(null);
 
   const load = useCallback(async () => {
     setState('loading'); setQty(1);
@@ -117,6 +119,11 @@ export default function Product() {
       if (err) throw err;
       if (!data) { setState('missing'); document.title = 'Product not found | Bhima Print Solutions'; return; }
       setP(data); setState('ok');
+      if (data.slug === 't-shirt-printing' || data.categories?.slug === 't-shirts') {
+        setSelectedColor(TSHIRT_COLORS[0]);
+      } else {
+        setSelectedColor(null);
+      }
       document.title = data.name + ' | Bhima Print Solutions';
       if (data.categories) {
         const r = await supabase.from('products').select('id,slug,name,price_from,image_url,categories!inner(slug,name,image_url)')
@@ -129,6 +136,24 @@ export default function Product() {
 
   const clamp = v => Math.max(1, Math.min(100000, parseInt(v, 10) || 1));
   const wished = p ? wishlist.has(p.id) : false;
+
+  const isTshirt = p?.slug === 't-shirt-printing' || p?.categories?.slug === 't-shirts';
+  const displayImage = (isTshirt && selectedColor?.image) || imgUrl(p?.image_url, p?.categories?.image_url);
+
+  const handleAdd = (andCheckout = false) => {
+    const q = clamp(qty);
+    if (isTshirt && selectedColor) {
+      cart.addCustom(p, q, '', {
+        color: { id: selectedColor.id, name: selectedColor.name, hex: selectedColor.hex, image: selectedColor.image },
+        preview: selectedColor.image
+      });
+    } else {
+      cart.add(p, q);
+    }
+    toast(`Added ${q} × "${p.name}" to your cart`);
+    if (andCheckout) navigate('/checkout');
+    else { setAdded(true); setTimeout(() => setAdded(false), 1300); }
+  };
 
   const wish = async () => {
     const r = await toggleWishlist(p.id);
@@ -148,7 +173,9 @@ export default function Product() {
         {state === 'ok' && p && (
           <>
             <div className="pd-grid">
-              <div className="pd-image"><img src={imgUrl(p.image_url, p.categories?.image_url)} alt={p.name} /></div>
+              <div className="pd-image" style={isTshirt ? { aspectRatio: '5 / 4' } : undefined}>
+                <img src={displayImage} alt={p.name} style={isTshirt ? { objectFit: 'contain' } : undefined} />
+              </div>
               <div className="pd-info">
                 {p.categories && <Link className="eyebrow" to={`/products?cat=${encodeURIComponent(p.categories.slug)}`}>{p.categories.name}</Link>}
                 <h1>{p.name}</h1>
@@ -157,20 +184,62 @@ export default function Product() {
                   : <div className="pd-price"><span>Price</span><strong>On request</strong></div>}
                 <p className="pd-desc">{p.description}</p>
                 <p className="pd-note">{hasPrice(p.price_from) ? 'This is a starting price. Final price depends on quantity, size and finish. We confirm it with you before we begin printing.' : 'Send us the quantity and your design or photo and we reply with the price on WhatsApp before we begin.'}</p>
+
+                {isTshirt && (
+                  <div style={{ margin: '14px 0 18px', padding: '14px 16px', background: '#f8fafc', borderRadius: 16, border: '1px solid var(--border-light)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
+                      <span style={{ fontSize: '.88rem', fontWeight: 700, color: 'var(--ink)' }}>Available Colours ({TSHIRT_COLORS.length})</span>
+                      {selectedColor && (
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '.78rem', background: '#fff', padding: '3px 10px', borderRadius: 999, border: '1px solid var(--border-light)' }}>
+                          <span style={{ width: 10, height: 10, borderRadius: '50%', background: selectedColor.hex, border: '1px solid rgba(0,0,0,0.15)' }} />
+                          <strong>{selectedColor.name}</strong>
+                          <code style={{ color: 'var(--text-muted)', fontFamily: 'monospace' }}>{selectedColor.hex}</code>
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                      {TSHIRT_COLORS.map(c => {
+                        const isSel = selectedColor?.id === c.id;
+                        return (
+                          <button
+                            key={c.id}
+                            type="button"
+                            onClick={() => setSelectedColor(c)}
+                            title={`${c.name} (${c.hex})`}
+                            aria-label={`Select ${c.name} (${c.hex})`}
+                            style={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: '50%',
+                              background: c.hex,
+                              border: isSel ? '2.5px solid var(--teal-button, #0d9488)' : (c.hex === '#ffffff' ? '1.5px solid #cbd5e1' : '1px solid rgba(0,0,0,0.15)'),
+                              boxShadow: isSel ? '0 0 0 3px rgba(13, 148, 136, 0.25)' : 'none',
+                              cursor: 'pointer',
+                              padding: 0,
+                              transform: isSel ? 'scale(1.15)' : 'scale(1)',
+                              transition: 'transform 0.15s ease, box-shadow 0.15s ease'
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <div className="pd-actions">
                   <div className="qty-stepper" role="group" aria-label="Quantity">
                     <button type="button" onClick={() => setQty(q => clamp(q - 1))} aria-label="Decrease quantity">−</button>
                     <input type="number" min="1" max="100000" value={qty} onChange={e => setQty(e.target.value === '' ? '' : clamp(e.target.value))} onBlur={() => setQty(clamp(qty))} aria-label="Quantity" />
                     <button type="button" onClick={() => setQty(q => clamp(q + 1))} aria-label="Increase quantity">+</button>
                   </div>
-                  <button className="btn btn-primary" onClick={() => { cart.add(p, clamp(qty)); toast(`Added ${clamp(qty)} × "${p.name}" to your cart`); setAdded(true); setTimeout(() => setAdded(false), 1300); }}>{added ? 'Added ✓' : 'Add to Cart'}</button>
+                  <button className="btn btn-primary" onClick={() => handleAdd(false)}>{added ? 'Added ✓' : 'Add to Cart'}</button>
                   <button className={'wish-big' + (wished ? ' active' : '')} onClick={wish} aria-label="Save to wishlist" aria-pressed={wished}>
                     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
                   </button>
                 </div>
                 <div className="pd-actions">
                   <Link className="btn btn-teal-pill" to={"/customize/" + encodeURIComponent(p.slug)}>Customise &amp; Preview</Link>
-                  <button className="btn btn-secondary" onClick={() => { cart.add(p, clamp(qty)); navigate('/checkout'); }}>Buy Now</button>
+                  <button className="btn btn-secondary" onClick={() => handleAdd(true)}>Buy Now</button>
                   <button className="btn btn-secondary" onClick={() => openEnquiry('Question about ' + p.name, { product: p.name })}>Ask About This Product</button>
                 </div>
               </div>

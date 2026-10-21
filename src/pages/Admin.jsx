@@ -178,6 +178,14 @@ function Orders() {
                         {i.design?.assets?.[0] && /\.(png|jpe?g|webp|gif)$/i.test(i.design.assets[0]) && <a href={i.design.assets[0]} target="_blank" rel="noopener noreferrer"><img src={i.design.assets[0]} alt={`Upload for ${i.name}`} loading="lazy" /></a>}
                         <div>
                           <strong>{i.name}</strong> × {i.qty}
+                          {i.design?.color && (
+                            <div className="muted" style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                              <span>Colour:</span>
+                              <span style={{ width: 12, height: 12, borderRadius: '50%', background: i.design.color.hex, display: 'inline-block', border: '1px solid rgba(0,0,0,0.2)' }} />
+                              <strong>{i.design.color.name}</strong>
+                              <code>({i.design.color.hex})</code>
+                            </div>
+                          )}
                           {i.design?.sizes && Object.keys(i.design.sizes).length > 0 && <div className="muted">Sizes: {Object.entries(i.design.sizes).map(([s, n2]) => `${s} × ${n2}`).join(', ')}</div>}
                           {i.design?.assets?.map((u, k) => <a key={k} className="link-btn" href={u} target="_blank" rel="noopener noreferrer" download>Uploaded file {k + 1}</a>)}
                           {i.design && !i.design.assets?.length && <div className="muted">No file uploaded</div>}

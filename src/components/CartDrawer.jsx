@@ -34,7 +34,16 @@ export function CartDrawer() {
               <img className="cart-thumb" src={imgUrl(i.image)} alt="" />
               <div className="cart-item-main">
                 <Link className="cart-item-title" to={'/product/' + encodeURIComponent(i.slug)} onClick={close}>{i.name}</Link>
-                <div className="cart-item-price">{eachText(i)}{i.design && <span className="custom-chip">Customised</span>}</div>
+                <div className="cart-item-price">
+                  {eachText(i)}
+                  {i.design && <span className="custom-chip">Customised</span>}
+                  {i.design?.color && (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginLeft: 6, fontSize: '.72rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: i.design.color.hex, display: 'inline-block', border: '1px solid rgba(0,0,0,0.2)' }} />
+                      {i.design.color.name}
+                    </span>
+                  )}
+                </div>
                 <div className="qty-stepper" role="group" aria-label={`Quantity for ${i.name}`}>
                   <button type="button" onClick={() => cart.setQty(i.lineId || i.id, i.qty - 1)} aria-label="Decrease quantity">−</button>
                   <span aria-live="polite">{i.qty}</span>

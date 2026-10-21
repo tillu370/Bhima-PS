@@ -12,6 +12,8 @@ const ACCEPT = /^(image\/(png|jpe?g|webp|gif)|application\/pdf)$/;
 
 // Size/quantity breakdown, by category slug. A product in a category not listed here
 // just gets a plain quantity stepper instead (e.g. a mug doesn't need sizes).
+import { TSHIRT_COLORS } from '../data/tshirtColors.js';
+
 const SIZE_SETS = {
   't-shirts': ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
 };
@@ -63,12 +65,13 @@ function Studio({ slug }) {
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [selectedColor, setSelectedColor] = useState(TSHIRT_COLORS[0]);
   const inputId = 'studioFile';
   const previewsRef = useRef([]);
 
   useEffect(() => {
     let on = true;
-    setState('loading'); setFiles([]); setSizes({}); setQty(1); setNotes(''); setError('');
+    setState('loading'); setFiles([]); setSizes({}); setQty(1); setNotes(''); setError(''); setSelectedColor(TSHIRT_COLORS[0]);
     Promise.all([
       supabase.from('products').select('id,slug,name,description,price_from,image_url,categories(slug,name,image_url)').eq('slug', slug).eq('is_active', true).maybeSingle(),
       supabase.from('products').select('slug,name').eq('is_active', true).order('sort_order')
@@ -84,6 +87,8 @@ function Studio({ slug }) {
 
   useEffect(() => () => previewsRef.current.forEach(u => URL.revokeObjectURL(u)), []);
 
+  const isTshirt = product?.categories?.slug === 't-shirts' || product?.slug === 't-shirt-printing' || slug === 't-shirt-printing';
+  const mockupSrc = (isTshirt && selectedColor?.image) || imgUrl(product?.image_url, product?.categories?.image_url);
   const sizeList = product && SIZE_SETS[product.categories?.slug];
   const sizeTotal = sizeList ? sizeList.reduce((n, s) => n + (parseInt(sizes[s], 10) || 0), 0) : 0;
 
@@ -118,7 +123,12 @@ function Studio({ slug }) {
         if (e) throw e;
         assets.push(supabase.storage.from('design-uploads').getPublicUrl(path).data.publicUrl);
       }
-      const design = { assets, sizes: sizeList ? Object.fromEntries(sizeList.filter(s => parseInt(sizes[s], 10) > 0).map(s => [s, parseInt(sizes[s], 10)])) : null };
+      const design = {
+        assets,
+        color: isTshirt && selectedColor ? { id: selectedColor.id, name: selectedColor.name, hex: selectedColor.hex, image: selectedColor.image } : null,
+        sizes: sizeList ? Object.fromEntries(sizeList.filter(s => parseInt(sizes[s], 10) > 0).map(s => [s, parseInt(sizes[s], 10)])) : null,
+        preview: mockupSrc
+      };
       cart.addCustom(product, finalQty, notes, design);
       toast('Added to your cart');
       navigate(goCheckout ? '/checkout' : '/cart');
@@ -139,10 +149,36 @@ function Studio({ slug }) {
       <PageSection>
         <div className="studio">
           <div className="studio-stage">
-            <div className="mockup" style={{ aspectRatio: '1 / 1' }}>
-              <img className="mockup-photo" src={imgUrl(product.image_url, product.categories?.image_url)} alt={product.name} />
+            <div className="mockup" style={{ aspectRatio: isTshirt ? '5 / 4' : '1 / 1', maxWidth: isTshirt ? 640 : 560 }}>
+              <img className="mockup-photo" src={mockupSrc} alt={product.name} style={isTshirt ? { objectFit: 'contain' } : undefined} />
+              {isTshirt && selectedColor && (
+                <div className="mockup-badge">
+                  <span className="mockup-badge-dot" style={{ backgroundColor: selectedColor.hex }} />
+                  <span>{selectedColor.name} ({selectedColor.hex})</span>
+                </div>
+              )}
             </div>
-            <p className="studio-note">Don't have a logo or design ready? No problem — add it to cart anyway and our team will create one with you.</p>
+            {isTshirt && (
+              <div className="tshirt-thumb-strip" aria-label="Available colours">
+                {TSHIRT_COLORS.map(c => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className={'tshirt-thumb-btn' + (selectedColor?.id === c.id ? ' active' : '')}
+                    onClick={() => setSelectedColor(c)}
+                    title={`${c.name} (${c.hex})`}
+                    aria-label={`Select ${c.name} (${c.hex})`}
+                  >
+                    <span className="tshirt-thumb-dot" style={{ backgroundColor: c.hex }} />
+                  </button>
+                ))}
+              </div>
+            )}
+            <p className="studio-note">
+              {isTshirt
+                ? 'High-quality 100% cotton polo t-shirt with front chest & back contact print. Choose your colour and sizes below.'
+                : "Don't have a logo or design ready? No problem — add it to cart anyway and our team will create one with you."}
+            </p>
           </div>
 
           <div className="studio-panel">
@@ -152,6 +188,46 @@ function Studio({ slug }) {
                 {allProducts.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>)}
               </select>
             </label>
+
+            {isTshirt && (
+              <div className="tool tshirt-color-tool">
+                <div className="tshirt-color-head">
+                  <h3>T-Shirt Colour</h3>
+                  <span className="tshirt-color-badge">
+                    <span className="tshirt-color-indicator" style={{ backgroundColor: selectedColor.hex }} />
+                    <strong>{selectedColor.name}</strong>
+                    <code>{selectedColor.hex}</code>
+                  </span>
+                </div>
+                <div className="tshirt-color-grid">
+                  {TSHIRT_COLORS.map(c => {
+                    const isSel = selectedColor?.id === c.id;
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className={'tshirt-color-card' + (isSel ? ' active' : '')}
+                        onClick={() => setSelectedColor(c)}
+                        aria-pressed={isSel}
+                      >
+                        <span
+                          className="tshirt-swatch-circle"
+                          style={{
+                            backgroundColor: c.hex,
+                            border: c.hex === '#ffffff' ? '1.5px solid #cbd5e1' : '1.5px solid rgba(0,0,0,0.12)'
+                          }}
+                        />
+                        <span className="tshirt-color-meta">
+                          <span className="tshirt-color-name">{c.name}</span>
+                          <span className="tshirt-color-hex">{c.hex}</span>
+                        </span>
+                        {isSel && <span className="tshirt-check">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             <div className="tool">
               <h3>Your logo or design (optional)</h3>
