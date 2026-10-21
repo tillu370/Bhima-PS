@@ -219,9 +219,7 @@ html, body {
   height: 150px;
 }
 
-/* Ensure all main content containers sit above the ambient canvas */
-.main-header,
-.top-bar,
+/* Ensure main page content containers sit above the ambient background canvas */
 main,
 footer,
 .hero-section,
@@ -291,11 +289,131 @@ footer,
 .logo-mark { width: auto !important; }
 .logo-svg { width: auto; }
 
-/* Header subtle translucency over pastel canvas */
+/* Header subtle translucency over pastel canvas & guaranteed stacking above page elements */
+.top-bar {
+  position: relative;
+  z-index: 1050;
+}
+
 .main-header {
-  background: rgba(255, 255, 255, 0.90) !important;
-  backdrop-filter: blur(12px) saturate(1.4) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1100 !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(14px) saturate(1.4) !important;
   border-bottom: 1px solid var(--pastel-border);
+}
+
+/* Products Dropdown: 2-column clean Mega-Menu preventing clipping and scroll fatigue */
+.nav-item.dropdown {
+  position: relative;
+}
+
+/* Invisible bridge so mouse hover is never lost when moving down */
+.nav-item.dropdown::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: -10px;
+  right: -10px;
+  height: 14px;
+}
+
+.dropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 4px) !important;
+  left: 0 !important;
+  z-index: 1200 !important;
+  background: #ffffff !important;
+  border-radius: 18px !important;
+  padding: 14px !important;
+  min-width: 480px !important;
+  max-width: 90vw !important;
+  max-height: calc(85vh - 80px) !important;
+  overflow-y: auto !important;
+  box-shadow: 0 20px 48px rgba(11, 27, 63, 0.18), 0 0 0 1px rgba(11, 27, 63, 0.08) !important;
+  display: none !important;
+  grid-template-columns: repeat(2, minmax(210px, 1fr)) !important;
+  gap: 4px 10px !important;
+  border: 1.5px solid rgba(0, 150, 136, 0.16) !important;
+}
+
+.nav-link-dropdown-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dropdown-toggle-arrow {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.nav-item.dropdown.open .dropdown-toggle-arrow,
+.nav-item.dropdown:hover .dropdown-toggle-arrow {
+  transform: rotate(180deg);
+  color: #008080;
+}
+
+.nav-item.dropdown.open .dropdown-menu,
+.nav-item.dropdown:hover .dropdown-menu,
+.nav-item.dropdown:focus-within .dropdown-menu,
+.dropdown-menu.is-visible {
+  display: grid !important;
+  animation: dropdownPopIn 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes dropdownPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-menu a {
+  display: flex !important;
+  align-items: center !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  text-decoration: none !important;
+  transition: all 0.16s ease !important;
+}
+
+.dropdown-menu a:hover {
+  background-color: #eaf6f1 !important;
+  color: #008080 !important;
+  transform: translateX(4px) !important;
+}
+
+.dropdown-menu a.dropdown-all-link {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  padding-top: 10px !important;
+  border-top: 1px solid #e2e8f0;
+  color: #008080 !important;
+  font-weight: 700 !important;
+  justify-content: center !important;
+}
+
+.dropdown-menu a.dropdown-all-link:hover {
+  background-color: #009688 !important;
+  color: #ffffff !important;
+  transform: none !important;
 }
 
 /* Quick Floating Pastel Selector (Allows instant switching to any pastel tone) */

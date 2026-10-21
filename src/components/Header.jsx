@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
@@ -22,6 +22,8 @@ export function Header() {
   const loc = useLocation();
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
   const onProducts = loc.pathname === '/products';
   const urlQ = new URLSearchParams(loc.search).get('q') || '';
@@ -30,12 +32,19 @@ export function Header() {
   useEffect(() => { if (onProducts) setQ(urlQ); }, [onProducts, urlQ]);
   useEffect(() => {
     setMenu(false);
-    // Clicking a link inside the "Products" dropdown navigates without a full page
-    // reload, so the clicked <a> keeps focus and :focus-within holds the (now very
-    // long, 20-category) dropdown open over the page it navigated to. Blurring it
-    // closes the dropdown as soon as the route actually changes.
+    setDropdownOpen(false);
     if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
   }, [loc.pathname, loc.search]);
+
+  useEffect(() => {
+    const handleOutside = e => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleOutside);
+    return () => document.removeEventListener('click', handleOutside);
+  }, []);
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 10);
     on();
@@ -69,13 +78,49 @@ export function Header() {
           </Link>
 
           <nav className="nav-links" aria-label="Main">
-            <div className="nav-item dropdown">
-              <Link to="/products" className="nav-link" aria-haspopup="true">
-                Products
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
-              </Link>
-              <div className="dropdown-menu">
-                {cats.map(c => <Link key={c.slug} to={`/products?cat=${encodeURIComponent(c.slug)}`}>{c.name}</Link>)}
+            <div
+              className={'nav-item dropdown' + (dropdownOpen ? ' open' : '')}
+              ref={dropdownRef}
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => setDropdownOpen(false)}
+            >
+              <div className="nav-link-dropdown-wrapper">
+                <Link to="/products" className="nav-link" aria-haspopup="true" onClick={() => setDropdownOpen(false)}>
+                  Products
+                </Link>
+                <button
+                  type="button"
+                  className="dropdown-toggle-arrow"
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDropdownOpen(o => !o);
+                  }}
+                  aria-expanded={dropdownOpen}
+                  aria-label="Toggle products dropdown"
+                >
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+              </div>
+              <div className={'dropdown-menu' + (dropdownOpen ? ' is-visible' : '')}>
+                {cats.map(c => (
+                  <Link
+                    key={c.slug}
+                    to={`/products?cat=${encodeURIComponent(c.slug)}`}
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+                <Link
+                  to="/products"
+                  className="dropdown-all-link"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Browse All Products &amp; Categories →
+                </Link>
               </div>
             </div>
             <Link to="/customize" className="nav-link nav-studio">Design Studio</Link>
