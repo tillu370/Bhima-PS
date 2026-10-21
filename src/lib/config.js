@@ -11,9 +11,11 @@ if (/^sb_secret_/.test(SUPABASE_KEY) || /service_role/.test(SUPABASE_KEY)) {
 
 export const whatsappUrl = text => 'https://wa.me/' + WHATSAPP_NUMBER + (text ? '?text=' + encodeURIComponent(text) : '');
 
-// Social profile links. Leave a variable unset and that icon is not shown (no dead links).
+// Social profile links.
 export const SOCIAL = {
-  instagram: env.VITE_INSTAGRAM_URL || '',
+  instagram: env.VITE_INSTAGRAM_URL || 'https://www.instagram.com/bhimaxerox?utm_source=qr&cplk=bHYyaW56c3d5czQ1',
+  facebook: env.VITE_FACEBOOK_URL || 'https://www.facebook.com/share/1DbWpc7qp7/?mibextid=wwXIfr',
+  whatsapp: whatsappUrl('Hello Bhima Print Solutions'),
   youtube: env.VITE_YOUTUBE_URL || '',
   linkedin: env.VITE_LINKEDIN_URL || ''
 };
