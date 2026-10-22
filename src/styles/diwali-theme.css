@@ -1,0 +1,1622 @@
+/* ==========================================================================
+   BHIMA PRINT SOLUTIONS — PREMIUM DIWALI FESTIVE THEME SYSTEM
+   Unmistakable luxury Indian festive gifting ecommerce experience.
+
+   Curated Palette:
+     - Midnight Plum:        #170D29
+     - Royal Purple:         #281342
+     - Deep Festive Burgundy:#521B2B
+     - Antique Gold:         #C6A357
+     - Warm Champagne:       #F4DCA1
+     - Warm Ivory:           #FFF8ED
+     - Warm Marigold:        #E9A23B
+     - Warm Festive Canvas:  #FAF5EA
+   ========================================================================== */
+
+:root {
+  --diwali-midnight-plum: #170D29;
+  --diwali-royal-purple: #281342;
+  --diwali-burgundy: #521B2B;
+  --diwali-antique-gold: #C6A357;
+  --diwali-champagne: #F4DCA1;
+  --diwali-ivory: #FFF8ED;
+  --diwali-marigold: #E9A23B;
+  --diwali-warm-canvas: #FAF5EA;
+  --diwali-gold-border: rgba(198, 163, 87, 0.38);
+  --diwali-gold-border-soft: rgba(198, 163, 87, 0.22);
+  --diwali-gold-glow: rgba(198, 163, 87, 0.25);
+  --diwali-gold-gradient: linear-gradient(135deg, #C6A357 0%, #F4DCA1 50%, #E9A23B 100%);
+  --diwali-plum-gradient: linear-gradient(135deg, #170D29 0%, #281342 60%, #521B2B 100%);
+}
+
+/* ==========================================================================
+   1. GLOBAL CANVAS & AMBIENT OVERRIDES
+   Eliminate default pastel mint/blue backgrounds when Diwali is active.
+   ========================================================================== */
+body[data-diwali-theme="active"],
+body[data-festive-theme="diwali"] {
+  --pastel-bg: #FAF5EA !important;
+  --pastel-bg-alt: #F4EADA !important;
+  --pastel-card-bg: #FFF8ED !important;
+  --pastel-border: rgba(198, 163, 87, 0.25) !important;
+  --pastel-dot-color: rgba(198, 163, 87, 0.12) !important;
+  background-color: #FAF5EA !important;
+  color: #170D29;
+  transition: background-color 0.4s ease;
+}
+
+/* Hide the default mint/peach floating orbs and switcher when Diwali is live */
+body[data-diwali-theme="active"] .pastel-canvas-container,
+body[data-festive-theme="diwali"] .pastel-canvas-container,
+body[data-diwali-theme="active"] .pastel-switcher-bar,
+body[data-festive-theme="diwali"] .pastel-switcher-bar {
+  display: none !important;
+}
+
+/* Suppress lingering pastel teal circles & wave cuts across sections */
+body[data-diwali-theme="active"] .categories-section::before,
+body[data-diwali-theme="active"] .categories-section::after,
+body[data-diwali-theme="active"] .why-choose-section::before,
+body[data-diwali-theme="active"] .why-choose-section::after,
+body[data-diwali-theme="active"] .faqs-section::before,
+body[data-diwali-theme="active"] .faqs-section::after,
+body[data-festive-theme="diwali"] .categories-section::before,
+body[data-festive-theme="diwali"] .categories-section::after,
+body[data-festive-theme="diwali"] .why-choose-section::before,
+body[data-festive-theme="diwali"] .why-choose-section::after,
+body[data-festive-theme="diwali"] .faqs-section::before,
+body[data-festive-theme="diwali"] .faqs-section::after {
+  display: none !important;
+}
+
+/* ==========================================================================
+   2. REFINED FESTIVE ANNOUNCEMENT STRIP
+   ========================================================================== */
+body[data-diwali-theme="active"] .top-bar,
+body[data-festive-theme="diwali"] .top-bar {
+  background: linear-gradient(90deg, #170D29 0%, #521B2B 50%, #170D29 100%) !important;
+  border-bottom: 1px solid rgba(198, 163, 87, 0.38) !important;
+  color: #FFF8ED !important;
+  box-shadow: 0 2px 10px rgba(23, 13, 41, 0.35);
+}
+
+body[data-diwali-theme="active"] .top-bar .highlight-badge,
+body[data-festive-theme="diwali"] .top-bar .highlight-badge {
+  background: rgba(198, 163, 87, 0.16) !important;
+  border: 1px solid rgba(198, 163, 87, 0.45) !important;
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .top-bar a.festive-topbar-cta,
+body[data-diwali-theme="active"] .top-bar a.diwali-topbar-cta,
+body[data-festive-theme="diwali"] .top-bar a.festive-topbar-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #C6A357 0%, #F4DCA1 100%) !important;
+  color: #170D29 !important;
+  font-weight: 750 !important;
+  font-size: 0.76rem !important;
+  padding: 3px 12px !important;
+  border-radius: 9999px !important;
+  text-decoration: none !important;
+  margin-left: 8px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(198, 163, 87, 0.35);
+}
+
+body[data-diwali-theme="active"] .top-bar a.festive-topbar-cta:hover,
+body[data-diwali-theme="active"] .top-bar a.diwali-topbar-cta:hover,
+body[data-festive-theme="diwali"] .top-bar a.festive-topbar-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(198, 163, 87, 0.55);
+}
+
+.festive-spark-icon,
+.diwali-spark-icon {
+  display: inline-block;
+  color: #F4DCA1;
+  animation: diwaliFlicker 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes diwaliFlicker {
+  0% { transform: scale(0.96); filter: drop-shadow(0 0 2px rgba(244, 220, 161, 0.5)); opacity: 0.9; }
+  50% { transform: scale(1.06); filter: drop-shadow(0 0 6px rgba(244, 220, 161, 0.9)); opacity: 1; }
+  100% { transform: scale(0.98); filter: drop-shadow(0 0 3px rgba(198, 163, 87, 0.6)); opacity: 0.92; }
+}
+
+/* ==========================================================================
+   3. COORDINATED FESTIVE HEADER & NAVIGATION
+   ========================================================================== */
+body[data-diwali-theme="active"] .main-header,
+body[data-festive-theme="diwali"] .main-header {
+  background: rgba(23, 13, 41, 0.96) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(198, 163, 87, 0.32) !important;
+  box-shadow: 0 4px 20px rgba(14, 7, 25, 0.45);
+}
+
+body[data-diwali-theme="active"] .main-header .brand-logo,
+body[data-festive-theme="diwali"] .main-header .brand-logo {
+  color: #FFF8ED;
+}
+
+body[data-diwali-theme="active"] .main-header .brand-logo svg text,
+body[data-festive-theme="diwali"] .main-header .brand-logo svg text {
+  fill: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .main-header .nav-link,
+body[data-festive-theme="diwali"] .main-header .nav-link {
+  color: #FFF8ED !important;
+  font-weight: 600;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+  position: relative;
+}
+
+body[data-diwali-theme="active"] .main-header .nav-link:hover,
+body[data-festive-theme="diwali"] .main-header .nav-link:hover {
+  color: #F4DCA1 !important;
+  text-shadow: 0 0 8px rgba(198, 163, 87, 0.4);
+}
+
+body[data-diwali-theme="active"] .main-header .nav-link.nav-studio,
+body[data-festive-theme="diwali"] .main-header .nav-link.nav-studio {
+  background: rgba(198, 163, 87, 0.16) !important;
+  border: 1px solid rgba(198, 163, 87, 0.42) !important;
+  color: #F4DCA1 !important;
+  border-radius: 9999px;
+  padding: 4px 12px;
+}
+
+body[data-diwali-theme="active"] .main-header .dropdown-toggle-arrow,
+body[data-festive-theme="diwali"] .main-header .dropdown-toggle-arrow {
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .dropdown-menu,
+body[data-festive-theme="diwali"] .dropdown-menu {
+  background: #281342 !important;
+  border: 1px solid rgba(198, 163, 87, 0.4) !important;
+  box-shadow: 0 12px 30px rgba(14, 7, 25, 0.5), 0 0 16px rgba(198, 163, 87, 0.2) !important;
+  border-radius: 12px;
+}
+
+body[data-diwali-theme="active"] .dropdown-menu a,
+body[data-festive-theme="diwali"] .dropdown-menu a {
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .dropdown-menu a:hover,
+body[data-festive-theme="diwali"] .dropdown-menu a:hover {
+  background: rgba(198, 163, 87, 0.18) !important;
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .dropdown-all-link,
+body[data-festive-theme="diwali"] .dropdown-all-link {
+  color: #F4DCA1 !important;
+  border-top-color: rgba(198, 163, 87, 0.25) !important;
+}
+
+body[data-diwali-theme="active"] .search-box,
+body[data-festive-theme="diwali"] .search-box {
+  background: rgba(40, 19, 66, 0.7) !important;
+  border: 1px solid rgba(198, 163, 87, 0.35) !important;
+}
+
+body[data-diwali-theme="active"] .search-box:focus-within,
+body[data-festive-theme="diwali"] .search-box:focus-within {
+  border-color: #C6A357 !important;
+  box-shadow: 0 0 12px rgba(198, 163, 87, 0.35) !important;
+}
+
+body[data-diwali-theme="active"] .search-box input,
+body[data-festive-theme="diwali"] .search-box input {
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .search-box input::placeholder,
+body[data-festive-theme="diwali"] .search-box input::placeholder {
+  color: rgba(255, 248, 237, 0.6) !important;
+}
+
+body[data-diwali-theme="active"] .search-box .search-icon,
+body[data-festive-theme="diwali"] .search-box .search-icon {
+  stroke: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .icon-btn,
+body[data-festive-theme="diwali"] .icon-btn {
+  background: rgba(40, 19, 66, 0.6) !important;
+  border: 1px solid rgba(198, 163, 87, 0.35) !important;
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .icon-btn:hover,
+body[data-festive-theme="diwali"] .icon-btn:hover {
+  background: rgba(198, 163, 87, 0.22) !important;
+  border-color: #C6A357 !important;
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .cart-badge,
+body[data-festive-theme="diwali"] .cart-badge {
+  background: linear-gradient(135deg, #C6A357, #E9A23B) !important;
+  color: #170D29 !important;
+  font-weight: 800;
+}
+
+body[data-diwali-theme="active"] .mobile-nav,
+body[data-festive-theme="diwali"] .mobile-nav {
+  background: #170D29 !important;
+  border-bottom: 1px solid rgba(198, 163, 87, 0.35);
+}
+
+body[data-diwali-theme="active"] .mobile-nav a,
+body[data-festive-theme="diwali"] .mobile-nav a {
+  color: #FFF8ED !important;
+  border-bottom-color: rgba(198, 163, 87, 0.15) !important;
+}
+
+/* ==========================================================================
+   4. REDESIGNED HERO SECTION (RICH PLUM, BURGUNDY, GOLD & REALISTIC GIFTS)
+   ========================================================================== */
+.festive-hero-banner-section,
+.diwali-hero-banner-section {
+  position: relative;
+  width: 100%;
+  min-height: 560px;
+  overflow: hidden;
+  background-color: #170D29;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(198, 163, 87, 0.38);
+  border-bottom: 1px solid rgba(198, 163, 87, 0.38);
+}
+
+.festive-hero-bg-image,
+.diwali-hero-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  z-index: 1;
+  filter: contrast(1.04) saturate(1.05);
+}
+
+/* Rich Atmospheric Scrim: Deep midnight plum & royal purple atmosphere on left,
+   open canvas on right for the realistic luxury gifts, diyas & golden lights */
+.festive-hero-gradient-scrim,
+.diwali-hero-gradient-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(90deg,
+    rgba(23, 13, 41, 0.96) 0%,
+    rgba(23, 13, 41, 0.90) 36%,
+    rgba(40, 19, 66, 0.72) 54%,
+    rgba(82, 27, 43, 0.38) 72%,
+    rgba(23, 13, 41, 0.28) 100%);
+  pointer-events: none;
+}
+
+/* Restrained Diya Glow Aura behind headline area */
+.festive-hero-glow-aura {
+  position: absolute;
+  top: 15%;
+  left: 8%;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233, 162, 59, 0.18) 0%, rgba(198, 163, 87, 0.08) 45%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Subtle Rangoli Corner Detailing */
+.festive-rangoli-corner {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.festive-rangoli-corner.top-left {
+  top: 12px;
+  left: 12px;
+}
+
+.festive-rangoli-corner.bottom-right {
+  bottom: 12px;
+  right: 12px;
+}
+
+.festive-hero-texture-overlay,
+.diwali-hero-texture-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-size: 380px 380px;
+  background-repeat: repeat;
+  opacity: 0.07;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.festive-hero-container,
+.diwali-hero-container {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 68px 24px;
+}
+
+.festive-hero-content,
+.diwali-hero-content {
+  max-width: 620px;
+}
+
+.festive-hero-eyebrow,
+.diwali-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(40, 19, 66, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(198, 163, 87, 0.45);
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #F4DCA1;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 18px rgba(14, 7, 25, 0.4), 0 0 12px rgba(198, 163, 87, 0.2);
+}
+
+.festive-hero-eyebrow .spark-dot,
+.diwali-hero-eyebrow .spark-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #F4DCA1;
+  box-shadow: 0 0 8px #F4DCA1;
+  animation: diwaliFlicker 2.4s infinite alternate;
+}
+
+.festive-hero-title,
+.diwali-hero-title {
+  font-size: clamp(2.3rem, 5.2vw, 3.6rem);
+  font-weight: 850;
+  line-height: 1.12;
+  color: #FFF8ED;
+  margin: 0 0 18px;
+  text-shadow: 0 4px 16px rgba(14, 7, 25, 0.8);
+  letter-spacing: -0.015em;
+}
+
+.festive-hero-title-highlight,
+.diwali-hero-title-highlight {
+  background: linear-gradient(135deg, #FFF8ED 0%, #F4DCA1 45%, #C6A357 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 2px 8px rgba(198, 163, 87, 0.35));
+}
+
+.festive-hero-desc,
+.diwali-hero-desc {
+  font-size: clamp(1.02rem, 1.9vw, 1.18rem);
+  line-height: 1.62;
+  color: rgba(255, 248, 237, 0.92);
+  margin: 0 0 30px;
+  max-width: 530px;
+  text-shadow: 0 2px 10px rgba(14, 7, 25, 0.6);
+}
+
+.festive-hero-actions,
+.diwali-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 34px;
+}
+
+.btn-festive-primary,
+.btn-diwali-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(135deg, #C6A357 0%, #F4DCA1 50%, #E9A23B 100%);
+  color: #170D29 !important;
+  font-weight: 800;
+  font-size: 0.98rem;
+  padding: 13px 28px;
+  border-radius: 9999px;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(198, 163, 87, 0.45), 0 0 10px rgba(233, 162, 59, 0.3);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.btn-festive-primary:hover,
+.btn-diwali-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(198, 163, 87, 0.65), 0 0 16px rgba(233, 162, 59, 0.5);
+}
+
+.btn-festive-secondary,
+.btn-diwali-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(40, 19, 66, 0.72);
+  backdrop-filter: blur(10px);
+  color: #FFF8ED !important;
+  font-weight: 700;
+  font-size: 0.96rem;
+  padding: 13px 26px;
+  border-radius: 9999px;
+  border: 1px solid rgba(198, 163, 87, 0.45);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.btn-festive-secondary:hover,
+.btn-diwali-secondary:hover {
+  background: rgba(198, 163, 87, 0.22);
+  border-color: #C6A357;
+  color: #F4DCA1 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 18px rgba(198, 163, 87, 0.35);
+}
+
+.btn-festive-enquiry-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #F4DCA1;
+  font-size: 0.86rem;
+  font-weight: 650;
+  padding: 8px 16px;
+  border: 1px solid rgba(198, 163, 87, 0.35);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-festive-enquiry-pill:hover {
+  background: rgba(198, 163, 87, 0.16);
+  border-color: #C6A357;
+  color: #FFF8ED;
+}
+
+.festive-hero-features,
+.diwali-hero-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(198, 163, 87, 0.25);
+}
+
+.festive-feature-item,
+.diwali-feature-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 650;
+  color: rgba(255, 248, 237, 0.88);
+}
+
+.festive-feature-item svg,
+.diwali-feature-item svg {
+  color: #F4DCA1;
+  filter: drop-shadow(0 0 4px rgba(198, 163, 87, 0.5));
+}
+
+/* ==========================================================================
+   5. MARQUEE TICKER FESTIVE STYLING
+   ========================================================================== */
+body[data-diwali-theme="active"] .marquee,
+body[data-festive-theme="diwali"] .marquee {
+  background: #200F36 !important;
+  border-top: 1px solid rgba(198, 163, 87, 0.25) !important;
+  border-bottom: 1px solid rgba(198, 163, 87, 0.25) !important;
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .marquee-item i,
+body[data-festive-theme="diwali"] .marquee-item i {
+  color: #C6A357 !important;
+}
+
+/* ==========================================================================
+   6. EXPLORE CATEGORIES SECTION (CLEAN WARM IVORY CARDS & GOLD OUTLINES)
+   ========================================================================== */
+body[data-diwali-theme="active"] .categories-section,
+body[data-festive-theme="diwali"] .categories-section {
+  background: #FAF5EA !important;
+  position: relative;
+  padding-top: 50px;
+}
+
+body[data-diwali-theme="active"] .categories-section .eyebrow,
+body[data-festive-theme="diwali"] .categories-section .eyebrow {
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .categories-section .section-title,
+body[data-festive-theme="diwali"] .categories-section .section-title {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .categories-section .section-subtitle,
+body[data-festive-theme="diwali"] .categories-section .section-subtitle {
+  color: rgba(23, 13, 41, 0.72) !important;
+}
+
+body[data-diwali-theme="active"] .categories-section .view-all-link,
+body[data-festive-theme="diwali"] .categories-section .view-all-link {
+  color: #521B2B !important;
+  font-weight: 750;
+}
+
+body[data-diwali-theme="active"] .categories-section .view-all-link:hover,
+body[data-festive-theme="diwali"] .categories-section .view-all-link:hover {
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .category-card,
+body[data-festive-theme="diwali"] .category-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(198, 163, 87, 0.32) !important;
+  box-shadow: 0 4px 18px rgba(23, 13, 41, 0.06) !important;
+  border-radius: 14px !important;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.26s ease, border-color 0.26s ease;
+}
+
+body[data-diwali-theme="active"] .category-card:hover,
+body[data-festive-theme="diwali"] .category-card:hover {
+  transform: translateY(-5px);
+  border-color: #C6A357 !important;
+  box-shadow: 0 12px 28px rgba(198, 163, 87, 0.22), 0 0 0 1px #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .category-name,
+body[data-festive-theme="diwali"] .category-name {
+  color: #170D29 !important;
+  font-weight: 800;
+}
+
+body[data-diwali-theme="active"] .category-desc,
+body[data-festive-theme="diwali"] .category-desc {
+  color: rgba(23, 13, 41, 0.68) !important;
+}
+
+body[data-diwali-theme="active"] .category-arrow-btn,
+body[data-festive-theme="diwali"] .category-arrow-btn {
+  background: linear-gradient(135deg, #C6A357, #E9A23B) !important;
+  color: #170D29 !important;
+  border: none !important;
+}
+
+/* ==========================================================================
+   7. COHESIVE TWIN PROMOTIONAL BANNERS
+   ========================================================================== */
+body[data-diwali-theme="active"] .promo-banners-section,
+body[data-festive-theme="diwali"] .promo-banners-section {
+  background: #FAF5EA !important;
+  padding: 40px 0;
+}
+
+/* Right Banner: Luxury Diwali Gift Hamper Banner */
+.promo-card.promo-diwali,
+.promo-card.promo-festive {
+  background: linear-gradient(135deg, #170D29 0%, #281342 60%, #521B2B 100%) !important;
+  border: 1px solid rgba(198, 163, 87, 0.45) !important;
+  color: #FFF8ED !important;
+  box-shadow: 0 12px 34px rgba(23, 13, 41, 0.28), 0 0 24px rgba(198, 163, 87, 0.16) !important;
+  border-radius: 18px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.promo-card.promo-diwali .promo-eyebrow-pill,
+.promo-card.promo-festive .promo-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #F4DCA1;
+  background: rgba(198, 163, 87, 0.18);
+  border: 1px solid rgba(198, 163, 87, 0.45);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.promo-card.promo-diwali .promo-title,
+.promo-card.promo-festive .promo-title {
+  color: #FFF8ED !important;
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem) !important;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.promo-card.promo-diwali .promo-desc,
+.promo-card.promo-festive .promo-desc {
+  color: rgba(255, 248, 237, 0.88) !important;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.promo-card.promo-diwali .btn-diwali-promo,
+.promo-card.promo-festive .btn-festive-promo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #C6A357 0%, #F4DCA1 100%) !important;
+  color: #170D29 !important;
+  font-weight: 800 !important;
+  font-size: 0.92rem !important;
+  padding: 11px 24px !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(198, 163, 87, 0.4);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.promo-card.promo-diwali .btn-diwali-promo:hover,
+.promo-card.promo-festive .btn-festive-promo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(198, 163, 87, 0.6);
+}
+
+.promo-card.promo-diwali .promo-img,
+.promo-card.promo-festive .promo-img {
+  filter: contrast(1.04) saturate(1.05);
+  border-radius: 12px;
+  transition: transform 0.35s ease;
+}
+
+.promo-card.promo-diwali:hover .promo-img,
+.promo-card.promo-festive:hover .promo-img {
+  transform: scale(1.03);
+}
+
+/* Left Banner: Harmonized with Diwali theme (replaces clashing mint panel) */
+body[data-diwali-theme="active"] .promo-card.promo-mint,
+body[data-festive-theme="diwali"] .promo-card.promo-mint {
+  background: #FFF8ED !important;
+  border: 1px solid rgba(198, 163, 87, 0.35) !important;
+  box-shadow: 0 8px 24px rgba(23, 13, 41, 0.08) !important;
+  border-radius: 18px !important;
+}
+
+body[data-diwali-theme="active"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="diwali"] .promo-card.promo-mint .promo-title {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .promo-card.promo-mint .promo-desc,
+body[data-festive-theme="diwali"] .promo-card.promo-mint .promo-desc {
+  color: rgba(23, 13, 41, 0.75) !important;
+}
+
+body[data-diwali-theme="active"] .promo-card.promo-mint .btn-dark-teal,
+body[data-festive-theme="diwali"] .promo-card.promo-mint .btn-dark-teal {
+  background: #281342 !important;
+  color: #FFF8ED !important;
+  border: 1px solid rgba(198, 163, 87, 0.4) !important;
+}
+
+body[data-diwali-theme="active"] .promo-card.promo-mint .btn-dark-teal:hover,
+body[data-festive-theme="diwali"] .promo-card.promo-mint .btn-dark-teal:hover {
+  background: #C6A357 !important;
+  color: #170D29 !important;
+}
+
+/* ==========================================================================
+   8. BEST-SELLING PRODUCTS SECTION
+   ========================================================================== */
+body[data-diwali-theme="active"] .products-section,
+body[data-festive-theme="diwali"] .products-section {
+  background: #FAF5EA !important;
+  padding: 50px 0;
+}
+
+body[data-diwali-theme="active"] .products-header .eyebrow,
+body[data-festive-theme="diwali"] .products-header .eyebrow {
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .products-header .section-title,
+body[data-festive-theme="diwali"] .products-header .section-title {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .products-header .section-subtitle,
+body[data-festive-theme="diwali"] .products-header .section-subtitle {
+  color: rgba(23, 13, 41, 0.72) !important;
+}
+
+body[data-diwali-theme="active"] .filter-pills .pill-btn,
+body[data-festive-theme="diwali"] .filter-pills .pill-btn {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(198, 163, 87, 0.3) !important;
+  color: #170D29 !important;
+  font-weight: 650;
+}
+
+body[data-diwali-theme="active"] .filter-pills .pill-btn.active,
+body[data-festive-theme="diwali"] .filter-pills .pill-btn.active {
+  background: #281342 !important;
+  border-color: #C6A357 !important;
+  color: #F4DCA1 !important;
+  box-shadow: 0 2px 10px rgba(40, 19, 66, 0.25);
+}
+
+body[data-diwali-theme="active"] .product-card,
+body[data-festive-theme="diwali"] .product-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(198, 163, 87, 0.28) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(23, 13, 41, 0.05) !important;
+  transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
+  position: relative;
+}
+
+body[data-diwali-theme="active"] .product-card:hover,
+body[data-festive-theme="diwali"] .product-card:hover {
+  transform: translateY(-5px);
+  border-color: #C6A357 !important;
+  box-shadow: 0 12px 28px rgba(198, 163, 87, 0.2) !important;
+}
+
+body[data-diwali-theme="active"] .product-title a,
+body[data-festive-theme="diwali"] .product-title a {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .product-title a:hover,
+body[data-festive-theme="diwali"] .product-title a:hover {
+  color: #521B2B !important;
+}
+
+body[data-diwali-theme="active"] .product-price strong,
+body[data-festive-theme="diwali"] .product-price strong {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .btn-add,
+body[data-festive-theme="diwali"] .btn-add {
+  background: linear-gradient(135deg, #C6A357 0%, #E9A23B 100%) !important;
+  color: #170D29 !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(198, 163, 87, 0.35);
+}
+
+body[data-diwali-theme="active"] .btn-add:hover,
+body[data-festive-theme="diwali"] .btn-add:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(198, 163, 87, 0.55);
+}
+
+body[data-diwali-theme="active"] .wishlist-btn:hover,
+body[data-diwali-theme="active"] .wishlist-btn.active,
+body[data-festive-theme="diwali"] .wishlist-btn:hover,
+body[data-festive-theme="diwali"] .wishlist-btn.active {
+  color: #E9A23B !important;
+}
+
+/* Small Tasteful Festive Pick Badge */
+.festive-pick-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  background: linear-gradient(135deg, #521B2B 0%, #281342 100%);
+  color: #F4DCA1;
+  border: 1px solid rgba(198, 163, 87, 0.55);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(23, 13, 41, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ==========================================================================
+   9. WHY CHOOSE US SECTION (COORDINATED IVORY CARDS & THIN GOLD TOP BORDERS)
+   ========================================================================== */
+body[data-diwali-theme="active"] .why-choose-section,
+body[data-festive-theme="diwali"] .why-choose-section {
+  background: #FAF5EA !important;
+  padding: 60px 0;
+}
+
+body[data-diwali-theme="active"] .why-left .eyebrow,
+body[data-festive-theme="diwali"] .why-left .eyebrow {
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .why-heading,
+body[data-festive-theme="diwali"] .why-heading {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .why-desc,
+body[data-festive-theme="diwali"] .why-desc {
+  color: rgba(23, 13, 41, 0.78) !important;
+}
+
+body[data-diwali-theme="active"] .why-card,
+body[data-festive-theme="diwali"] .why-card {
+  background: #FFF8ED !important;
+  border: 1px solid rgba(198, 163, 87, 0.28) !important;
+  border-top: 3.5px solid #C6A357 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(23, 13, 41, 0.05) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+body[data-diwali-theme="active"] .why-card:hover,
+body[data-festive-theme="diwali"] .why-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(198, 163, 87, 0.2) !important;
+}
+
+body[data-diwali-theme="active"] .why-card-title,
+body[data-festive-theme="diwali"] .why-card-title {
+  color: #170D29 !important;
+  font-weight: 800;
+}
+
+body[data-diwali-theme="active"] .why-card-desc,
+body[data-festive-theme="diwali"] .why-card-desc {
+  color: rgba(23, 13, 41, 0.72) !important;
+}
+
+body[data-diwali-theme="active"] .why-icon-box,
+body[data-festive-theme="diwali"] .why-icon-box {
+  background: rgba(198, 163, 87, 0.16) !important;
+  border: 1px solid rgba(198, 163, 87, 0.4) !important;
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .why-icon-box svg,
+body[data-festive-theme="diwali"] .why-icon-box svg {
+  stroke: #C6A357 !important;
+}
+
+/* ==========================================================================
+   10. CORPORATE GIFTING (RICH DEEP PLUM & WARM GOLD PRESENTATION)
+   ========================================================================== */
+body[data-diwali-theme="active"] .corporate-banner-section,
+body[data-festive-theme="diwali"] .corporate-banner-section {
+  background: #FAF5EA !important;
+  padding: 50px 0;
+}
+
+body[data-diwali-theme="active"] .corporate-card,
+body[data-festive-theme="diwali"] .corporate-card {
+  background: linear-gradient(135deg, #170D29 0%, #281342 60%, #3D1438 100%) !important;
+  border: 1px solid rgba(198, 163, 87, 0.45) !important;
+  box-shadow: 0 16px 42px rgba(23, 13, 41, 0.35), 0 0 30px rgba(198, 163, 87, 0.16) !important;
+  border-radius: 20px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-diwali-theme="active"] .corp-left .eyebrow,
+body[data-festive-theme="diwali"] .corp-left .eyebrow {
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .corp-title,
+body[data-festive-theme="diwali"] .corp-title {
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .corp-desc,
+body[data-festive-theme="diwali"] .corp-desc {
+  color: rgba(255, 248, 237, 0.88) !important;
+}
+
+body[data-diwali-theme="active"] .corp-checklist li,
+body[data-festive-theme="diwali"] .corp-checklist li {
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .corp-checklist .check-icon,
+body[data-festive-theme="diwali"] .corp-checklist .check-icon {
+  background: linear-gradient(135deg, #C6A357, #E9A23B) !important;
+  color: #170D29 !important;
+  font-weight: 800;
+}
+
+body[data-diwali-theme="active"] .corp-left .btn-teal-pill,
+body[data-festive-theme="diwali"] .corp-left .btn-teal-pill {
+  background: linear-gradient(135deg, #C6A357 0%, #F4DCA1 50%, #E9A23B 100%) !important;
+  color: #170D29 !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(198, 163, 87, 0.45) !important;
+}
+
+body[data-diwali-theme="active"] .corp-left .btn-teal-pill:hover,
+body[data-festive-theme="diwali"] .corp-left .btn-teal-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(198, 163, 87, 0.65) !important;
+}
+
+body[data-diwali-theme="active"] .corp-badge,
+body[data-festive-theme="diwali"] .corp-badge {
+  background: rgba(23, 13, 41, 0.92) !important;
+  border: 1px solid rgba(198, 163, 87, 0.45) !important;
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .corp-badge strong,
+body[data-festive-theme="diwali"] .corp-badge strong {
+  color: #F4DCA1 !important;
+}
+
+/* ==========================================================================
+   11. HOW IT WORKS SECTION
+   ========================================================================== */
+body[data-diwali-theme="active"] .how-it-works-section,
+body[data-festive-theme="diwali"] .how-it-works-section {
+  background: #FAF5EA !important;
+  padding: 60px 0;
+}
+
+body[data-diwali-theme="active"] .how-it-works-section .eyebrow,
+body[data-festive-theme="diwali"] .how-it-works-section .eyebrow {
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .how-it-works-section .section-title,
+body[data-festive-theme="diwali"] .how-it-works-section .section-title {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .how-it-works-section .section-subtitle,
+body[data-festive-theme="diwali"] .how-it-works-section .section-subtitle {
+  color: rgba(23, 13, 41, 0.72) !important;
+}
+
+body[data-diwali-theme="active"] .step-card,
+body[data-festive-theme="diwali"] .step-card {
+  background: #FFF8ED !important;
+  border: 1px solid rgba(198, 163, 87, 0.3) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(23, 13, 41, 0.05) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+body[data-diwali-theme="active"] .step-card:hover,
+body[data-festive-theme="diwali"] .step-card:hover {
+  transform: translateY(-4px);
+  border-color: #C6A357 !important;
+  box-shadow: 0 10px 24px rgba(198, 163, 87, 0.18) !important;
+}
+
+body[data-diwali-theme="active"] .step-num-badge,
+body[data-festive-theme="diwali"] .step-num-badge {
+  background: linear-gradient(135deg, #170D29 0%, #281342 100%) !important;
+  color: #F4DCA1 !important;
+  border: 1px solid #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .step-title,
+body[data-festive-theme="diwali"] .step-title {
+  color: #170D29 !important;
+  font-weight: 800;
+}
+
+body[data-diwali-theme="active"] .step-desc,
+body[data-festive-theme="diwali"] .step-desc {
+  color: rgba(23, 13, 41, 0.72) !important;
+}
+
+body[data-diwali-theme="active"] .step-connector-arrow svg,
+body[data-festive-theme="diwali"] .step-connector-arrow svg {
+  stroke: #C6A357 !important;
+}
+
+/* ==========================================================================
+   12. TESTIMONIALS SECTION
+   ========================================================================== */
+body[data-diwali-theme="active"] .testimonials-section,
+body[data-festive-theme="diwali"] .testimonials-section {
+  background: #FAF5EA !important;
+  padding: 50px 0;
+}
+
+body[data-diwali-theme="active"] .testimonial-hero-card,
+body[data-festive-theme="diwali"] .testimonial-hero-card {
+  background: linear-gradient(135deg, #170D29 0%, #281342 65%, #521B2B 100%) !important;
+  border: 1px solid rgba(198, 163, 87, 0.42) !important;
+  box-shadow: 0 14px 34px rgba(23, 13, 41, 0.3) !important;
+  border-radius: 18px !important;
+}
+
+body[data-diwali-theme="active"] .testi-hero-title,
+body[data-festive-theme="diwali"] .testi-hero-title {
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .testi-hero-subtitle,
+body[data-festive-theme="diwali"] .testi-hero-subtitle {
+  color: rgba(255, 248, 237, 0.88) !important;
+}
+
+body[data-diwali-theme="active"] .testimonial-hero-card .btn-outline-white,
+body[data-festive-theme="diwali"] .testimonial-hero-card .btn-outline-white {
+  border-color: #C6A357 !important;
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .testimonial-hero-card .btn-outline-white:hover,
+body[data-festive-theme="diwali"] .testimonial-hero-card .btn-outline-white:hover {
+  background: #C6A357 !important;
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .testimonial-card,
+body[data-festive-theme="diwali"] .testimonial-card {
+  background: #FFF8ED !important;
+  border: 1px solid rgba(198, 163, 87, 0.28) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(23, 13, 41, 0.05) !important;
+}
+
+body[data-diwali-theme="active"] .stars-row,
+body[data-festive-theme="diwali"] .stars-row {
+  color: #E9A23B !important;
+  text-shadow: 0 0 6px rgba(233, 162, 59, 0.4);
+}
+
+body[data-diwali-theme="active"] .review-quote,
+body[data-festive-theme="diwali"] .review-quote {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .reviewer-avatar,
+body[data-festive-theme="diwali"] .reviewer-avatar {
+  background: linear-gradient(135deg, #281342, #521B2B) !important;
+  color: #F4DCA1 !important;
+  border: 1px solid #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .reviewer-name,
+body[data-festive-theme="diwali"] .reviewer-name {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .reviewer-role,
+body[data-festive-theme="diwali"] .reviewer-role {
+  color: rgba(23, 13, 41, 0.65) !important;
+}
+
+/* ==========================================================================
+   13. FAQS SECTION
+   ========================================================================== */
+body[data-diwali-theme="active"] .faqs-section,
+body[data-festive-theme="diwali"] .faqs-section {
+  background: #FAF5EA !important;
+  padding: 50px 0;
+}
+
+body[data-diwali-theme="active"] .faqs-section .eyebrow,
+body[data-festive-theme="diwali"] .faqs-section .eyebrow {
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .faqs-section .section-title,
+body[data-festive-theme="diwali"] .faqs-section .section-title {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .faqs-section .section-subtitle,
+body[data-festive-theme="diwali"] .faqs-section .section-subtitle {
+  color: rgba(23, 13, 41, 0.72) !important;
+}
+
+body[data-diwali-theme="active"] .faq-item,
+body[data-festive-theme="diwali"] .faq-item {
+  background: #FFF8ED !important;
+  border: 1px solid rgba(198, 163, 87, 0.3) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 12px rgba(23, 13, 41, 0.04) !important;
+}
+
+body[data-diwali-theme="active"] .faq-item.open,
+body[data-festive-theme="diwali"] .faq-item.open {
+  border-color: #C6A357 !important;
+  box-shadow: 0 6px 20px rgba(198, 163, 87, 0.16) !important;
+}
+
+body[data-diwali-theme="active"] .faq-question,
+body[data-festive-theme="diwali"] .faq-question {
+  color: #170D29 !important;
+}
+
+body[data-diwali-theme="active"] .faq-icon,
+body[data-festive-theme="diwali"] .faq-icon {
+  color: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .faq-answer p,
+body[data-festive-theme="diwali"] .faq-answer p {
+  color: rgba(23, 13, 41, 0.78) !important;
+}
+
+/* ==========================================================================
+   14. FINAL CLOSING CTA BANNER
+   ========================================================================== */
+body[data-diwali-theme="active"] .bottom-cta-section,
+body[data-festive-theme="diwali"] .bottom-cta-section {
+  background: #FAF5EA !important;
+  padding: 50px 0;
+}
+
+body[data-diwali-theme="active"] .bottom-cta-card,
+body[data-festive-theme="diwali"] .bottom-cta-card {
+  background: linear-gradient(135deg, #170D29 0%, #281342 50%, #521B2B 100%) !important;
+  border: 1px solid rgba(198, 163, 87, 0.45) !important;
+  box-shadow: 0 16px 42px rgba(23, 13, 41, 0.35), 0 0 28px rgba(198, 163, 87, 0.15) !important;
+  border-radius: 20px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-diwali-theme="active"] .bottom-cta-card .blob,
+body[data-festive-theme="diwali"] .bottom-cta-card .blob {
+  display: none !important;
+}
+
+body[data-diwali-theme="active"] .cta-title,
+body[data-festive-theme="diwali"] .cta-title {
+  color: #FFF8ED !important;
+}
+
+body[data-diwali-theme="active"] .cta-highlight,
+body[data-festive-theme="diwali"] .cta-highlight {
+  background: linear-gradient(135deg, #FFF8ED 0%, #F4DCA1 50%, #C6A357 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+body[data-diwali-theme="active"] .cta-desc,
+body[data-festive-theme="diwali"] .cta-desc {
+  color: rgba(255, 248, 237, 0.88) !important;
+}
+
+body[data-diwali-theme="active"] .cta-arrow-doodle svg,
+body[data-festive-theme="diwali"] .cta-arrow-doodle svg {
+  stroke: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .cta-arrow-doodle polygon,
+body[data-festive-theme="diwali"] .cta-arrow-doodle polygon {
+  fill: #C6A357 !important;
+}
+
+body[data-diwali-theme="active"] .bottom-cta-card .cta-btn,
+body[data-festive-theme="diwali"] .bottom-cta-card .cta-btn {
+  background: linear-gradient(135deg, #C6A357 0%, #F4DCA1 50%, #E9A23B 100%) !important;
+  color: #170D29 !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(198, 163, 87, 0.45) !important;
+}
+
+body[data-diwali-theme="active"] .bottom-cta-card .cta-btn:hover,
+body[data-festive-theme="diwali"] .bottom-cta-card .cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(198, 163, 87, 0.65) !important;
+}
+
+/* ==========================================================================
+   15. HARMONIZED FOOTER
+   ========================================================================== */
+body[data-diwali-theme="active"] .main-footer,
+body[data-festive-theme="diwali"] .main-footer {
+  background: #0E0719 !important;
+  border-top: 1px solid rgba(198, 163, 87, 0.32) !important;
+}
+
+body[data-diwali-theme="active"] .footer-wordmark,
+body[data-festive-theme="diwali"] .footer-wordmark {
+  color: rgba(198, 163, 87, 0.04) !important;
+}
+
+body[data-diwali-theme="active"] .footer-col-title,
+body[data-festive-theme="diwali"] .footer-col-title {
+  color: #F4DCA1 !important;
+  border-bottom-color: rgba(198, 163, 87, 0.35) !important;
+}
+
+body[data-diwali-theme="active"] .footer-desc,
+body[data-festive-theme="diwali"] .footer-desc,
+body[data-diwali-theme="active"] .contact-info-list li,
+body[data-festive-theme="diwali"] .contact-info-list li,
+body[data-diwali-theme="active"] .contact-info-list a,
+body[data-festive-theme="diwali"] .contact-info-list a {
+  color: rgba(255, 248, 237, 0.82) !important;
+}
+
+body[data-diwali-theme="active"] .footer-links-col a:hover,
+body[data-festive-theme="diwali"] .footer-links-col a:hover,
+body[data-diwali-theme="active"] .contact-info-list a:hover,
+body[data-festive-theme="diwali"] .contact-info-list a:hover {
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .footer-social-icons a,
+body[data-festive-theme="diwali"] .footer-social-icons a {
+  background: rgba(40, 19, 66, 0.6) !important;
+  border: 1px solid rgba(198, 163, 87, 0.35) !important;
+  color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .footer-social-icons a:hover,
+body[data-festive-theme="diwali"] .footer-social-icons a:hover {
+  background: #C6A357 !important;
+  color: #170D29 !important;
+  border-color: #F4DCA1 !important;
+}
+
+body[data-diwali-theme="active"] .sub-footer,
+body[data-festive-theme="diwali"] .sub-footer {
+  border-top: 1px solid rgba(198, 163, 87, 0.22) !important;
+}
+
+body[data-diwali-theme="active"] .sub-footer p,
+body[data-festive-theme="diwali"] .sub-footer p,
+body[data-diwali-theme="active"] .sub-footer-links a,
+body[data-festive-theme="diwali"] .sub-footer-links a,
+body[data-diwali-theme="active"] .to-top,
+body[data-festive-theme="diwali"] .to-top {
+  color: rgba(255, 248, 237, 0.68) !important;
+}
+
+body[data-diwali-theme="active"] .sub-footer-links a:hover,
+body[data-festive-theme="diwali"] .sub-footer-links a:hover,
+body[data-diwali-theme="active"] .to-top:hover,
+body[data-festive-theme="diwali"] .to-top:hover {
+  color: #F4DCA1 !important;
+}
+
+/* ==========================================================================
+   16. DIWALI SPLASH SCREEN
+   ========================================================================== */
+.diwali-splash-overlay,
+.festive-splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #170D29;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #FFF8ED;
+  opacity: 1;
+  transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.diwali-splash-overlay.fade-out,
+.festive-splash-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.diwali-splash-scrim,
+.festive-splash-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(23, 13, 41, 0.5) 0%, rgba(23, 13, 41, 0.88) 70%, rgba(23, 13, 41, 0.98) 100%);
+  pointer-events: none;
+}
+
+.diwali-splash-content,
+.festive-splash-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 24px;
+  max-width: 520px;
+  width: 90%;
+  animation: diwaliFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes diwaliFadeUp {
+  0% { opacity: 0; transform: translateY(18px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.diwali-splash-logo-box,
+.festive-splash-logo-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  background: rgba(40, 19, 66, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(198, 163, 87, 0.42);
+  border-radius: 9999px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(198, 163, 87, 0.25);
+  margin-bottom: 24px;
+}
+
+.diwali-splash-logo-box .logo-mark,
+.festive-splash-logo-box .logo-mark {
+  width: 32px;
+  height: 32px;
+}
+
+.diwali-splash-logo-box .brand-name,
+.festive-splash-logo-box .brand-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #FFF8ED;
+  text-transform: uppercase;
+}
+
+.diwali-splash-icon,
+.festive-splash-icon {
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 16px rgba(244, 220, 161, 0.85));
+  animation: diwaliFloat 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes diwaliFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+
+.diwali-splash-eyebrow,
+.festive-splash-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #F4DCA1;
+  margin-bottom: 10px;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  background: rgba(198, 163, 87, 0.16);
+  border: 1px solid rgba(198, 163, 87, 0.4);
+}
+
+.diwali-splash-headline,
+.festive-splash-headline {
+  font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+  font-weight: 850;
+  line-height: 1.22;
+  color: #FFF8ED;
+  margin: 0 0 14px;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+}
+
+.diwali-splash-headline .gold-gradient-text,
+.festive-splash-headline .gold-gradient-text {
+  background: linear-gradient(135deg, #F4DCA1 0%, #C6A357 50%, #E9A23B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.diwali-splash-subtext,
+.festive-splash-subtext {
+  font-size: 0.96rem;
+  line-height: 1.55;
+  color: rgba(255, 248, 237, 0.85);
+  margin: 0 0 28px;
+}
+
+.diwali-splash-loader-bar,
+.festive-splash-loader-bar {
+  width: 220px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 8px rgba(198, 163, 87, 0.3);
+}
+
+.diwali-splash-loader-progress,
+.festive-splash-loader-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #C6A357, #F4DCA1, #FFFFFF);
+  border-radius: 9999px;
+  animation: diwaliProgress 1.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  box-shadow: 0 0 10px rgba(244, 220, 161, 0.9);
+}
+
+@keyframes diwaliProgress {
+  0% { width: 0%; }
+  60% { width: 75%; }
+  100% { width: 100%; }
+}
+
+.diwali-splash-skip-btn,
+.festive-splash-skip-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  z-index: 5;
+  background: rgba(23, 13, 41, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(198, 163, 87, 0.4);
+  color: #F4DCA1;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.diwali-splash-skip-btn:hover,
+.festive-splash-skip-btn:hover {
+  background: rgba(198, 163, 87, 0.2);
+  color: #FFFFFF;
+  border-color: #C6A357;
+}
+
+/* ==========================================================================
+   17. LIVE STOREFRONT PREVIEW BAR & ADMIN STYLING
+   ========================================================================== */
+.diwali-preview-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: linear-gradient(135deg, #170D29 0%, #281342 100%);
+  color: #FFF8ED;
+  border: 1px solid #C6A357;
+  border-radius: 9999px;
+  padding: 9px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(198, 163, 87, 0.45);
+  font-size: 0.86rem;
+  font-weight: 650;
+  animation: diwaliSlideIn 0.3s ease-out;
+}
+
+@keyframes diwaliSlideIn {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.diwali-preview-exit-btn {
+  background: linear-gradient(135deg, #C6A357, #F4DCA1);
+  color: #170D29;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.diwali-preview-exit-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   18. RESPONSIVE REFINEMENTS
+   ========================================================================== */
+@media (max-width: 768px) {
+  .festive-hero-banner-section,
+  .diwali-hero-banner-section {
+    min-height: 500px;
+  }
+
+  .festive-hero-gradient-scrim,
+  .diwali-hero-gradient-scrim {
+    background: linear-gradient(180deg,
+      rgba(23, 13, 41, 0.94) 0%,
+      rgba(23, 13, 41, 0.92) 55%,
+      rgba(40, 19, 66, 0.88) 100%) !important;
+  }
+
+  .festive-hero-container,
+  .diwali-hero-container {
+    padding: 42px 18px;
+  }
+
+  .festive-hero-title,
+  .diwali-hero-title {
+    font-size: 2.1rem;
+  }
+
+  .festive-hero-desc,
+  .diwali-hero-desc {
+    font-size: 0.98rem;
+  }
+
+  .festive-hero-actions,
+  .diwali-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-festive-primary,
+  .btn-festive-secondary,
+  .btn-diwali-primary,
+  .btn-diwali-secondary,
+  .btn-festive-enquiry-pill {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .festive-rangoli-corner {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   19. ACCESSIBILITY: REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .festive-spark-icon,
+  .diwali-spark-icon,
+  .festive-splash-content,
+  .festive-splash-icon,
+  .diwali-splash-content,
+  .diwali-splash-loader-progress,
+  .festive-splash-loader-progress,
+  .festive-hero-eyebrow .spark-dot,
+  .diwali-hero-eyebrow .spark-dot {
+    animation: none !important;
+  }
+
+  .festive-splash-overlay,
+  .diwali-splash-overlay {
+    transition: opacity 0.1s linear !important;
+  }
+}

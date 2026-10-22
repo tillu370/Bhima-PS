@@ -1,0 +1,929 @@
+/* ==========================================================================
+   BHIMA PRINT SOLUTIONS — UPGRADED FESTIVE THEME ADMIN DASHBOARD
+   Design System:
+     - Surfaces: Clean White (#FFFFFF), Crisp Neutral (#F8FAFC, #F1F5F9)
+     - Typography: Deep Navy (#0F172A), Slate Body (#334155, #64748B)
+     - Accents: Restrained Champagne Gold (#D4AF37, #E8C872)
+     - Borders: Subtle Slate (#E2E8F0)
+     - Shadows: Elegant Soft Elevation
+   ========================================================================== */
+
+/* -------------------------------------------------------------------------
+   1. Dashboard Shell & Layout Upgrades
+   ------------------------------------------------------------------------- */
+.admin-page-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Ensure the main grid takes optimal width without cramped columns */
+.dash.admin-expanded {
+  grid-template-columns: 260px minmax(0, 1fr) !important;
+  gap: 28px !important;
+  align-items: start;
+}
+
+/* Sidebar clean navigation styling */
+.dash-nav {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+  border-radius: 16px !important;
+  padding: 10px !important;
+}
+
+.dash-nav button, .dash-nav a {
+  padding: 12px 16px !important;
+  border-radius: 10px !important;
+  font-size: 0.92rem !important;
+  color: #334155 !important;
+  transition: all 0.15s ease !important;
+}
+
+.dash-nav button:hover, .dash-nav a:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.dash-nav button[aria-selected="true"] {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15) !important;
+}
+
+.dash-nav button[aria-selected="true"] .festive-tab-badge {
+  background: #D4AF37 !important;
+  color: #0f172a !important;
+}
+
+.panel.admin-panel-clean {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 18px !important;
+  padding: 28px !important;
+  box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* -------------------------------------------------------------------------
+   2. Festive Dashboard Overview Header Card
+   ------------------------------------------------------------------------- */
+.festive-admin-overview-header {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.festive-overview-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.festive-overview-title-row h2 {
+  font-size: 1.45rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  letter-spacing: -0.01em;
+}
+
+.festive-overview-desc {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.festive-overview-actions-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.festive-live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.festive-live-status-pill.is-active {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.festive-live-status-pill.is-inactive {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+.festive-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.festive-live-status-pill.is-active .festive-status-dot {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.festive-live-status-pill.is-inactive .festive-status-dot {
+  background: #94a3b8;
+}
+
+.festive-dirty-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.festive-saved-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* -------------------------------------------------------------------------
+   3. Workspace View Mode Tabs (Settings / Split / Preview)
+   ------------------------------------------------------------------------- */
+.festive-view-tabs {
+  display: inline-flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+  gap: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.festive-view-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #475569;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.festive-view-tab-btn:hover {
+  color: #0f172a;
+}
+
+.festive-view-tab-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* -------------------------------------------------------------------------
+   4. Visual Festival Selector Grid
+   ------------------------------------------------------------------------- */
+.festive-selector-section {
+  margin-bottom: 28px;
+}
+
+.festive-section-heading {
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.festive-section-subheading {
+  font-size: 0.84rem;
+  color: #64748b;
+  margin: 0 0 16px;
+}
+
+.festive-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.festive-theme-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+}
+
+.festive-theme-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.festive-theme-card.is-selected {
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.22), 0 8px 26px rgba(15, 23, 42, 0.08);
+  background: #fffdf9;
+}
+
+.festive-card-thumb-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background: #0f172a;
+  overflow: hidden;
+}
+
+.festive-card-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.festive-theme-card:hover .festive-card-thumb-img {
+  transform: scale(1.03);
+}
+
+.festive-card-selected-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #D4AF37;
+  color: #0f172a;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.festive-card-season-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+
+.festive-card-info-box {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.festive-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.festive-card-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.festive-card-status-dot {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.festive-card-status-dot.active {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.festive-card-status-dot.draft {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.festive-card-tagline {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* -------------------------------------------------------------------------
+   5. Settings Cards & Form Controls
+   ------------------------------------------------------------------------- */
+.festive-settings-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.festive-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.festive-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.festive-card-header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D4AF37;
+}
+
+.festive-card-header h3 {
+  font-size: 1.12rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+}
+
+.festive-card-header p {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+/* Clean Toggle Rows */
+.admin-toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  transition: background 0.15s ease;
+}
+
+.admin-toggle-item:hover {
+  background: #f1f5f9;
+}
+
+.admin-toggle-text strong {
+  display: block;
+  font-size: 0.92rem;
+  color: #0f172a;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.admin-toggle-text span {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+/* Modern Accessible Switch */
+.admin-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.admin-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.admin-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #cbd5e1;
+  transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 9999px;
+}
+
+.admin-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.admin-switch input:checked + .admin-switch-slider {
+  background-color: #059669;
+}
+
+.admin-switch input:checked + .admin-switch-slider:before {
+  transform: translateX(22px);
+}
+
+/* Inputs styling */
+.admin-input-label {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.admin-text-input,
+.admin-textarea {
+  width: 100%;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  color: #0f172a;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-text-input:focus,
+.admin-textarea:focus {
+  outline: none;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+.admin-two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Visual Image Picker Cards (16:9 large) */
+.admin-image-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.admin-image-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+}
+
+.admin-image-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.admin-image-card.is-active {
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+  background: #fffdf9;
+}
+
+.admin-image-card-thumb-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background: #0f172a;
+}
+
+.admin-image-card-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-image-card-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #D4AF37;
+  color: #0f172a;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.admin-image-card-body {
+  padding: 10px 12px;
+}
+
+.admin-image-card-name {
+  font-size: 0.86rem;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.admin-image-card-desc {
+  font-size: 0.74rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+/* -------------------------------------------------------------------------
+   6. Live Preview Containers inside Admin
+   ------------------------------------------------------------------------- */
+.admin-live-preview-box {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0f172a;
+  margin-top: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.admin-preview-label-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+/* -------------------------------------------------------------------------
+   7. Bottom Action Bar
+   ------------------------------------------------------------------------- */
+.festive-admin-action-bar {
+  position: sticky;
+  bottom: 16px;
+  z-index: 50;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.admin-btn-reset {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-weight: 650;
+  font-size: 0.88rem;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.admin-btn-reset:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.admin-btn-preview {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.15s ease;
+}
+
+.admin-btn-preview:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.admin-btn-save {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  border: none;
+  font-weight: 750;
+  font-size: 0.94rem;
+  padding: 11px 26px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  transition: all 0.18s ease;
+}
+
+.admin-btn-save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.35);
+  background: #020617;
+}
+
+.admin-btn-save:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* -------------------------------------------------------------------------
+   8. Responsive Layout Adjustments
+   ------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .dash.admin-expanded {
+    grid-template-columns: 1fr !important;
+  }
+  .festive-admin-overview-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .festive-overview-actions-wrap {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  .festive-selector-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-two-col-grid {
+    grid-template-columns: 1fr;
+  }
+  .panel.admin-panel-clean {
+    padding: 18px !important;
+  }
+  .festive-admin-action-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-btn-save, .admin-btn-preview, .admin-btn-reset {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* Real storefront components rendered inside the admin preview workspace. */
+.festive-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.festive-workspace-grid.is-split {
+  grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.9fr);
+}
+
+.festive-workspace-grid.is-preview-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-live-workspace-panel {
+  min-width: 0;
+  position: sticky;
+  top: 84px;
+}
+
+.festive-preview-stage {
+  --festive-deep: #170D29;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+}
+
+.festive-preview-stage > .admin-preview-label-tag {
+  display: flex;
+  padding: 9px 12px 0;
+  margin: 0;
+  background: #fff;
+}
+
+.festive-preview-stage .top-bar {
+  min-height: 44px;
+}
+
+.festive-preview-stage .top-bar-content {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.festive-preview-stage .top-features,
+.festive-preview-stage .top-bar-right {
+  display: none;
+}
+
+.festive-preview-stage .festive-hero-banner-section {
+  min-height: clamp(300px, 38vw, 430px);
+}
+
+.festive-preview-stage .festive-hero-container {
+  padding: 34px 24px;
+}
+
+.festive-preview-stage .festive-hero-content {
+  max-width: 390px;
+}
+
+.festive-preview-stage .festive-hero-title {
+  font-size: clamp(1.45rem, 2.6vw, 2.3rem);
+  margin-bottom: 10px;
+}
+
+.festive-preview-stage .festive-hero-desc {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+
+.festive-preview-stage .festive-hero-actions {
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.festive-preview-stage .festive-hero-actions .btn-festive-primary,
+.festive-preview-stage .festive-hero-actions .btn-festive-secondary,
+.festive-preview-stage .festive-hero-actions .btn-festive-enquiry-pill {
+  font-size: 0.76rem;
+  padding: 8px 12px;
+}
+
+.festive-preview-stage .festive-hero-features,
+.festive-preview-stage .festive-rangoli-corner,
+.festive-preview-stage .festive-hero-corner {
+  display: none;
+}
+
+.festive-preview-stage > .promo-banners-section {
+  padding: 10px 12px 14px;
+  margin: 0;
+  background: #fff;
+}
+
+.festive-preview-stage[data-festive-theme="diwali"] > .promo-banners-section {
+  background: #FAF5EA !important;
+}
+
+.festive-preview-stage .promo-grid {
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 0;
+}
+
+.festive-preview-stage .promo-card {
+  min-width: 0;
+  min-height: 230px;
+  padding: 14px;
+  border-radius: 12px;
+}
+
+.festive-preview-stage .promo-card .promo-title {
+  font-size: 1.12rem;
+}
+
+.festive-preview-stage .promo-card .promo-desc {
+  font-size: 0.76rem;
+}
+
+.festive-preview-stage .promo-card .btn-festive-promo,
+.festive-preview-stage .promo-card .btn-dark-teal {
+  font-size: 0.72rem !important;
+  padding: 7px 10px !important;
+}
+
+.festive-preview-stage button[aria-disabled="true"] {
+  cursor: default;
+}
+
+.festive-theme-card:focus-visible,
+.admin-image-card:focus-visible,
+.festive-view-tab-btn:focus-visible,
+.admin-btn-preview:focus-visible,
+.admin-btn-save:focus-visible,
+.admin-btn-reset:focus-visible {
+  outline: 3px solid rgba(212, 175, 55, 0.65);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1180px) {
+  .festive-workspace-grid.is-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-live-workspace-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .festive-view-tabs {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+  .festive-view-tab-btn {
+    justify-content: flex-start;
+  }
+  .festive-preview-stage .festive-hero-banner-section {
+    min-height: 360px;
+  }
+  .festive-preview-stage .promo-grid {
+    grid-template-columns: 1fr;
+  }
+}

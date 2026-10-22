@@ -15,6 +15,10 @@ import './styles/studio.css';
 import './styles/mobile.css';
 import './styles/pastel-theme.css';
 import './styles/deal.css';
+import './styles/diwali-theme.css';
+import './styles/christmas-theme.css';
+import './styles/festive-theme.css';
+import './styles/admin-dashboard.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

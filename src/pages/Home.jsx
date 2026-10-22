@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { A } from '../components/A.jsx';
 import { HomeProducts } from '../components/HomeProducts.jsx';
 import { HomeCategories } from '../components/HomeCategories.jsx';
+import { DiwaliHeroBanner } from '../components/DiwaliHeroBanner.jsx';
+import { HomePromoBanners } from '../components/HomePromoBanners.jsx';
 import { FaqGrid } from '../components/FaqGrid.jsx';
 import { useUi } from '../context/UiContext.jsx';
+import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
 import { useHeroParallax } from '../lib/useHeroParallax.js';
 
@@ -12,8 +14,8 @@ const MARQUEE = ['Mug Printing', 'T Shirt Printing', 'Pillow Printing', 'Photo F
 
 // Home page sections (markup converted from the original static page).
 export default function Home() {
-  const go = useNavigate();
   const { openEnquiry } = useUi();
+  const { isDiwali, config: diwaliConfig } = useDiwaliTheme();
   const kd = fn => e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } };
   useHeroParallax();
   useScrollReveal('.section-header, .category-card, .promo-card, .why-left, .why-card, .corporate-card, .step-card, .testimonials-grid, .testimonial-card, .bottom-cta-card');
@@ -21,86 +23,90 @@ export default function Home() {
   return (
     <>
       {/* ==================== HERO SECTION ==================== */}
-      <section className="hero-section">
-        <div className="hero-outer-container">
-          <div className="hero-sticker" aria-hidden="true">Made to<br />order</div>
-          <div className="hero-swatch" aria-hidden="true"><i className="c" /><i className="m" /><i className="y" /><i className="k" /><span>CMYK</span></div>
-          {/* Left Column: Copy, CTAs, Highlights with Curved Arrow */}
-          <div className="hero-left-wrapper">
-            {/* Curved Doodle Arrow on far left */}
-            <div className="hero-curved-arrow">
-              <svg viewBox="0 0 60 140" fill="none" stroke="#009688" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M 8 130 C 2 70, 8 26, 48 10" />
-                <polyline points="36 6, 52 10, 48 26" />
-              </svg>
+      {isDiwali ? (
+        <DiwaliHeroBanner config={diwaliConfig} />
+      ) : (
+        <section className="hero-section">
+          <div className="hero-outer-container">
+            <div className="hero-sticker" aria-hidden="true">Made to<br />order</div>
+            <div className="hero-swatch" aria-hidden="true"><i className="c" /><i className="m" /><i className="y" /><i className="k" /><span>CMYK</span></div>
+            {/* Left Column: Copy, CTAs, Highlights with Curved Arrow */}
+            <div className="hero-left-wrapper">
+              {/* Curved Doodle Arrow on far left */}
+              <div className="hero-curved-arrow">
+                <svg viewBox="0 0 60 140" fill="none" stroke="#009688" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M 8 130 C 2 70, 8 26, 48 10" />
+                  <polyline points="36 6, 52 10, 48 26" />
+                </svg>
+              </div>
+
+              <div className="hero-left-content">
+                
+                <div className="hero-eyebrow">YOUR IDEAS, OUR PRINT.</div>
+                <h1 className="hero-title">
+                  <span className="w" style={{ '--i': 0 }}>Make</span>{' '}<span className="w" style={{ '--i': 1 }}>It</span>{' '}<span className="w" style={{ '--i': 2 }}>Real</span><br />
+                  <span className="highlight-teal squiggle"><span className="w" style={{ '--i': 3 }}>With</span>{' '}<span className="w" style={{ '--i': 4 }}>Print.</span></span>
+                </h1>
+                <p className="hero-desc">
+                  Custom printing solutions for businesses, creators, <br />
+                  celebrations and everything in between.
+                </p>
+
+                <div className="hero-buttons">
+                  <A href="/products" className="btn btn-mustard-pill">
+                    Explore Products
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </A>
+                  <button className="btn btn-quote-pill" onClick={() => openEnquiry('Get a Fast Custom Quote')}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Get a Quote
+                  </button>
+                </div>
+
+                {/* 4 Service Highlights */}
+                <p className="hero-note" aria-hidden="true">
+                  <svg viewBox="0 0 54 34" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 28C14 30 30 24 40 10" /><path d="M31 9l10 0-2 10" /></svg>
+                  Ideas. Design. Print. Repeat.
+                </p>
+                <div className="hero-trust-badges">
+                  <div className="trust-badge-item">
+                    <div className="badge-icon">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                    <span>High-Quality Prints</span>
+                  </div>
+                  <div className="trust-badge-item">
+                    <div className="badge-icon">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+                    </div>
+                    <span>Custom Designs</span>
+                  </div>
+                  <div className="trust-badge-item">
+                    <div className="badge-icon">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <span>Bulk Orders</span>
+                  </div>
+                  <div className="trust-badge-item">
+                    <div className="badge-icon">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    </div>
+                    <span>On-Time Delivery</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="hero-left-content">
-              
-              <div className="hero-eyebrow">YOUR IDEAS, OUR PRINT.</div>
-              <h1 className="hero-title">
-                <span className="w" style={{ '--i': 0 }}>Make</span>{' '}<span className="w" style={{ '--i': 1 }}>It</span>{' '}<span className="w" style={{ '--i': 2 }}>Real</span><br />
-                <span className="highlight-teal squiggle"><span className="w" style={{ '--i': 3 }}>With</span>{' '}<span className="w" style={{ '--i': 4 }}>Print.</span></span>
-              </h1>
-              <p className="hero-desc">
-                Custom printing solutions for businesses, creators, <br />
-                celebrations and everything in between.
-              </p>
-
-              <div className="hero-buttons">
-                <A href="/products" className="btn btn-mustard-pill">
-                  Explore Products
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </A>
-                <button className="btn btn-quote-pill" onClick={() => openEnquiry('Get a Fast Custom Quote')}>
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  Get a Quote
-                </button>
-              </div>
-
-              {/* 4 Service Highlights */}
-              <p className="hero-note" aria-hidden="true">
-                <svg viewBox="0 0 54 34" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 28C14 30 30 24 40 10" /><path d="M31 9l10 0-2 10" /></svg>
-                Ideas. Design. Print. Repeat.
-              </p>
-              <div className="hero-trust-badges">
-                <div className="trust-badge-item">
-                  <div className="badge-icon">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  </div>
-                  <span>High-Quality Prints</span>
+            {/* Right Column: Supplied bhima-hero.png with Carousel Controls */}
+            <div className="hero-right-wrapper">
+              <div className="hero-image-stage">
+                <img src="/images/bhima-hero.jpg" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
+            
                 </div>
-                <div className="trust-badge-item">
-                  <div className="badge-icon">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
-                  </div>
-                  <span>Custom Designs</span>
-                </div>
-                <div className="trust-badge-item">
-                  <div className="badge-icon">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                  </div>
-                  <span>Bulk Orders</span>
-                </div>
-                <div className="trust-badge-item">
-                  <div className="badge-icon">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#009688" strokeWidth="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                  </div>
-                  <span>On-Time Delivery</span>
-                </div>
-              </div>
             </div>
           </div>
-
-          {/* Right Column: Supplied bhima-hero.png with Carousel Controls */}
-          <div className="hero-right-wrapper">
-            <div className="hero-image-stage">
-              <img src="/images/bhima-hero.jpg" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
-          
-              </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
@@ -130,39 +136,7 @@ export default function Home() {
       </section>
 
       {/* ==================== TWIN PROMO BANNERS ==================== */}
-      <section className="promo-banners-section">
-        <div className="container promo-grid">
-          {/* Left Banner: Custom T-Shirts (Mint Green) */}
-          <div className="promo-card promo-mint">
-            <div className="promo-content">
-              <h2 className="promo-title">Custom<br />T-Shirts</h2>
-              <p className="promo-desc">For teams, events, colleges and brands.</p>
-              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=t-shirts')}>
-                Explore Apparel
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
-            </div>
-            <div className="promo-visual">
-              <img loading="lazy" decoding="async" src="/images/t-shirt-printing.jpg" alt="Custom T-Shirts Mockup" className="promo-img" />
-            </div>
-          </div>
-
-          {/* Right Banner: Personalised Gifts (Warm Peach) */}
-          <div className="promo-card promo-peach">
-            <div className="promo-content">
-              <h2 className="promo-title">Personalised<br />Gifts</h2>
-              <p className="promo-desc">Make every moment extra special.</p>
-              <button className="btn btn-dark-teal" onClick={() => go('/products?cat=photo-frames')}>
-                Explore Gifts
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
-            </div>
-            <div className="promo-visual">
-              <img loading="lazy" decoding="async" src="/images/cat-frames-clocks.jpg" alt="Personalised Mugs and Frames" className="promo-img" />
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomePromoBanners isFestive={isDiwali} config={diwaliConfig} />
 
       {/* ==================== BEST SELLING PRODUCTS ==================== */}
       <HomeProducts />

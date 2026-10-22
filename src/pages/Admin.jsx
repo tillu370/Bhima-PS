@@ -7,8 +7,9 @@ import { supabase } from '../lib/supabase.js';
 import { useDialog } from '../lib/useDialog.js';
 import { errMsg, fmtDate, imgUrl, money, slugify } from '../lib/utils.js';
 import { fetchCurrentDeal, saveDeal, DEFAULT_DEAL } from '../lib/dealData.js';
+import { DiwaliThemeManager } from '../components/DiwaliThemeManager.jsx';
 
-const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal'];
+const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal', 'festival'];
 const ORDER_STATUSES = ['new', 'contacted', 'confirmed', 'printing', 'delivered', 'cancelled'];
 const ENQ_STATUSES = ['new', 'contacted', 'closed'];
 const REVIEW_STATUSES = ['pending', 'approved', 'rejected'];
@@ -1082,28 +1083,33 @@ export default function Admin() {
   if (!user) return <>{hero}<PageSection><StateBox title="Admin login required" action={<Link className="btn btn-primary" to="/login?next=/admin">Log in</Link>}>Log in with an admin account.</StateBox></PageSection></>;
   if (!isAdmin) return <>{hero}<PageSection><StateBox title="Access denied" action={<Link className="btn btn-primary" to="/account">Go to My Account</Link>}>This account does not have admin access.</StateBox></PageSection></>;
 
-  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers, deal: DealManager }[tab];
+  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers, deal: DealManager, festival: DiwaliThemeManager }[tab];
   return (
     <>
       {hero}
       <PageSection>
-        <div className="dash">
-          <nav className="dash-nav" role="tablist" aria-label="Admin sections">
-            {TABS.map(t => {
-              const n = (t === 'orders' || t === 'enquiries' || t === 'reviews') ? navCounts[t] : null;
-              const label = t === 'deal' ? 'Deal of the Day 🔥' : (t[0].toUpperCase() + t.slice(1));
-              return (
-                <button key={t} role="tab" aria-selected={tab === t} onClick={() => goTab(t)}>
-                  {label}
-                  {!!n && <span className="count">{n}</span>}
-                </button>
-              );
-            })}
-            <Link to="/account">My Account</Link>
-          </nav>
-          <div className="panel" role="tabpanel">
-            {tab !== 'products' && tab !== 'categories' && tab !== 'deal' && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
-            {tab === 'overview' ? <Overview goTab={goTab} key={tab} /> : <View key={tab} />}
+        <div className="admin-page-container">
+          <div className={'dash' + (tab === 'festival' ? ' admin-expanded' : '')}>
+            <nav className="dash-nav" role="tablist" aria-label="Admin sections">
+              {TABS.map(t => {
+                const n = (t === 'orders' || t === 'enquiries' || t === 'reviews') ? navCounts[t] : null;
+                const label = t === 'deal'
+                  ? 'Deal of the Day'
+                  : (t === 'festival' ? 'Festive Theme' : (t[0].toUpperCase() + t.slice(1)));
+                return (
+                  <button key={t} role="tab" aria-selected={tab === t} onClick={() => goTab(t)}>
+                    <span>{label}</span>
+                    {t === 'festival' && <span className="festive-tab-badge" style={{ fontSize: '0.72rem', padding: '1px 6px', borderRadius: 9999, background: '#fef3c7', color: '#92400e', fontWeight: 800 }}>✦ 4</span>}
+                    {!!n && <span className="count">{n}</span>}
+                  </button>
+                );
+              })}
+              <Link to="/account">My Account</Link>
+            </nav>
+            <div className={'panel' + (tab === 'festival' ? ' admin-panel-clean' : '')} role="tabpanel">
+              {tab !== 'products' && tab !== 'categories' && tab !== 'deal' && tab !== 'festival' && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
+              {tab === 'overview' ? <Overview goTab={goTab} key={tab} /> : <View key={tab} />}
+            </div>
           </div>
         </div>
       </PageSection>

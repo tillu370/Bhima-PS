@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useFestiveTheme } from '../lib/festiveThemeData.js';
 
 const PASTEL_THEMES = [
   { id: 'mint', name: 'Pastel Mint', color: '#ebf6f0', dotClass: 'pastel-dot-mint', desc: 'Fresh & Modern' },
@@ -9,14 +11,23 @@ const PASTEL_THEMES = [
 ];
 
 export function PastelCanvas() {
+  const { isFestive } = useFestiveTheme();
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
   const [activeTheme, setActiveTheme] = useState(() => {
     return localStorage.getItem('bps_pastel_theme') || 'mint';
   });
 
   useEffect(() => {
-    document.body.setAttribute('data-pastel-theme', activeTheme);
-    localStorage.setItem('bps_pastel_theme', activeTheme);
-  }, [activeTheme]);
+    if (!isAdmin) {
+      document.body.setAttribute('data-pastel-theme', activeTheme);
+      localStorage.setItem('bps_pastel_theme', activeTheme);
+    }
+  }, [activeTheme, isAdmin]);
+
+  // Hide decorative pastel patterns on Admin Dashboard and during active festive themes
+  if (isAdmin || isFestive) return null;
 
   return (
     <>

@@ -1,4 +1,4 @@
-const env = import.meta.env;
+const env = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : (typeof process !== 'undefined' && process.env ? process.env : {});
 
 // Public values. Defaults keep the site working when no environment variables are set.
 export const SUPABASE_URL = (env.VITE_SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL || 'https://scjesfsrrgawtojuwzlk.supabase.co').replace(/\/+$/, '');

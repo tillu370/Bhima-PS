@@ -1,0 +1,612 @@
+/* Shared festive storefront — photos stay visible, copy sits in the image's open canvas. */
+
+[data-festive-theme="diwali"] {
+  --festive-deep: #170D29;
+  --festive-mid: #281342;
+  --festive-accent: #521B2B;
+  --festive-gold: #C6A357;
+  --festive-champagne: #F4DCA1;
+  --festive-ivory: #FFF8ED;
+  --festive-copy: #FFF8ED;
+  --festive-copy-muted: rgba(255, 248, 237, 0.92);
+  --festive-btn-ink: #170D29;
+  --festive-scrim: 23, 13, 41;
+  --festive-tone: dark;
+}
+
+[data-festive-theme="christmas"] {
+  --festive-deep: #0B2B1E;
+  --festive-mid: #4A0E17;
+  --festive-gold: #D4AF37;
+  --festive-champagne: #E8C872;
+  --festive-ivory: #FFFDF7;
+  --festive-copy: #FFFDF7;
+  --festive-copy-muted: rgba(255, 253, 247, 0.9);
+  --festive-btn-ink: #0B2B1E;
+  --festive-scrim: 11, 43, 30;
+  --festive-tone: dark;
+}
+
+[data-festive-theme="new-year"] {
+  --festive-deep: #061427;
+  --festive-mid: #0B1F3A;
+  --festive-gold: #D4AF37;
+  --festive-champagne: #E8C872;
+  --festive-ivory: #F8F4E8;
+  --festive-copy: #F8F4E8;
+  --festive-copy-muted: rgba(248, 244, 232, 0.9);
+  --festive-btn-ink: #061427;
+  --festive-scrim: 6, 20, 39;
+  --festive-tone: dark;
+}
+
+[data-festive-theme="sankranthi"] {
+  --festive-deep: #7A3E09;
+  --festive-mid: #C26A12;
+  --festive-gold: #D4A017;
+  --festive-champagne: #F3D27A;
+  --festive-ivory: #FFF8E8;
+  --festive-copy: #3A2208;
+  --festive-copy-muted: rgba(58, 34, 8, 0.82);
+  --festive-btn-ink: #3A2208;
+  --festive-scrim: 255, 236, 196;
+  --festive-tone: light;
+}
+
+[data-festive-theme] .top-bar {
+  background: linear-gradient(90deg, var(--festive-deep) 0%, var(--festive-mid) 50%, var(--festive-deep) 100%) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--festive-gold) 40%, transparent);
+  color: var(--festive-ivory);
+}
+
+[data-festive-theme] .top-bar .highlight-badge {
+  background: color-mix(in srgb, var(--festive-gold) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 45%, transparent);
+  color: var(--festive-champagne);
+}
+
+[data-festive-theme] .top-bar a.festive-topbar-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, var(--festive-gold) 0%, var(--festive-champagne) 100%);
+  color: var(--festive-btn-ink) !important;
+  font-weight: 750;
+  font-size: 0.76rem;
+  padding: 3px 11px;
+  border-radius: 9999px;
+  text-decoration: none;
+  margin-left: 8px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--festive-gold) 35%, transparent);
+}
+
+.festive-spark-icon {
+  display: inline-block;
+  color: var(--festive-champagne);
+  animation: festiveFlicker 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes festiveFlicker {
+  0% { transform: scale(0.96); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(0.98); opacity: 0.92; }
+}
+
+.festive-splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--festive-deep);
+  background-size: cover;
+  background-position: center;
+  color: var(--festive-ivory);
+  transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.festive-splash-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.festive-splash-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(var(--festive-scrim), 0.28) 0%, rgba(var(--festive-scrim), 0.62) 70%, rgba(var(--festive-scrim), 0.82) 100%);
+  pointer-events: none;
+}
+
+[data-festive-theme="sankranthi"] .festive-splash-scrim {
+  background: radial-gradient(circle at center, rgba(255, 244, 214, 0.18) 0%, rgba(122, 62, 9, 0.42) 70%, rgba(58, 34, 8, 0.72) 100%);
+}
+
+.festive-splash-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 24px;
+  max-width: 560px;
+  width: 90%;
+  animation: festiveFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes festiveFadeUp {
+  0% { opacity: 0; transform: translateY(16px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.festive-splash-logo-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 42%, transparent);
+  border-radius: 9999px;
+  margin-bottom: 20px;
+}
+
+.festive-splash-logo-box .brand-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--festive-ivory);
+  text-transform: uppercase;
+}
+
+.festive-splash-icon {
+  width: 54px;
+  height: 54px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--festive-champagne) 80%, transparent));
+  animation: festiveFloat 3.4s ease-in-out infinite alternate;
+}
+
+@keyframes festiveFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+
+.festive-splash-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--festive-champagne);
+  margin-bottom: 10px;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--festive-gold) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 35%, transparent);
+}
+
+.festive-splash-headline {
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.22;
+  color: var(--festive-ivory);
+  margin: 0 0 14px;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+}
+
+.festive-splash-headline .gold-gradient-text {
+  background: linear-gradient(135deg, var(--festive-ivory) 0%, var(--festive-champagne) 50%, var(--festive-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.festive-splash-subtext {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 253, 247, 0.88);
+  margin: 0 0 26px;
+}
+
+.festive-splash-loader-bar {
+  width: 220px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.festive-splash-loader-progress {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--festive-gold), var(--festive-champagne), var(--festive-ivory));
+  border-radius: 9999px;
+  animation: festiveProgress 1.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes festiveProgress {
+  0% { width: 0%; }
+  60% { width: 75%; }
+  100% { width: 100%; }
+}
+
+.festive-splash-skip-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 40%, transparent);
+  color: var(--festive-champagne);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.festive-hero-banner-section {
+  position: relative;
+  width: 100%;
+  min-height: clamp(520px, 72vh, 720px);
+  overflow: hidden;
+  background-color: var(--festive-deep);
+  display: flex;
+  align-items: center;
+}
+
+.festive-hero-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: 1;
+}
+
+.festive-hero-gradient-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(var(--festive-scrim), 0.22) 0%, rgba(var(--festive-scrim), 0.08) 38%, rgba(var(--festive-scrim), 0.28) 100%),
+    linear-gradient(90deg, rgba(var(--festive-scrim), 0.42) 0%, rgba(var(--festive-scrim), 0.16) 34%, rgba(var(--festive-scrim), 0) 58%);
+}
+
+.festive-hero-banner-section.is-center .festive-hero-gradient-scrim {
+  background:
+    linear-gradient(180deg, rgba(var(--festive-scrim), 0.18) 0%, rgba(var(--festive-scrim), 0.08) 42%, rgba(var(--festive-scrim), 0.45) 100%);
+}
+
+[data-festive-theme="sankranthi"] .festive-hero-gradient-scrim {
+  background:
+    linear-gradient(90deg, rgba(255, 248, 232, 0.42) 0%, rgba(255, 248, 232, 0.12) 38%, rgba(255, 248, 232, 0) 62%);
+}
+
+.festive-hero-texture-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-size: 420px 420px;
+  background-repeat: repeat;
+  opacity: 0.045;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.festive-hero-corner {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: min(320px, 34vw);
+  height: auto;
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
+}
+
+.festive-hero-container {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 72px 24px;
+}
+
+.festive-hero-content {
+  max-width: 560px;
+}
+
+.festive-hero-banner-section.is-center .festive-hero-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.festive-hero-banner-section.is-center .festive-hero-content {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.festive-hero-banner-section.is-center .festive-hero-desc {
+  max-width: 540px;
+}
+
+.festive-hero-banner-section.is-center .festive-hero-actions,
+.festive-hero-banner-section.is-center .festive-hero-features {
+  justify-content: center;
+}
+
+.festive-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 42%, transparent);
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--festive-champagne);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+[data-festive-theme="sankranthi"] .festive-hero-eyebrow {
+  background: rgba(255, 248, 232, 0.7);
+  color: #7A3E09;
+}
+
+.festive-hero-eyebrow .spark-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--festive-champagne);
+  box-shadow: 0 0 8px var(--festive-champagne);
+  animation: festiveFlicker 2s infinite alternate;
+}
+
+.festive-hero-title {
+  font-size: clamp(2.15rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.12;
+  color: var(--festive-copy);
+  margin: 0 0 16px;
+  text-shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
+  letter-spacing: -0.02em;
+}
+
+[data-festive-theme="sankranthi"] .festive-hero-title {
+  text-shadow: 0 2px 16px rgba(255, 248, 232, 0.7);
+}
+
+.festive-hero-title-highlight {
+  background: linear-gradient(135deg, var(--festive-ivory) 0%, var(--festive-champagne) 52%, var(--festive-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-festive-theme="sankranthi"] .festive-hero-title-highlight {
+  background: none;
+  -webkit-text-fill-color: #3A2208;
+  color: #3A2208;
+}
+
+.festive-hero-desc {
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--festive-copy-muted);
+  margin: 0 0 28px;
+  max-width: 500px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.festive-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.btn-festive-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--festive-gold) 0%, var(--festive-champagne) 70%);
+  color: var(--festive-btn-ink);
+  font-weight: 750;
+  font-size: 0.98rem;
+  padding: 13px 26px;
+  border-radius: 9999px;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--festive-gold) 45%, transparent);
+}
+
+.btn-festive-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-festive-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(8px);
+  color: var(--festive-ivory);
+  font-weight: 650;
+  font-size: 0.98rem;
+  padding: 13px 24px;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 42%, transparent);
+  cursor: pointer;
+}
+
+[data-festive-theme="sankranthi"] .btn-festive-secondary {
+  background: rgba(255, 248, 232, 0.55);
+  color: #3A2208;
+}
+
+.festive-hero-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--festive-gold) 24%, transparent);
+}
+
+.festive-feature-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--festive-copy-muted);
+}
+
+.festive-feature-item svg {
+  color: var(--festive-gold);
+}
+
+.promo-card.promo-festive {
+  background: linear-gradient(135deg, var(--festive-deep) 0%, var(--festive-mid) 100%) !important;
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 40%, transparent) !important;
+  color: var(--festive-ivory) !important;
+}
+
+.promo-card.promo-festive .promo-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  color: var(--festive-champagne);
+  background: color-mix(in srgb, var(--festive-gold) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--festive-gold) 40%, transparent);
+  border-radius: 9999px;
+  padding: 3px 10px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.promo-card.promo-festive .promo-title {
+  color: var(--festive-ivory) !important;
+}
+
+.promo-card.promo-festive .promo-desc {
+  color: rgba(255, 249, 239, 0.84) !important;
+}
+
+.promo-card.promo-festive .btn-festive-promo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, var(--festive-gold) 0%, var(--festive-champagne) 100%) !important;
+  color: var(--festive-btn-ink) !important;
+  font-weight: 750 !important;
+  font-size: 0.9rem !important;
+  padding: 10px 20px !important;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+}
+
+.festive-theme-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.festive-theme-pick {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #fff;
+  text-align: left;
+  padding: 0;
+}
+
+.festive-theme-pick.selected {
+  border-color: #D8A84E;
+  box-shadow: 0 0 0 3px rgba(216, 168, 78, 0.22);
+}
+
+.festive-theme-pick img {
+  width: 100%;
+  height: 86px;
+  object-fit: cover;
+  display: block;
+}
+
+.festive-theme-pick span {
+  display: block;
+  padding: 8px 10px 10px;
+  font-size: 0.86rem;
+  font-weight: 750;
+  color: #1e293b;
+}
+
+@media (max-width: 768px) {
+  .festive-hero-banner-section {
+    min-height: 560px;
+    align-items: flex-end;
+  }
+  .festive-hero-gradient-scrim,
+  .festive-hero-banner-section.is-center .festive-hero-gradient-scrim,
+  [data-festive-theme="sankranthi"] .festive-hero-gradient-scrim {
+    background: linear-gradient(180deg, rgba(var(--festive-scrim), 0.08) 0%, rgba(var(--festive-scrim), 0.55) 48%, rgba(var(--festive-scrim), 0.82) 100%);
+  }
+  [data-festive-theme="sankranthi"] .festive-hero-gradient-scrim {
+    background: linear-gradient(180deg, rgba(255, 248, 232, 0.1) 0%, rgba(255, 236, 196, 0.55) 55%, rgba(255, 236, 196, 0.88) 100%);
+  }
+  .festive-hero-container,
+  .festive-hero-banner-section.is-center .festive-hero-container {
+    justify-content: flex-end;
+    text-align: left;
+    padding: 36px 18px 28px;
+  }
+  .festive-hero-banner-section.is-center .festive-hero-content {
+    align-items: flex-start;
+  }
+  .festive-hero-banner-section.is-center .festive-hero-actions,
+  .festive-hero-banner-section.is-center .festive-hero-features {
+    justify-content: flex-start;
+  }
+  .festive-hero-corner {
+    display: none;
+  }
+  .festive-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-festive-primary,
+  .btn-festive-secondary {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .festive-spark-icon,
+  .festive-splash-content,
+  .festive-splash-icon,
+  .festive-splash-loader-progress,
+  .festive-hero-eyebrow .spark-dot {
+    animation: none !important;
+  }
+}
