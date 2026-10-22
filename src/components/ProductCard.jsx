@@ -4,9 +4,10 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
-import { errMsg, hasPrice, imgUrl, money } from '../lib/utils.js';
+import { errMsg, hasPrice, money } from '../lib/utils.js';
+import { SafeImage } from './SafeImage.jsx';
 
-export function ProductCard({ product: p }) {
+export function ProductCard({ product: p, eager = false }) {
   const { wishlist, toggleWishlist } = useAuth();
   const { isDiwali } = useDiwaliTheme();
   const cart = useCart();
@@ -41,8 +42,8 @@ export function ProductCard({ product: p }) {
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
       </button>
       <Link className="product-img-box" to={href} aria-label={`View ${p.name}`}>
-        <img className="img-main" loading="lazy" decoding="async" src={imgUrl(p.image_url, p.categories?.image_url)} alt={p.name} />
-        {p.image_url_2 && <img className="img-alt" loading="lazy" decoding="async" src={imgUrl(p.image_url_2)} alt="" aria-hidden="true" />}
+        <SafeImage className="img-main" loading={eager ? 'eager' : 'lazy'} decoding="async" src={p.image_url} fallbackSrc={p.categories?.image_url} alt={p.name} />
+        {p.image_url_2 && <SafeImage className="img-alt" loading={eager ? 'eager' : 'lazy'} decoding="async" src={p.image_url_2} fallbackSrc={[p.image_url, p.categories?.image_url]} alt="" aria-hidden="true" />}
       </Link>
       <div className="product-info">
         <h3 className="product-title"><Link to={href}>{p.name}</Link></h3>

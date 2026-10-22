@@ -28,15 +28,16 @@
 }
 
 [data-festive-theme="new-year"] {
-  --festive-deep: #061427;
-  --festive-mid: #0B1F3A;
-  --festive-gold: #D4AF37;
-  --festive-champagne: #E8C872;
-  --festive-ivory: #F8F4E8;
-  --festive-copy: #F8F4E8;
-  --festive-copy-muted: rgba(248, 244, 232, 0.9);
-  --festive-btn-ink: #061427;
-  --festive-scrim: 6, 20, 39;
+  --festive-deep: #09182F;
+  --festive-mid: #101722;
+  --festive-gold: #D9B66F;
+  --festive-champagne: #F3DFAD;
+  --festive-silver: #D8DDE5;
+  --festive-ivory: #FAF8F2;
+  --festive-copy: #FAF8F2;
+  --festive-copy-muted: rgba(250, 248, 242, 0.92);
+  --festive-btn-ink: #09182F;
+  --festive-scrim: 9, 24, 47;
   --festive-tone: dark;
 }
 

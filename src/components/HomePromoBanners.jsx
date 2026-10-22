@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { FestivePromoCard } from './FestivePromoCard.jsx';
+import { SafeImage } from './SafeImage.jsx';
 
 export function HomePromoBanners({ isFestive, config, preview = false }) {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export function HomePromoBanners({ isFestive, config, preview = false }) {
             </button>
           </div>
           <div className="promo-visual">
-            <img loading="lazy" decoding="async" src="/images/t-shirt-printing.jpg" alt="Custom T-Shirts Mockup" className="promo-img" />
+            <SafeImage loading="lazy" decoding="async" src="/images/t-shirt-printing.jpg" alt="Custom T-Shirts Mockup" className="promo-img" />
           </div>
         </div>
 
@@ -33,7 +34,7 @@ export function HomePromoBanners({ isFestive, config, preview = false }) {
               </button>
             </div>
             <div className="promo-visual">
-              <img loading="lazy" decoding="async" src="/images/cat-frames-clocks.jpg" alt="Personalised Mugs and Frames" className="promo-img" />
+              <SafeImage loading="lazy" decoding="async" src="/images/cat-frames-clocks.jpg" alt="Personalised Mugs and Frames" className="promo-img" />
             </div>
           </div>
         )}

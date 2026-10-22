@@ -1,0 +1,858 @@
+/* ==========================================================================
+   BHIMA PRINT SOLUTIONS — NEW YEAR FESTIVE THEME SYSTEM
+   
+   Celebration Palette:
+     - Midnight Navy:         #09182F
+     - Deep Charcoal:         #101722
+     - Champagne Gold:        #D9B66F
+     - Soft Silver:           #D8DDE5
+     - Warm Ivory:            #FAF8F2
+     - White:                 #FFFFFF
+     - Warm Neutral Canvas:   #F3EFE6
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. GLOBAL CANVAS & AMBIENT CELEBRATION TREATMENT
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] {
+  --pastel-bg: #FAF8F2 !important;
+  --pastel-bg-alt: #F3EFE6 !important;
+  --pastel-card-bg: #FFFFFF !important;
+  --pastel-border: rgba(217, 182, 111, 0.25) !important;
+  --pastel-dot-color: rgba(217, 182, 111, 0.15) !important;
+  --festive-deep: #09182F !important;
+  --festive-mid: #101722 !important;
+  --festive-gold: #D9B66F !important;
+  --festive-champagne: #F3DFAD !important;
+  --festive-silver: #D8DDE5 !important;
+  --festive-ivory: #FAF8F2 !important;
+  --festive-copy: #FAF8F2 !important;
+  --festive-copy-muted: rgba(250, 248, 242, 0.92) !important;
+  --festive-btn-ink: #09182F !important;
+  --festive-scrim: 9, 24, 47 !important;
+  --festive-tone: dark !important;
+  background-color: #FAF8F2 !important;
+  color: #101722 !important;
+  transition: background-color 0.4s ease;
+}
+
+/* Suppress lingering pastel mint/peach orbs and default switcher bar */
+body[data-festive-theme="new-year"] .pastel-canvas-container,
+body[data-festive-theme="new-year"] .pastel-switcher-bar {
+  display: none !important;
+}
+
+/* Suppress lingering pastel teal circles & wave cuts across sections */
+body[data-festive-theme="new-year"] .categories-section::before,
+body[data-festive-theme="new-year"] .categories-section::after,
+body[data-festive-theme="new-year"] .why-choose-section::before,
+body[data-festive-theme="new-year"] .why-choose-section::after,
+body[data-festive-theme="new-year"] .faqs-section::before,
+body[data-festive-theme="new-year"] .faqs-section::after {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. REFINED FESTIVE TOP BAR & MAIN HEADER
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .top-bar {
+  background: linear-gradient(90deg, #09182F 0%, #101722 50%, #09182F 100%) !important;
+  border-bottom: 1px solid rgba(217, 182, 111, 0.35) !important;
+  color: #FAF8F2 !important;
+  box-shadow: 0 2px 12px rgba(9, 24, 47, 0.35);
+}
+
+body[data-festive-theme="new-year"] .top-bar .highlight-badge {
+  background: rgba(217, 182, 111, 0.16) !important;
+  border: 1px solid rgba(217, 182, 111, 0.45) !important;
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .top-bar a.festive-topbar-cta {
+  background: linear-gradient(135deg, #D9B66F 0%, #F3DFAD 100%) !important;
+  color: #09182F !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 10px rgba(217, 182, 111, 0.4) !important;
+}
+
+body[data-festive-theme="new-year"] .top-bar a.festive-topbar-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(217, 182, 111, 0.6) !important;
+}
+
+/* Main Navigation Header: Crisp Midnight Navy Frosted Glass */
+body[data-festive-theme="new-year"] .main-header {
+  background: rgba(9, 24, 47, 0.96) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(217, 182, 111, 0.3) !important;
+  box-shadow: 0 4px 24px rgba(9, 24, 47, 0.35);
+}
+
+body[data-festive-theme="new-year"] .main-header .brand-logo {
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .brand-logo svg text {
+  fill: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .nav-link {
+  color: #FAF8F2 !important;
+  font-weight: 600;
+}
+
+body[data-festive-theme="new-year"] .main-header .nav-link:hover {
+  color: #D9B66F !important;
+  text-shadow: 0 0 10px rgba(217, 182, 111, 0.4);
+}
+
+body[data-festive-theme="new-year"] .main-header .nav-link::after {
+  background: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .nav-link.nav-studio {
+  background: rgba(217, 182, 111, 0.16) !important;
+  border: 1px solid rgba(217, 182, 111, 0.45) !important;
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .search-box {
+  background: rgba(16, 23, 34, 0.8) !important;
+  border: 1px solid rgba(217, 182, 111, 0.35) !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .search-box:focus-within {
+  border-color: #D9B66F !important;
+  box-shadow: 0 0 12px rgba(217, 182, 111, 0.35) !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .search-box input {
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .search-box input::placeholder {
+  color: rgba(250, 248, 242, 0.6) !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .search-box .search-icon {
+  stroke: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .cart-badge {
+  background: linear-gradient(135deg, #D9B66F, #F3DFAD) !important;
+  color: #09182F !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="new-year"] .main-header .icon-btn {
+  background: rgba(16, 23, 34, 0.65) !important;
+  border: 1px solid rgba(217, 182, 111, 0.35) !important;
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .icon-btn:hover {
+  background: rgba(217, 182, 111, 0.2) !important;
+  border-color: #D9B66F !important;
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .main-header .mobile-nav {
+  background: #09182F !important;
+  border-bottom: 1px solid rgba(217, 182, 111, 0.3);
+}
+
+body[data-festive-theme="new-year"] .main-header .mobile-nav a {
+  color: #FAF8F2 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. PRESERVE & REFINE NEW YEAR HERO SECTION
+   Preserves hero imagery & content; ensures crisp atmospheric contrast
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .festive-hero-banner-section {
+  background-color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .festive-hero-gradient-scrim {
+  background: linear-gradient(90deg, 
+    rgba(9, 24, 47, 0.94) 0%, 
+    rgba(9, 24, 47, 0.82) 36%, 
+    rgba(9, 24, 47, 0.45) 54%, 
+    rgba(9, 24, 47, 0.08) 72%, 
+    transparent 100%) !important;
+}
+
+body[data-festive-theme="new-year"] .festive-hero-eyebrow {
+  background: rgba(9, 24, 47, 0.8) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #D9B66F !important;
+  border: 1px solid rgba(217, 182, 111, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+body[data-festive-theme="new-year"] .festive-hero-eyebrow .spark-dot {
+  background: #D9B66F !important;
+  box-shadow: 0 0 10px #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .festive-hero-title {
+  color: #FAF8F2 !important;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+body[data-festive-theme="new-year"] .festive-hero-title-highlight {
+  background: linear-gradient(135deg, #FAF8F2 0%, #F3DFAD 50%, #D9B66F 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+body[data-festive-theme="new-year"] .festive-hero-desc {
+  color: rgba(250, 248, 242, 0.92) !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+body[data-festive-theme="new-year"] .btn-festive-primary {
+  background: linear-gradient(135deg, #D9B66F 0%, #F3DFAD 70%, #C99700 100%) !important;
+  color: #09182F !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 18px rgba(217, 182, 111, 0.45) !important;
+}
+
+body[data-festive-theme="new-year"] .btn-festive-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(217, 182, 111, 0.65) !important;
+}
+
+body[data-festive-theme="new-year"] .btn-festive-secondary {
+  background: rgba(9, 24, 47, 0.65) !important;
+  backdrop-filter: blur(8px);
+  color: #FAF8F2 !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  font-weight: 650 !important;
+}
+
+body[data-festive-theme="new-year"] .btn-festive-secondary:hover {
+  background: rgba(217, 182, 111, 0.2) !important;
+  border-color: #D9B66F !important;
+  color: #D9B66F !important;
+  transform: translateY(-2px);
+}
+
+body[data-festive-theme="new-year"] .btn-festive-enquiry-pill {
+  background: rgba(9, 24, 47, 0.65) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .btn-festive-enquiry-pill:hover {
+  background: rgba(217, 182, 111, 0.2) !important;
+  border-color: #D9B66F !important;
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .festive-hero-features {
+  border-top-color: rgba(217, 182, 111, 0.25) !important;
+}
+
+body[data-festive-theme="new-year"] .festive-feature-item {
+  color: rgba(250, 248, 242, 0.9) !important;
+  font-weight: 600;
+}
+
+body[data-festive-theme="new-year"] .festive-feature-item svg {
+  color: #D9B66F !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. MARQUEE TICKER FESTIVE STYLING
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .marquee {
+  background: #09182F !important;
+  border-top: 1px solid rgba(217, 182, 111, 0.28) !important;
+  border-bottom: 1px solid rgba(217, 182, 111, 0.28) !important;
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .marquee-item i {
+  color: #D9B66F !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. EXPLORE CATEGORIES SECTION
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .categories-section {
+  background: #FAF8F2 !important;
+  position: relative;
+}
+
+body[data-festive-theme="new-year"] .categories-section .eyebrow {
+  color: #09182F !important;
+  background: rgba(217, 182, 111, 0.2) !important;
+}
+
+body[data-festive-theme="new-year"] .categories-section .eyebrow::before {
+  background: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .categories-section .section-title {
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .categories-section .section-subtitle {
+  color: #4A5568 !important;
+}
+
+body[data-festive-theme="new-year"] .categories-section .view-all-link {
+  color: #09182F !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="new-year"] .categories-section .view-all-link:hover {
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .category-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(217, 182, 111, 0.22) !important;
+  box-shadow: 0 4px 18px rgba(9, 24, 47, 0.05) !important;
+  border-radius: 14px !important;
+  transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
+}
+
+body[data-festive-theme="new-year"] .category-card:hover {
+  transform: translateY(-5px);
+  border-color: #D9B66F !important;
+  box-shadow: 0 12px 28px rgba(217, 182, 111, 0.2), 0 0 0 1px #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .category-name {
+  color: #09182F !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="new-year"] .category-desc {
+  color: #4A5568 !important;
+}
+
+body[data-festive-theme="new-year"] .category-arrow-btn {
+  background: linear-gradient(135deg, #D9B66F, #F3DFAD) !important;
+  color: #09182F !important;
+  border: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. COHESIVE TWIN PROMOTIONAL BANNERS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .promo-banners-section {
+  background: #FAF8F2 !important;
+  padding: 40px 0;
+}
+
+/* Left Banner (Custom T-Shirts): Harmonized warm ivory & midnight navy */
+body[data-festive-theme="new-year"] .promo-card.promo-mint {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5F1E8 100%) !important;
+  border: 1px solid rgba(217, 182, 111, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(9, 24, 47, 0.06) !important;
+  border-radius: 18px !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-mint .promo-title {
+  color: #09182F !important;
+  font-weight: 850;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-mint .promo-desc {
+  color: #334155 !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-mint .btn-dark-teal {
+  background: #09182F !important;
+  color: #FAF8F2 !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  font-weight: 750 !important;
+  box-shadow: 0 4px 14px rgba(9, 24, 47, 0.3) !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-mint .btn-dark-teal:hover {
+  background: #D9B66F !important;
+  color: #09182F !important;
+  border-color: #D9B66F !important;
+  box-shadow: 0 6px 20px rgba(217, 182, 111, 0.4) !important;
+}
+
+/* Right Banner: New Year Celebration Gift Hampers */
+body[data-festive-theme="new-year"] .promo-card.promo-festive {
+  background: linear-gradient(135deg, #09182F 0%, #101722 60%, #19273D 100%) !important;
+  border: 1px solid rgba(217, 182, 111, 0.45) !important;
+  box-shadow: 0 12px 34px rgba(9, 24, 47, 0.28), 0 0 20px rgba(217, 182, 111, 0.15) !important;
+  border-radius: 18px !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-festive .promo-eyebrow-pill {
+  background: rgba(217, 182, 111, 0.18) !important;
+  color: #D9B66F !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-festive .promo-title {
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-festive .promo-desc {
+  color: rgba(250, 248, 242, 0.9) !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-festive .btn-festive-promo {
+  background: linear-gradient(135deg, #D9B66F 0%, #F3DFAD 100%) !important;
+  color: #09182F !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(217, 182, 111, 0.45) !important;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-festive .btn-festive-promo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 182, 111, 0.6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. BEST-SELLING PRODUCTS SECTION
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .products-section {
+  background: #FAF8F2 !important;
+  padding: 50px 0;
+}
+
+body[data-festive-theme="new-year"] .products-header .eyebrow,
+body[data-festive-theme="new-year"] .section-header .eyebrow {
+  color: #09182F !important;
+  background: rgba(217, 182, 111, 0.2) !important;
+}
+
+body[data-festive-theme="new-year"] .products-header .section-title {
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .products-header .section-subtitle {
+  color: #4A5568 !important;
+}
+
+/* Category Filter Chips */
+body[data-festive-theme="new-year"] .filter-btn {
+  background: #FFFFFF !important;
+  color: #4A5568 !important;
+  border: 1px solid rgba(217, 182, 111, 0.25) !important;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+body[data-festive-theme="new-year"] .filter-btn:hover {
+  border-color: #D9B66F !important;
+  color: #09182F !important;
+  background: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .filter-btn.active {
+  background: #09182F !important;
+  color: #FAF8F2 !important;
+  border-color: #09182F !important;
+  box-shadow: 0 3px 12px rgba(9, 24, 47, 0.25) !important;
+}
+
+/* Product Cards */
+body[data-festive-theme="new-year"] .product-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(217, 182, 111, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(9, 24, 47, 0.05) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+body[data-festive-theme="new-year"] .product-card:hover {
+  transform: translateY(-4px);
+  border-color: #D9B66F !important;
+  box-shadow: 0 10px 24px rgba(217, 182, 111, 0.18) !important;
+}
+
+body[data-festive-theme="new-year"] .product-card .product-title {
+  color: #09182F !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="new-year"] .product-card .product-category {
+  color: #64748B !important;
+}
+
+body[data-festive-theme="new-year"] .product-card .product-price {
+  color: #09182F !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="new-year"] .product-card .product-badge,
+body[data-festive-theme="new-year"] .product-card .badge-sale {
+  background: #09182F !important;
+  color: #D9B66F !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="new-year"] .product-card .btn-add-cart,
+body[data-festive-theme="new-year"] .product-card .btn-quick-enquire {
+  background: #09182F !important;
+  color: #FAF8F2 !important;
+  border: none !important;
+}
+
+body[data-festive-theme="new-year"] .product-card .btn-add-cart:hover,
+body[data-festive-theme="new-year"] .product-card .btn-quick-enquire:hover {
+  background: #D9B66F !important;
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .products-actions .btn-secondary,
+body[data-festive-theme="new-year"] .products-actions .btn {
+  background: #09182F !important;
+  color: #FAF8F2 !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  border-radius: 9999px;
+  font-weight: 750;
+}
+
+body[data-festive-theme="new-year"] .products-actions .btn-secondary:hover,
+body[data-festive-theme="new-year"] .products-actions .btn:hover {
+  background: #D9B66F !important;
+  color: #09182F !important;
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   8. WHY CHOOSE BHIMA PRINT SOLUTIONS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .why-choose-section {
+  background: #F3EFE6 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="new-year"] .why-choose-section .why-heading {
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .why-choose-section .why-subheading {
+  color: #4A5568 !important;
+}
+
+body[data-festive-theme="new-year"] .why-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(217, 182, 111, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(9, 24, 47, 0.05) !important;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+body[data-festive-theme="new-year"] .why-card:hover {
+  transform: translateY(-4px);
+  border-color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .why-card-title {
+  color: #09182F !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="new-year"] .why-card-desc {
+  color: #4A5568 !important;
+}
+
+body[data-festive-theme="new-year"] .why-card:nth-child(1) .why-icon-box {
+  background: rgba(217, 182, 111, 0.18) !important;
+  color: #B3862A !important;
+}
+
+body[data-festive-theme="new-year"] .why-card:nth-child(2) .why-icon-box {
+  background: rgba(9, 24, 47, 0.1) !important;
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .why-card:nth-child(3) .why-icon-box {
+  background: rgba(216, 221, 229, 0.4) !important;
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .why-card:nth-child(4) .why-icon-box {
+  background: rgba(217, 182, 111, 0.18) !important;
+  color: #B3862A !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. CORPORATE SOLUTIONS / PRINTING SOLUTIONS FOR YOUR BUSINESS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .corporate-banner-section {
+  background: #FAF8F2 !important;
+  padding: 40px 0;
+}
+
+body[data-festive-theme="new-year"] .corporate-card {
+  background: linear-gradient(135deg, #09182F 0%, #101722 65%, #182840 100%) !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  box-shadow: 0 12px 34px rgba(9, 24, 47, 0.25) !important;
+  border-radius: 20px !important;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .corp-title {
+  color: #FAF8F2 !important;
+  font-weight: 850;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .corp-desc {
+  color: rgba(250, 248, 242, 0.88) !important;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .eyebrow {
+  color: #D9B66F !important;
+  background: rgba(217, 182, 111, 0.18) !important;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .check-icon {
+  background: rgba(217, 182, 111, 0.2) !important;
+  color: #D9B66F !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .corp-checklist li span {
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .btn-teal-pill {
+  background: linear-gradient(135deg, #D9B66F 0%, #F3DFAD 100%) !important;
+  color: #09182F !important;
+  border: none !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 16px rgba(217, 182, 111, 0.4) !important;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .btn-teal-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(217, 182, 111, 0.6) !important;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .corp-badge {
+  background: rgba(9, 24, 47, 0.94) !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .corporate-card .corp-badge strong {
+  color: #D9B66F !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. HOW IT WORKS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .how-it-works-section {
+  background: #F3EFE6 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="new-year"] .how-it-works-section .section-title {
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .how-it-works-section .section-subtitle {
+  color: #4A5568 !important;
+}
+
+body[data-festive-theme="new-year"] .step-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(217, 182, 111, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(9, 24, 47, 0.05) !important;
+}
+
+body[data-festive-theme="new-year"] .step-card-title {
+  color: #09182F !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="new-year"] .step-card-desc {
+  color: #4A5568 !important;
+}
+
+body[data-festive-theme="new-year"] .step-card .step-number {
+  color: rgba(217, 182, 111, 0.2) !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. TESTIMONIALS / WHAT OUR CUSTOMERS SAY
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .testimonials-section {
+  background: #FAF8F2 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="new-year"] .testimonials-card-main,
+body[data-festive-theme="new-year"] .testi-hero-card,
+body[data-festive-theme="new-year"] .testi-left {
+  background: linear-gradient(135deg, #09182F 0%, #101722 100%) !important;
+  border: 1px solid rgba(217, 182, 111, 0.35) !important;
+  color: #FAF8F2 !important;
+  border-radius: 18px !important;
+}
+
+body[data-festive-theme="new-year"] .testi-hero-card .eyebrow {
+  color: #D9B66F !important;
+  background: rgba(217, 182, 111, 0.18) !important;
+}
+
+body[data-festive-theme="new-year"] .testi-hero-title {
+  color: #FAF8F2 !important;
+}
+
+body[data-festive-theme="new-year"] .testimonial-card,
+body[data-festive-theme="new-year"] .testi-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(217, 182, 111, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(9, 24, 47, 0.05) !important;
+}
+
+body[data-festive-theme="new-year"] .testimonial-stars,
+body[data-festive-theme="new-year"] .testi-stars {
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .testimonial-text,
+body[data-festive-theme="new-year"] .testi-quote {
+  color: #101722 !important;
+}
+
+body[data-festive-theme="new-year"] .testimonial-author,
+body[data-festive-theme="new-year"] .testi-author-name {
+  color: #09182F !important;
+  font-weight: 750;
+}
+
+/* --------------------------------------------------------------------------
+   12. FREQUENTLY ASKED QUESTIONS (FAQ)
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .faqs-section {
+  background: #F3EFE6 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="new-year"] .faqs-section .section-title {
+  color: #09182F !important;
+}
+
+body[data-festive-theme="new-year"] .faq-card,
+body[data-festive-theme="new-year"] .faq-item {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(217, 182, 111, 0.22) !important;
+  border-radius: 12px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body[data-festive-theme="new-year"] .faq-card:hover,
+body[data-festive-theme="new-year"] .faq-item:hover {
+  border-color: #D9B66F !important;
+  box-shadow: 0 4px 16px rgba(217, 182, 111, 0.12) !important;
+}
+
+body[data-festive-theme="new-year"] .faq-question {
+  color: #09182F !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="new-year"] .faq-answer {
+  color: #334155 !important;
+}
+
+body[data-festive-theme="new-year"] .faq-icon {
+  color: #D9B66F !important;
+  stroke: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .faqs-section .view-all-link {
+  color: #09182F !important;
+  border: 1px solid rgba(217, 182, 111, 0.4) !important;
+  background: #FFFFFF !important;
+  border-radius: 9999px;
+  padding: 6px 16px;
+}
+
+body[data-festive-theme="new-year"] .faqs-section .view-all-link:hover {
+  border-color: #D9B66F !important;
+  color: #D9B66F !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. FINAL BOTTOM CTA BANNER
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .bottom-cta-section {
+  background: #FAF8F2 !important;
+  padding: 40px 0 60px;
+}
+
+body[data-festive-theme="new-year"] .bottom-cta-card {
+  background: linear-gradient(135deg, #09182F 0%, #101722 60%, #182840 100%) !important;
+  border: 1.5px solid rgba(217, 182, 111, 0.4) !important;
+  box-shadow: 0 12px 36px rgba(9, 24, 47, 0.25) !important;
+  border-radius: 20px !important;
+}
+
+body[data-festive-theme="new-year"] .bottom-cta-title {
+  color: #FAF8F2 !important;
+  font-weight: 850;
+}
+
+body[data-festive-theme="new-year"] .bottom-cta-desc {
+  color: rgba(250, 248, 242, 0.88) !important;
+}
+
+body[data-festive-theme="new-year"] .bottom-cta-card .btn {
+  background: linear-gradient(135deg, #D9B66F 0%, #F3DFAD 100%) !important;
+  color: #09182F !important;
+  border: none !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 16px rgba(217, 182, 111, 0.4) !important;
+}
+
+body[data-festive-theme="new-year"] .bottom-cta-card .btn:hover {
+  box-shadow: 0 6px 22px rgba(217, 182, 111, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   14. FOOTER HARMONIZATION
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="new-year"] .site-footer {
+  background: #061122 !important;
+  border-top: 2px solid #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .site-footer .footer-title {
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .site-footer .footer-links a:hover {
+  color: #D9B66F !important;
+}
+
+body[data-festive-theme="new-year"] .site-footer .footer-bottom {
+  border-top-color: rgba(217, 182, 111, 0.2) !important;
+}
+
+/* --------------------------------------------------------------------------
+   15. RESPONSIVE REFINEMENTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  body[data-festive-theme="new-year"] .festive-hero-gradient-scrim {
+    background: linear-gradient(180deg, 
+      rgba(9, 24, 47, 0.15) 0%, 
+      rgba(9, 24, 47, 0.72) 45%, 
+      rgba(9, 24, 47, 0.98) 100%) !important;
+  }
+}

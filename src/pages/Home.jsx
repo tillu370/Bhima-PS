@@ -4,6 +4,7 @@ import { HomeProducts } from '../components/HomeProducts.jsx';
 import { HomeCategories } from '../components/HomeCategories.jsx';
 import { DiwaliHeroBanner } from '../components/DiwaliHeroBanner.jsx';
 import { HomePromoBanners } from '../components/HomePromoBanners.jsx';
+import { SafeImage } from '../components/SafeImage.jsx';
 import { FaqGrid } from '../components/FaqGrid.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
@@ -100,7 +101,7 @@ export default function Home() {
             {/* Right Column: Supplied bhima-hero.png with Carousel Controls */}
             <div className="hero-right-wrapper">
               <div className="hero-image-stage">
-                <img src="/images/bhima-hero.jpg" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
+                <SafeImage src="/images/bhima-hero.jpg" alt="Bhima Print Solutions Merchandise Showcase" className="hero-product-img" width="1024" height="576" fetchpriority="high" />
             
                 </div>
             </div>
@@ -251,7 +252,7 @@ export default function Home() {
 
             <div className="corp-right">
               <div className="corp-img-wrapper">
-                <img loading="lazy" decoding="async" src="/images/cat-corporate-gifts.jpg" alt="Corporate Merchandise Branding" className="corp-main-img" />
+                <SafeImage loading="lazy" decoding="async" src="/images/cat-corporate-gifts.jpg" alt="Corporate Merchandise Branding" className="corp-main-img" />
                 <div className="corp-badge"><strong>Bulk orders welcome</strong><span>Custom bulk orders · Dedicated support</span></div>
               </div>
             </div>

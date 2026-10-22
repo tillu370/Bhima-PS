@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchCurrentDeal, isDealDismissedToday, dismissDealToday, DEFAULT_DEAL } from '../lib/dealData.js';
 import { whatsappUrl } from '../lib/config.js';
-import { imgUrl, money } from '../lib/utils.js';
+import { money } from '../lib/utils.js';
+import { SafeImage } from './SafeImage.jsx';
 
 export function DealOfTheDayModal() {
   const [deal, setDeal] = useState(DEFAULT_DEAL);
@@ -134,8 +135,8 @@ export function DealOfTheDayModal() {
             <div className="deal-modal-content-grid">
               {/* Product Visual */}
               <div className="deal-modal-media">
-                <img
-                  src={imgUrl(deal.image_url)}
+                <SafeImage
+                  src={deal.image_url}
                   alt={deal.title}
                   className="deal-product-img"
                 />

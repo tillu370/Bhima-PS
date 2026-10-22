@@ -49,7 +49,7 @@ export function HomeProducts() {
 
         <div className="products-grid" aria-live="polite">
           {state === 'loading' && <ProductSkeletons />}
-          {state === 'ok' && shown.map(p => <ProductCard key={p.id} product={p} />)}
+          {state === 'ok' && shown.map(p => <ProductCard key={p.id} product={p} eager />)}
         </div>
         {state === 'ok' && !shown.length && <div className="products-state"><p>No products in this category yet.</p></div>}
         {state === 'error' && (

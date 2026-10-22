@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router-dom';
+import { FESTIVALS } from '../lib/festiveThemeData.js';
+import { SafeImage } from './SafeImage.jsx';
 
 export function FestivePromoCard({ config, preview = false, onNavigate }) {
   const navigate = useNavigate();
   const festivalId = config?.festival_id || config?.theme_id || 'diwali';
   const isChristmas = festivalId === 'christmas';
+  const festival = FESTIVALS.find(item => item.id === festivalId);
+  const promoImage = config?.promo_image || festival?.promoImages?.[0]?.path || '/images/festive/diwali/promo-diwali-giftboxes.png';
+  const fallbackPromoImage = festival?.promoImages?.map(item => item.path).find(path => path !== promoImage);
   const go = path => {
     if (preview) return;
     if (onNavigate) onNavigate(path);
@@ -30,10 +35,11 @@ export function FestivePromoCard({ config, preview = false, onNavigate }) {
         </button>
       </div>
       <div className="promo-visual">
-        <img
+        <SafeImage
           loading="lazy"
           decoding="async"
-          src={config?.promo_image || '/images/festive/diwali/promo-diwali-giftboxes.png'}
+          src={promoImage}
+          fallbackSrc={fallbackPromoImage}
           alt={isChristmas ? 'Personalised Christmas gifts and hampers' : 'Personalised festive gifts and hampers'}
           className="promo-img"
         />

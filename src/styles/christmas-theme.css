@@ -745,6 +745,8 @@ body[data-festive-theme="christmas"] .festive-hero-title {
 
 body[data-festive-theme="christmas"] .festive-hero-title-highlight {
   background: linear-gradient(110deg, #FFF8EE 0%, #F1DDAE 70%, #D5B36A 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 
@@ -935,9 +937,10 @@ body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-desc {
 
 body[data-festive-theme="christmas"] .promo-card.promo-xmas .btn-festive-promo,
 body[data-festive-theme="christmas"] .promo-card.promo-xmas .btn-xmas-promo {
-  background: var(--xmas-gold) !important;
+  background: var(--xmas-ivory) !important;
+  border: 1px solid var(--xmas-gold) !important;
   color: var(--xmas-forest-deep) !important;
-  box-shadow: 0 4px 14px rgba(213, 179, 106, 0.26) !important;
+  box-shadow: 0 3px 10px rgba(9, 42, 34, 0.16) !important;
 }
 
 body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-img {
@@ -1206,7 +1209,8 @@ body[data-festive-theme="christmas"] .cta-arrow-doodle polygon {
 }
 
 body[data-festive-theme="christmas"] .bottom-cta-card .cta-btn {
-  background: var(--xmas-gold) !important;
+  background: var(--xmas-ivory) !important;
+  border: 1px solid var(--xmas-gold) !important;
   color: var(--xmas-forest-deep) !important;
 }
 

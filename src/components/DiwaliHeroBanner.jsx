@@ -2,12 +2,14 @@ import { Link } from 'react-router-dom';
 import { useUi } from '../context/UiContext.jsx';
 import { FESTIVALS } from '../lib/festiveThemeData.js';
 import { getFestiveTheme } from '../lib/diwaliThemeData.js';
+import { SafeImage } from './SafeImage.jsx';
 
 export function DiwaliHeroBanner({ config, preview = false }) {
   const { openEnquiry } = useUi();
   const theme = FESTIVALS.find(festival => festival.id === (config?.festival_id || config?.theme_id)) || FESTIVALS[0];
   const renderData = getFestiveTheme(theme.id);
   const heroImg = config?.hero_image || theme.heroImages[0]?.path || theme.thumb;
+  const fallbackHeroImg = theme.heroImages.find(image => image.path !== heroImg)?.path;
   const selectedHero = renderData.heroBannerOptions.find(option => option.path === heroImg);
   const layout = config?.hero_layout || selectedHero?.layout || renderData.layout;
   const eyebrow = config?.hero_eyebrow || theme.defaultEyebrow;
@@ -25,8 +27,9 @@ export function DiwaliHeroBanner({ config, preview = false }) {
       className={'festive-hero-banner-section is-' + (layout === 'center' ? 'center' : 'left')}
       aria-label={theme.name + ' festive showcase'}
     >
-      <img
+      <SafeImage
         src={heroImg}
+        fallbackSrc={fallbackHeroImg}
         alt={theme.name + ' personalised gifts collection'}
         className="festive-hero-bg-image"
         style={{ objectPosition: config?.hero_object_position || renderData.objectPosition || 'center center' }}
@@ -74,7 +77,7 @@ export function DiwaliHeroBanner({ config, preview = false }) {
       )}
 
       {(config?.decoration_image || renderData.cornerAccent || theme.decorationImage) && (
-        <img src={config?.decoration_image || renderData.cornerAccent || theme.decorationImage} alt="" aria-hidden="true" className="festive-hero-corner" />
+        <SafeImage src={config?.decoration_image || renderData.cornerAccent || theme.decorationImage} fallbackSrc={renderData.cornerAccent} alt="" aria-hidden="true" className="festive-hero-corner" />
       )}
 
       <div className="container festive-hero-container">

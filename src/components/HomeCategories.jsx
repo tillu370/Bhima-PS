@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchCategories } from '../lib/data.js';
-import { imgUrl } from '../lib/utils.js';
+import { SafeImage } from './SafeImage.jsx';
 
 // Category tiles on the home page, driven by the `categories` table.
 // Only a single row's worth is shown here; the rest are one click away
@@ -32,7 +32,7 @@ export function HomeCategories() {
         return (
           <div className="category-card" key={c.id} role="link" tabIndex={0} aria-label={`Browse ${c.name}`}
             onClick={open} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}>
-            <div className="category-img-container"><img loading="lazy" decoding="async" src={imgUrl(c.image_url, c.slug)} alt={c.name} /></div>
+            <div className="category-img-container"><SafeImage loading="lazy" decoding="async" src={c.image_url} alt={c.name} /></div>
             <h3 className="category-name">{c.name}</h3>
             <p className="category-desc">{c.description}</p>
             <div className="category-arrow-btn" aria-hidden="true">
