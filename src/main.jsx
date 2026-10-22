@@ -22,6 +22,7 @@ import './styles/sankranthi-theme.css';
 import './styles/new-year-theme.css';
 import './styles/admin-dashboard.css';
 import './styles/festive-promo-layout.css';
+import './styles/festive-brand-contrast.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
