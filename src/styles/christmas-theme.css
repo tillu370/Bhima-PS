@@ -1,26 +1,45 @@
 /* ==========================================================================
    BHIMA PRINT SOLUTIONS — CHRISTMAS FESTIVE THEME SYSTEM
    Palette:
-     - Forest Green:        #0B2B1E / #0E3827
-     - Deep Burgundy:       #4A0E17 / #5C121E
-     - Warm Cream / Ivory:  #FFFDF7 / #F8F3E8
-     - Champagne Gold:      #D4AF37 / #E8C872
-     - Rich Evergreen:      #134E35
-     - Brand Teal:          #009688
+     - Forest Green:        #123B2D
+     - Deep Evergreen:      #092A22
+     - Warm Ivory:           #FFF8EE
+     - Burgundy:             #792C3A
+     - Champagne Gold:       #D5B36A
+     - Soft Sage:            #E7EEE7
    ========================================================================== */
 
-:root {
-  --xmas-forest: #0B2B1E;
-  --xmas-forest-deep: #061A12;
-  --xmas-burgundy: #4A0E17;
-  --xmas-burgundy-deep: #32080E;
-  --xmas-gold: #D4AF37;
-  --xmas-champagne: #E8C872;
-  --xmas-cream: #FFFDF7;
-  --xmas-ivory: #F8F3E8;
-  --xmas-gold-border: rgba(212, 175, 55, 0.42);
-  --xmas-gold-glow: rgba(212, 175, 55, 0.25);
-  --xmas-evergreen: #134E35;
+body[data-festive-theme="christmas"] {
+  --xmas-forest: #123B2D;
+  --xmas-forest-deep: #092A22;
+  --xmas-burgundy: #792C3A;
+  --xmas-burgundy-deep: #54202B;
+  --xmas-gold: #D5B36A;
+  --xmas-champagne: #D5B36A;
+  --xmas-cream: #FFF8EE;
+  --xmas-ivory: #FFF8EE;
+  --xmas-sage: #E7EEE7;
+  --xmas-gold-border: rgba(213, 179, 106, 0.42);
+  --xmas-gold-glow: rgba(213, 179, 106, 0.2);
+  --xmas-evergreen: #123B2D;
+
+  --festive-deep: var(--xmas-forest);
+  --festive-mid: var(--xmas-burgundy);
+  --festive-gold: var(--xmas-gold);
+  --festive-champagne: var(--xmas-champagne);
+  --festive-ivory: var(--xmas-ivory);
+  --festive-copy: var(--xmas-ivory);
+  --festive-copy-muted: rgba(255, 248, 238, 0.9);
+  --festive-btn-ink: var(--xmas-forest-deep);
+  --festive-scrim: 9, 42, 34;
+
+  --pastel-bg: #FFF8EE !important;
+  --pastel-bg-alt: #E7EEE7 !important;
+  --pastel-card-bg: #FFFCF7 !important;
+  --pastel-border: rgba(18, 59, 45, 0.12) !important;
+  --pastel-dot-color: rgba(18, 59, 45, 0.08) !important;
+  background-color: var(--xmas-cream) !important;
+  color: #20382F;
 }
 
 /* -------------------------------------------------------------------------
@@ -565,5 +584,706 @@ body[data-festive-theme="christmas"] .top-bar a.xmas-topbar-cta:hover {
   }
   .xmas-splash-overlay {
     transition: opacity 0.1s linear !important;
+  }
+}
+
+/* ========================================================================
+   7. CHRISTMAS STOREFRONT SYSTEM
+   These rules are intentionally gated by the selected festive theme.
+   ======================================================================== */
+html:has(body[data-festive-theme="christmas"]) {
+  background-color: #FFF8EE !important;
+}
+
+body[data-festive-theme="christmas"] .pastel-canvas-container,
+body[data-festive-theme="christmas"] .pastel-switcher-bar,
+body[data-festive-theme="christmas"] .categories-section::before,
+body[data-festive-theme="christmas"] .categories-section::after,
+body[data-festive-theme="christmas"] .why-choose-section::before,
+body[data-festive-theme="christmas"] .why-choose-section::after,
+body[data-festive-theme="christmas"] .faqs-section::before,
+body[data-festive-theme="christmas"] .faqs-section::after {
+  display: none !important;
+}
+
+/* Announcement strip and navigation */
+body[data-festive-theme="christmas"] .top-bar {
+  background: linear-gradient(100deg, var(--xmas-forest-deep), var(--xmas-burgundy), var(--xmas-forest-deep)) !important;
+  border-bottom: 1px solid var(--xmas-gold-border) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .top-bar .highlight-badge {
+  background: rgba(213, 179, 106, 0.14) !important;
+  border: 1px solid rgba(213, 179, 106, 0.42) !important;
+  color: #F1DDAE !important;
+}
+
+body[data-festive-theme="christmas"] .top-bar a.festive-topbar-cta,
+body[data-festive-theme="christmas"] .top-bar a.xmas-topbar-cta {
+  background: var(--xmas-gold) !important;
+  color: var(--xmas-forest-deep) !important;
+  box-shadow: 0 2px 8px rgba(213, 179, 106, 0.28) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header {
+  background: rgba(255, 248, 238, 0.97) !important;
+  border-bottom: 1px solid rgba(18, 59, 45, 0.12) !important;
+  box-shadow: 0 4px 18px rgba(9, 42, 34, 0.06) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+body[data-festive-theme="christmas"] .main-header .brand-logo,
+body[data-festive-theme="christmas"] .main-header .nav-link,
+body[data-festive-theme="christmas"] .main-header .mobile-menu-btn,
+body[data-festive-theme="christmas"] .main-header .icon-btn {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .brand-logo svg text {
+  fill: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .nav-link {
+  font-weight: 650;
+}
+
+body[data-festive-theme="christmas"] .main-header .nav-link:hover,
+body[data-festive-theme="christmas"] .main-header .nav-link[aria-current="page"] {
+  color: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .nav-link::after {
+  background: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .nav-link.nav-studio {
+  background: var(--xmas-sage) !important;
+  border: 1px solid rgba(18, 59, 45, 0.16) !important;
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .search-box {
+  background: #FFFCF7 !important;
+  border-color: rgba(18, 59, 45, 0.18) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .search-box:focus-within {
+  border-color: var(--xmas-gold) !important;
+  box-shadow: 0 0 0 3px rgba(213, 179, 106, 0.16) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .search-box input {
+  color: var(--xmas-forest-deep) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .search-box input::placeholder {
+  color: #68766F !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .search-icon,
+body[data-festive-theme="christmas"] .main-header .dropdown-toggle-arrow {
+  color: var(--xmas-burgundy) !important;
+  stroke: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .icon-btn {
+  background: #FFFCF7 !important;
+  border: 1px solid rgba(18, 59, 45, 0.14) !important;
+}
+
+body[data-festive-theme="christmas"] .main-header .icon-btn:hover {
+  background: var(--xmas-sage) !important;
+  border-color: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .cart-badge {
+  background: var(--xmas-burgundy) !important;
+  color: #FFF8EE !important;
+}
+
+body[data-festive-theme="christmas"] .dropdown-menu,
+body[data-festive-theme="christmas"] .mobile-nav {
+  background: #FFFCF7 !important;
+  border-color: rgba(18, 59, 45, 0.14) !important;
+}
+
+body[data-festive-theme="christmas"] .dropdown-menu a,
+body[data-festive-theme="christmas"] .mobile-nav a {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .dropdown-menu a:hover,
+body[data-festive-theme="christmas"] .mobile-nav a:hover {
+  background: var(--xmas-sage) !important;
+  color: var(--xmas-burgundy) !important;
+}
+
+/* Keep the existing festive hero, image, editable copy and actions. */
+body[data-festive-theme="christmas"] .festive-hero-banner-section {
+  background-color: var(--xmas-forest-deep) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-hero-gradient-scrim {
+  background:
+    linear-gradient(180deg, rgba(9, 42, 34, 0.08) 0%, rgba(9, 42, 34, 0.04) 42%, rgba(9, 42, 34, 0.22) 100%),
+    linear-gradient(90deg, rgba(9, 42, 34, 0.94) 0%, rgba(9, 42, 34, 0.88) 34%, rgba(9, 42, 34, 0.68) 52%, rgba(9, 42, 34, 0.08) 78%, rgba(9, 42, 34, 0.08) 100%) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-hero-eyebrow {
+  background: rgba(9, 42, 34, 0.72) !important;
+  border-color: rgba(213, 179, 106, 0.5) !important;
+  color: #F1DDAE !important;
+}
+
+body[data-festive-theme="christmas"] .festive-hero-title {
+  color: var(--xmas-ivory) !important;
+  line-height: 1.12;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.48) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-hero-title-highlight {
+  background: linear-gradient(110deg, #FFF8EE 0%, #F1DDAE 70%, #D5B36A 100%) !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+body[data-festive-theme="christmas"] .festive-hero-desc {
+  color: rgba(255, 248, 238, 0.94) !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-festive-theme="christmas"] .btn-festive-primary {
+  background: var(--xmas-gold) !important;
+  color: var(--xmas-forest-deep) !important;
+  box-shadow: 0 4px 16px rgba(213, 179, 106, 0.28) !important;
+}
+
+body[data-festive-theme="christmas"] .btn-festive-secondary,
+body[data-festive-theme="christmas"] .btn-festive-enquiry-pill {
+  background: rgba(9, 42, 34, 0.72) !important;
+  border-color: rgba(213, 179, 106, 0.55) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-feature-item {
+  color: rgba(255, 248, 238, 0.92) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-feature-item svg,
+body[data-festive-theme="christmas"] .festive-hero-eyebrow .spark-dot {
+  color: var(--xmas-gold) !important;
+  background-color: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-hero-features {
+  border-top-color: rgba(213, 179, 106, 0.34) !important;
+}
+
+/* Alternating ivory and sage sections soften the canvas without darkening it. */
+body[data-festive-theme="christmas"] .categories-section,
+body[data-festive-theme="christmas"] .products-section,
+body[data-festive-theme="christmas"] .how-it-works-section,
+body[data-festive-theme="christmas"] .faqs-section {
+  background-color: var(--xmas-cream) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-banners-section,
+body[data-festive-theme="christmas"] .why-choose-section,
+body[data-festive-theme="christmas"] .corporate-banner-section,
+body[data-festive-theme="christmas"] .testimonials-section,
+body[data-festive-theme="christmas"] .bottom-cta-section {
+  background-color: var(--xmas-sage) !important;
+}
+
+body[data-festive-theme="christmas"] .marquee {
+  background: var(--xmas-forest) !important;
+  border-block: 1px solid rgba(213, 179, 106, 0.3) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .marquee-item i {
+  color: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .section-header {
+  background-image: linear-gradient(90deg, rgba(213, 179, 106, 0.52), rgba(213, 179, 106, 0.08));
+  background-size: 100% 1px;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  padding-bottom: 18px;
+}
+
+body[data-festive-theme="christmas"] .eyebrow,
+body[data-festive-theme="christmas"] .products-header .eyebrow {
+  color: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .section-title,
+body[data-festive-theme="christmas"] .products-header .section-title,
+body[data-festive-theme="christmas"] .why-heading,
+body[data-festive-theme="christmas"] .corp-title {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .section-subtitle,
+body[data-festive-theme="christmas"] .why-desc,
+body[data-festive-theme="christmas"] .products-header .section-subtitle {
+  color: #4E5D55 !important;
+}
+
+body[data-festive-theme="christmas"] .view-all-link {
+  color: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .view-all-link:hover {
+  color: var(--xmas-forest) !important;
+}
+
+/* Category tiles and category labels */
+body[data-festive-theme="christmas"] .category-card {
+  background: #FFFCF7 !important;
+  border: 1px solid rgba(18, 59, 45, 0.12) !important;
+  box-shadow: 0 5px 18px rgba(9, 42, 34, 0.045) !important;
+}
+
+body[data-festive-theme="christmas"] .category-card:hover {
+  border-color: rgba(213, 179, 106, 0.78) !important;
+  box-shadow: 0 10px 24px rgba(9, 42, 34, 0.1) !important;
+}
+
+body[data-festive-theme="christmas"] .category-name {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .category-desc {
+  color: #56645C !important;
+}
+
+body[data-festive-theme="christmas"] .category-arrow-btn {
+  background: #F4EAD2 !important;
+  border-color: rgba(213, 179, 106, 0.52) !important;
+  color: var(--xmas-burgundy) !important;
+}
+
+/* The T-shirt banner keeps its image, layout and working CTA. */
+body[data-festive-theme="christmas"] .promo-card.promo-mint {
+  background: linear-gradient(130deg, #F6F8F3 0%, #E7EEE7 100%) !important;
+  border: 1px solid rgba(18, 59, 45, 0.12) !important;
+  box-shadow: 0 8px 22px rgba(9, 42, 34, 0.06) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-mint .promo-title {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-mint .promo-desc {
+  color: #4E5D55 !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-mint .btn-dark-teal {
+  background: var(--xmas-forest) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-mint .promo-visual::before {
+  background: linear-gradient(90deg, #E7EEE7, rgba(231, 238, 231, 0)) !important;
+}
+
+/* Christmas hampers: use the configured promo image and a restrained pine motif. */
+body[data-festive-theme="christmas"] .promo-card.promo-xmas {
+  background: linear-gradient(125deg, var(--xmas-forest-deep) 0%, var(--xmas-forest) 58%, var(--xmas-burgundy) 100%) !important;
+  border: 1px solid var(--xmas-gold-border) !important;
+  box-shadow: 0 10px 26px rgba(9, 42, 34, 0.16) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 52%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.1;
+  background: url("/images/festive/christmas/christmas-pattern.png") center / 280px repeat;
+  mask-image: linear-gradient(90deg, #000 0%, #000 60%, transparent 100%);
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-visual {
+  z-index: 1;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-content {
+  z-index: 2;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-eyebrow-pill {
+  color: #F1DDAE !important;
+  background: rgba(213, 179, 106, 0.12) !important;
+  border-color: rgba(213, 179, 106, 0.38) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-title {
+  background: none !important;
+  color: var(--xmas-ivory) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-desc {
+  color: rgba(255, 248, 238, 0.88) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .btn-festive-promo,
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .btn-xmas-promo {
+  background: var(--xmas-gold) !important;
+  color: var(--xmas-forest-deep) !important;
+  box-shadow: 0 4px 14px rgba(213, 179, 106, 0.26) !important;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-xmas .promo-img {
+  border-radius: 0 !important;
+  filter: saturate(0.95) contrast(1.02);
+}
+
+/* Product filters, cards, badges and selected card accents */
+body[data-festive-theme="christmas"] .filter-pills .pill-btn,
+body[data-festive-theme="christmas"] .filter-pills .filter-btn {
+  background: #FFFCF7 !important;
+  border-color: rgba(18, 59, 45, 0.16) !important;
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .filter-pills .pill-btn:hover,
+body[data-festive-theme="christmas"] .filter-pills .filter-btn:hover {
+  border-color: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .filter-pills .pill-btn.active,
+body[data-festive-theme="christmas"] .filter-pills .filter-btn.active {
+  background: var(--xmas-forest) !important;
+  border-color: var(--xmas-forest) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .product-card {
+  background: #FFFCF7 !important;
+  border-color: rgba(18, 59, 45, 0.12) !important;
+  box-shadow: 0 5px 18px rgba(9, 42, 34, 0.045) !important;
+}
+
+body[data-festive-theme="christmas"] .product-card:hover {
+  border-color: rgba(213, 179, 106, 0.78) !important;
+  box-shadow: 0 10px 24px rgba(9, 42, 34, 0.1) !important;
+}
+
+body[data-festive-theme="christmas"] .product-title,
+body[data-festive-theme="christmas"] .product-title a {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .product-price {
+  color: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .btn-add {
+  background: var(--xmas-forest) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .btn-add:hover,
+body[data-festive-theme="christmas"] .btn-add.added {
+  background: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-pick-badge {
+  background: rgba(255, 248, 238, 0.96) !important;
+  border: 1px solid rgba(213, 179, 106, 0.72) !important;
+  color: var(--xmas-burgundy) !important;
+  box-shadow: 0 3px 10px rgba(9, 42, 34, 0.12) !important;
+}
+
+body[data-festive-theme="christmas"] .festive-pick-badge span {
+  color: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .wishlist-btn.active {
+  background: var(--xmas-burgundy) !important;
+  color: #FFF8EE !important;
+}
+
+/* Why BHIMA and corporate gifting */
+body[data-festive-theme="christmas"] .why-card,
+body[data-festive-theme="christmas"] .step-card {
+  background: #FFFCF7 !important;
+  border-color: rgba(18, 59, 45, 0.12) !important;
+  box-shadow: 0 5px 18px rgba(9, 42, 34, 0.04) !important;
+}
+
+body[data-festive-theme="christmas"] .why-card-title,
+body[data-festive-theme="christmas"] .step-title {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .why-card-desc,
+body[data-festive-theme="christmas"] .step-desc {
+  color: #56645C !important;
+}
+
+body[data-festive-theme="christmas"] .why-icon-box {
+  background: var(--xmas-sage) !important;
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .why-icon-box svg,
+body[data-festive-theme="christmas"] .step-illustration svg {
+  color: var(--xmas-forest) !important;
+  stroke: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .step-num-badge {
+  background: #F4EAD2 !important;
+  border-color: var(--xmas-gold) !important;
+  color: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .step-connector-arrow {
+  color: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .step-connector-arrow svg {
+  stroke: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .corporate-card {
+  background: linear-gradient(125deg, #E7EEE7 0%, #FFF8EE 62%, #F4EAD2 100%) !important;
+  border: 1px solid rgba(18, 59, 45, 0.12) !important;
+  box-shadow: 0 12px 32px rgba(9, 42, 34, 0.08) !important;
+}
+
+body[data-festive-theme="christmas"] .corp-desc {
+  color: #44554C !important;
+}
+
+body[data-festive-theme="christmas"] .corp-checklist li {
+  color: var(--xmas-forest-deep) !important;
+}
+
+body[data-festive-theme="christmas"] .check-icon {
+  background: var(--xmas-forest) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .btn-teal-pill {
+  background: var(--xmas-forest) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .btn-teal-pill:hover {
+  background: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .corp-badge {
+  background: rgba(9, 42, 34, 0.94) !important;
+  border: 1px solid var(--xmas-gold-border) !important;
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .corp-badge strong {
+  color: #F1DDAE !important;
+}
+
+/* Testimonials and FAQ */
+body[data-festive-theme="christmas"] .testimonials-grid {
+  background: var(--xmas-forest) !important;
+  border: 1px solid rgba(213, 179, 106, 0.34) !important;
+  box-shadow: 0 12px 30px rgba(9, 42, 34, 0.12) !important;
+}
+
+body[data-festive-theme="christmas"] .testimonial-hero-card .eyebrow {
+  color: #F1DDAE !important;
+}
+
+body[data-festive-theme="christmas"] .testi-hero-title {
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .testi-hero-subtitle {
+  color: rgba(255, 248, 238, 0.84) !important;
+}
+
+body[data-festive-theme="christmas"] .testimonial-hero-card .btn-outline-white {
+  border-color: rgba(213, 179, 106, 0.7) !important;
+  color: #F1DDAE !important;
+}
+
+body[data-festive-theme="christmas"] .testimonial-hero-card .btn-outline-white:hover {
+  background: var(--xmas-gold) !important;
+  color: var(--xmas-forest-deep) !important;
+}
+
+body[data-festive-theme="christmas"] .testimonial-card {
+  background: #FFFCF7 !important;
+  border: 1px solid rgba(18, 59, 45, 0.1) !important;
+}
+
+body[data-festive-theme="christmas"] .stars-row {
+  color: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .review-quote {
+  color: #34463D !important;
+}
+
+body[data-festive-theme="christmas"] .reviewer-avatar {
+  background: var(--xmas-sage) !important;
+  color: var(--xmas-forest) !important;
+  border: 1px solid rgba(18, 59, 45, 0.12) !important;
+}
+
+body[data-festive-theme="christmas"] .reviewer-name {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .reviewer-role {
+  color: #68766F !important;
+}
+
+body[data-festive-theme="christmas"] .faq-item {
+  background: #FFFCF7 !important;
+  border-color: rgba(18, 59, 45, 0.12) !important;
+}
+
+body[data-festive-theme="christmas"] .faq-item.active,
+body[data-festive-theme="christmas"] .faq-item:hover {
+  border-color: rgba(213, 179, 106, 0.8) !important;
+  box-shadow: 0 6px 18px rgba(9, 42, 34, 0.07) !important;
+}
+
+body[data-festive-theme="christmas"] .faq-question {
+  color: var(--xmas-forest) !important;
+}
+
+body[data-festive-theme="christmas"] .faq-toggle-icon {
+  color: var(--xmas-burgundy) !important;
+}
+
+body[data-festive-theme="christmas"] .faq-answer,
+body[data-festive-theme="christmas"] .faq-answer p {
+  color: #4E5D55 !important;
+}
+
+/* Closing CTA and readable evergreen footer */
+body[data-festive-theme="christmas"] .bottom-cta-card {
+  background: linear-gradient(120deg, var(--xmas-forest-deep), var(--xmas-forest) 68%, var(--xmas-burgundy)) !important;
+  border: 1px solid var(--xmas-gold-border) !important;
+  box-shadow: 0 12px 28px rgba(9, 42, 34, 0.14) !important;
+}
+
+body[data-festive-theme="christmas"] .bottom-cta-card .blob {
+  opacity: 0.08 !important;
+}
+
+body[data-festive-theme="christmas"] .cta-title {
+  color: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .cta-highlight {
+  color: #F1DDAE !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+body[data-festive-theme="christmas"] .cta-desc {
+  color: rgba(255, 248, 238, 0.86) !important;
+}
+
+body[data-festive-theme="christmas"] .cta-arrow-doodle svg {
+  stroke: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .cta-arrow-doodle polygon {
+  fill: var(--xmas-gold) !important;
+}
+
+body[data-festive-theme="christmas"] .bottom-cta-card .cta-btn {
+  background: var(--xmas-gold) !important;
+  color: var(--xmas-forest-deep) !important;
+}
+
+body[data-festive-theme="christmas"] .main-footer {
+  background: var(--xmas-forest-deep) !important;
+  border-top: 1px solid rgba(213, 179, 106, 0.42) !important;
+}
+
+body[data-festive-theme="christmas"] .footer-wordmark {
+  color: rgba(213, 179, 106, 0.035) !important;
+}
+
+body[data-festive-theme="christmas"] .main-footer .brand-logo,
+body[data-festive-theme="christmas"] .main-footer .brand-logo svg text {
+  color: var(--xmas-ivory) !important;
+  fill: var(--xmas-ivory) !important;
+}
+
+body[data-festive-theme="christmas"] .footer-col-title {
+  color: #F1DDAE !important;
+  border-bottom-color: rgba(213, 179, 106, 0.28) !important;
+}
+
+body[data-festive-theme="christmas"] .footer-desc,
+body[data-festive-theme="christmas"] .footer-links-col a,
+body[data-festive-theme="christmas"] .contact-info-list li,
+body[data-festive-theme="christmas"] .contact-info-list a,
+body[data-festive-theme="christmas"] .sub-footer p,
+body[data-festive-theme="christmas"] .sub-footer a,
+body[data-festive-theme="christmas"] .to-top {
+  color: rgba(255, 248, 238, 0.78) !important;
+}
+
+body[data-festive-theme="christmas"] .footer-links-col a:hover,
+body[data-festive-theme="christmas"] .contact-info-list a:hover,
+body[data-festive-theme="christmas"] .sub-footer-links a:hover,
+body[data-festive-theme="christmas"] .to-top:hover {
+  color: #F1DDAE !important;
+}
+
+body[data-festive-theme="christmas"] .footer-social-icons a {
+  background: rgba(255, 248, 238, 0.08) !important;
+  border: 1px solid rgba(213, 179, 106, 0.32) !important;
+  color: #F1DDAE !important;
+}
+
+body[data-festive-theme="christmas"] .footer-social-icons a:hover {
+  background: var(--xmas-gold) !important;
+  color: var(--xmas-forest-deep) !important;
+}
+
+body[data-festive-theme="christmas"] .sub-footer {
+  border-top-color: rgba(213, 179, 106, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+  body[data-festive-theme="christmas"] .festive-hero-gradient-scrim {
+    background: linear-gradient(180deg, rgba(9, 42, 34, 0.18) 0%, rgba(9, 42, 34, 0.62) 44%, rgba(9, 42, 34, 0.95) 100%) !important;
+  }
+
+  body[data-festive-theme="christmas"] .festive-hero-container {
+    padding: 42px 18px;
+  }
+
+  body[data-festive-theme="christmas"] .festive-hero-actions {
+    gap: 10px;
+  }
+
+  body[data-festive-theme="christmas"] .promo-card.promo-xmas::before {
+    width: 100%;
+    opacity: 0.07;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-festive-theme="christmas"] .xmas-spark-star,
+  body[data-festive-theme="christmas"] .festive-hero-eyebrow .spark-dot {
+    animation: none !important;
   }
 }

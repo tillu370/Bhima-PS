@@ -41,15 +41,15 @@
 }
 
 [data-festive-theme="sankranthi"] {
-  --festive-deep: #7A3E09;
-  --festive-mid: #C26A12;
-  --festive-gold: #D4A017;
-  --festive-champagne: #F3D27A;
+  --festive-deep: #124A42;
+  --festive-mid: #A84E32;
+  --festive-gold: #C58A21;
+  --festive-champagne: #E7AE28;
   --festive-ivory: #FFF8E8;
-  --festive-copy: #3A2208;
-  --festive-copy-muted: rgba(58, 34, 8, 0.82);
-  --festive-btn-ink: #3A2208;
-  --festive-scrim: 255, 236, 196;
+  --festive-copy: #124A42;
+  --festive-copy-muted: #3A2F22;
+  --festive-btn-ink: #124A42;
+  --festive-scrim: 255, 248, 232;
   --festive-tone: light;
 }
 
@@ -363,8 +363,9 @@
 }
 
 [data-festive-theme="sankranthi"] .festive-hero-eyebrow {
-  background: rgba(255, 248, 232, 0.7);
-  color: #7A3E09;
+  background: rgba(255, 248, 232, 0.94);
+  color: #A84E32;
+  border: 1px solid rgba(197, 138, 33, 0.45);
 }
 
 .festive-hero-eyebrow .spark-dot {
@@ -387,7 +388,7 @@
 }
 
 [data-festive-theme="sankranthi"] .festive-hero-title {
-  text-shadow: 0 2px 16px rgba(255, 248, 232, 0.7);
+  text-shadow: none;
 }
 
 .festive-hero-title-highlight {
@@ -399,8 +400,8 @@
 
 [data-festive-theme="sankranthi"] .festive-hero-title-highlight {
   background: none;
-  -webkit-text-fill-color: #3A2208;
-  color: #3A2208;
+  -webkit-text-fill-color: #A84E32;
+  color: #A84E32;
 }
 
 .festive-hero-desc {
@@ -456,8 +457,9 @@
 }
 
 [data-festive-theme="sankranthi"] .btn-festive-secondary {
-  background: rgba(255, 248, 232, 0.55);
-  color: #3A2208;
+  background: rgba(255, 248, 232, 0.95);
+  color: #124A42;
+  border-color: #C58A21;
 }
 
 .festive-hero-features {

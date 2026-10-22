@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 
 export function FestivePromoCard({ config, preview = false, onNavigate }) {
   const navigate = useNavigate();
+  const festivalId = config?.festival_id || config?.theme_id || 'diwali';
+  const isChristmas = festivalId === 'christmas';
   const go = path => {
     if (preview) return;
     if (onNavigate) onNavigate(path);
@@ -9,7 +11,7 @@ export function FestivePromoCard({ config, preview = false, onNavigate }) {
   };
 
   return (
-    <div className="promo-card promo-festive promo-diwali">
+    <div className={'promo-card promo-festive ' + (isChristmas ? 'promo-xmas' : 'promo-diwali')}>
       <div className="promo-content">
         <span className="promo-eyebrow-pill">
           <span aria-hidden="true">✦</span>
@@ -32,7 +34,7 @@ export function FestivePromoCard({ config, preview = false, onNavigate }) {
           loading="lazy"
           decoding="async"
           src={config?.promo_image || '/images/festive/diwali/promo-diwali-giftboxes.png'}
-          alt="Personalised festive gifts and hampers"
+          alt={isChristmas ? 'Personalised Christmas gifts and hampers' : 'Personalised festive gifts and hampers'}
           className="promo-img"
         />
       </div>

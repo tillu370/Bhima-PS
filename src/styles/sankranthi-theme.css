@@ -1,0 +1,820 @@
+/* ==========================================================================
+   BHIMA PRINT SOLUTIONS — SANKRANTHI FESTIVE THEME SYSTEM
+   
+   Coordinated Harvest Festival Palette:
+     - Warm Ivory:            #FFF8E8
+     - Turmeric Yellow:       #E7AE28
+     - Harvest Gold:          #C58A21
+     - Terracotta:            #A84E32
+     - Leaf Green:            #47734A
+     - Deep Green:            #124A42 (Text & Primary Actions)
+     - Warm Neutral Canvas:   #FAF4E6
+     - Dark Charcoal Text:    #2E2214
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. GLOBAL CANVAS & AMBIENT HARVEST TREATMENT
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] {
+  --pastel-bg: #FFF8E8 !important;
+  --pastel-bg-alt: #FAF4E6 !important;
+  --pastel-card-bg: #FFFFFF !important;
+  --pastel-border: rgba(197, 138, 33, 0.22) !important;
+  --pastel-dot-color: rgba(197, 138, 33, 0.14) !important;
+  --festive-deep: #124A42 !important;
+  --festive-mid: #A84E32 !important;
+  --festive-gold: #C58A21 !important;
+  --festive-champagne: #E7AE28 !important;
+  --festive-ivory: #FFF8E8 !important;
+  --festive-copy: #124A42 !important;
+  --festive-copy-muted: #3A2F22 !important;
+  --festive-btn-ink: #FFF8E8 !important;
+  --festive-scrim: 255, 248, 232 !important;
+  --festive-tone: light !important;
+  background-color: #FFF8E8 !important;
+  color: #2E2214 !important;
+  transition: background-color 0.4s ease;
+}
+
+/* Suppress lingering pastel mint/peach orbs and default switcher bar */
+body[data-festive-theme="sankranthi"] .pastel-canvas-container,
+body[data-festive-theme="sankranthi"] .pastel-switcher-bar {
+  display: none !important;
+}
+
+/* Suppress lingering pastel teal circles & wave cuts across sections */
+body[data-festive-theme="sankranthi"] .categories-section::before,
+body[data-festive-theme="sankranthi"] .categories-section::after,
+body[data-festive-theme="sankranthi"] .why-choose-section::before,
+body[data-festive-theme="sankranthi"] .why-choose-section::after,
+body[data-festive-theme="sankranthi"] .faqs-section::before,
+body[data-festive-theme="sankranthi"] .faqs-section::after {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. REFINED FESTIVE TOP BAR & MAIN HEADER
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .top-bar {
+  background: linear-gradient(90deg, #7A3E09 0%, #A84E32 50%, #7A3E09 100%) !important;
+  border-bottom: 1px solid rgba(231, 174, 40, 0.35) !important;
+  color: #FFF8E8 !important;
+  box-shadow: 0 2px 10px rgba(122, 62, 9, 0.25);
+}
+
+body[data-festive-theme="sankranthi"] .top-bar .highlight-badge {
+  background: rgba(255, 248, 232, 0.18) !important;
+  border: 1px solid rgba(231, 174, 40, 0.5) !important;
+  color: #FFF8E8 !important;
+}
+
+body[data-festive-theme="sankranthi"] .top-bar a.festive-topbar-cta {
+  background: linear-gradient(135deg, #E7AE28 0%, #C58A21 100%) !important;
+  color: #124A42 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(197, 138, 33, 0.4) !important;
+}
+
+body[data-festive-theme="sankranthi"] .top-bar a.festive-topbar-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(197, 138, 33, 0.6) !important;
+}
+
+/* Main Navigation Header */
+body[data-festive-theme="sankranthi"] .main-header {
+  background: rgba(255, 248, 232, 0.96) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(197, 138, 33, 0.28) !important;
+  box-shadow: 0 4px 20px rgba(122, 62, 9, 0.06);
+}
+
+body[data-festive-theme="sankranthi"] .main-header .nav-link {
+  color: #124A42 !important;
+  font-weight: 600;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .nav-link:hover {
+  color: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .nav-link::after {
+  background: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .nav-link.nav-studio {
+  background: rgba(231, 174, 40, 0.16) !important;
+  border: 1px solid rgba(197, 138, 33, 0.45) !important;
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .search-box {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(197, 138, 33, 0.3) !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .search-box:focus-within {
+  border-color: #C58A21 !important;
+  box-shadow: 0 0 10px rgba(197, 138, 33, 0.25) !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .search-box input {
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .search-box input::placeholder {
+  color: #7A7264 !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .search-box .search-icon {
+  stroke: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .cart-badge {
+  background: linear-gradient(135deg, #E7AE28, #C58A21) !important;
+  color: #124A42 !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .icon-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(197, 138, 33, 0.25) !important;
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .main-header .icon-btn:hover {
+  background: #FFFFFF !important;
+  border-color: #C58A21 !important;
+  color: #A84E32 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. REFINED SANKRANTHI HERO SECTION
+   Preserves hero photography; optimizes readability & balance
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .festive-hero-banner-section {
+  background-color: #FAF4E6 !important;
+}
+
+body[data-festive-theme="sankranthi"] .festive-hero-gradient-scrim {
+  background: linear-gradient(90deg, 
+    rgba(255, 248, 232, 0.95) 0%, 
+    rgba(255, 248, 232, 0.85) 32%, 
+    rgba(255, 248, 232, 0.45) 52%, 
+    rgba(255, 248, 232, 0.05) 70%, 
+    transparent 100%) !important;
+}
+
+body[data-festive-theme="sankranthi"] .festive-hero-eyebrow {
+  background: rgba(255, 248, 232, 0.94) !important;
+  color: #A84E32 !important;
+  border: 1px solid rgba(197, 138, 33, 0.45) !important;
+  box-shadow: 0 2px 8px rgba(168, 78, 50, 0.08);
+}
+
+body[data-festive-theme="sankranthi"] .festive-hero-eyebrow .spark-dot {
+  background: #E7AE28 !important;
+  box-shadow: 0 0 8px #E7AE28 !important;
+}
+
+body[data-festive-theme="sankranthi"] .festive-hero-title {
+  color: #124A42 !important;
+  text-shadow: none !important;
+}
+
+body[data-festive-theme="sankranthi"] .festive-hero-title-highlight {
+  background: none !important;
+  -webkit-text-fill-color: #A84E32 !important;
+  color: #A84E32 !important;
+}
+
+body[data-festive-theme="sankranthi"] .festive-hero-desc {
+  color: #3A2F22 !important;
+  text-shadow: none !important;
+  font-weight: 500;
+}
+
+body[data-festive-theme="sankranthi"] .btn-festive-primary {
+  background: linear-gradient(135deg, #E7AE28 0%, #C58A21 100%) !important;
+  color: #124A42 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 18px rgba(197, 138, 33, 0.4) !important;
+}
+
+body[data-festive-theme="sankranthi"] .btn-festive-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(197, 138, 33, 0.55) !important;
+}
+
+body[data-festive-theme="sankranthi"] .btn-festive-secondary {
+  background: rgba(255, 248, 232, 0.95) !important;
+  color: #124A42 !important;
+  border: 1.5px solid #C58A21 !important;
+  font-weight: 700 !important;
+}
+
+body[data-festive-theme="sankranthi"] .btn-festive-secondary:hover {
+  background: #FFFFFF !important;
+  border-color: #A84E32 !important;
+  color: #A84E32 !important;
+}
+
+body[data-festive-theme="sankranthi"] .btn-festive-enquiry-pill {
+  background: rgba(255, 248, 232, 0.95) !important;
+  border: 1px solid rgba(168, 78, 50, 0.35) !important;
+  color: #A84E32 !important;
+}
+
+body[data-festive-theme="sankranthi"] .btn-festive-enquiry-pill:hover {
+  background: #FFFFFF !important;
+  border-color: #A84E32 !important;
+}
+
+body[data-festive-theme="sankranthi"] .festive-hero-features {
+  border-top-color: rgba(197, 138, 33, 0.28) !important;
+}
+
+body[data-festive-theme="sankranthi"] .festive-feature-item {
+  color: #2E2214 !important;
+  font-weight: 600;
+}
+
+body[data-festive-theme="sankranthi"] .festive-feature-item svg {
+  color: #C58A21 !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. MARQUEE TICKER FESTIVE STYLING
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .marquee {
+  background: #124A42 !important;
+  border-top: 1px solid rgba(197, 138, 33, 0.3) !important;
+  border-bottom: 1px solid rgba(197, 138, 33, 0.3) !important;
+  color: #FFF8E8 !important;
+}
+
+body[data-festive-theme="sankranthi"] .marquee-item i {
+  color: #E7AE28 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. EXPLORE CATEGORIES SECTION
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .categories-section {
+  background: #FFF8E8 !important;
+  position: relative;
+}
+
+body[data-festive-theme="sankranthi"] .categories-section .eyebrow {
+  color: #A84E32 !important;
+  background: rgba(231, 174, 40, 0.16) !important;
+}
+
+body[data-festive-theme="sankranthi"] .categories-section .eyebrow::before {
+  background: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .categories-section .section-title {
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .categories-section .section-subtitle {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .categories-section .view-all-link {
+  color: #A84E32 !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="sankranthi"] .categories-section .view-all-link:hover {
+  color: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .category-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(197, 138, 33, 0.22) !important;
+  box-shadow: 0 4px 18px rgba(18, 74, 66, 0.05) !important;
+  border-radius: 14px !important;
+  transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
+}
+
+body[data-festive-theme="sankranthi"] .category-card:hover {
+  transform: translateY(-5px);
+  border-color: #C58A21 !important;
+  box-shadow: 0 12px 28px rgba(197, 138, 33, 0.18), 0 0 0 1px #E7AE28 !important;
+}
+
+body[data-festive-theme="sankranthi"] .category-name {
+  color: #124A42 !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="sankranthi"] .category-desc {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .category-arrow-btn {
+  background: linear-gradient(135deg, #E7AE28, #C58A21) !important;
+  color: #124A42 !important;
+  border: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. COHESIVE TWIN PROMOTIONAL BANNERS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .promo-banners-section {
+  background: #FFF8E8 !important;
+  padding: 40px 0;
+}
+
+/* Left Banner (Custom T-Shirts): Harmonized cream/terracotta */
+body[data-festive-theme="sankranthi"] .promo-card.promo-mint {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF4E6 100%) !important;
+  border: 1px solid rgba(197, 138, 33, 0.28) !important;
+  box-shadow: 0 8px 24px rgba(18, 74, 66, 0.06) !important;
+  border-radius: 18px !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-mint .promo-title {
+  color: #124A42 !important;
+  font-weight: 850;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-mint .promo-desc {
+  color: #3A2F22 !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-mint .btn-dark-teal {
+  background: #124A42 !important;
+  color: #FFF8E8 !important;
+  border: none !important;
+  font-weight: 750 !important;
+  box-shadow: 0 4px 14px rgba(18, 74, 66, 0.3) !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-mint .btn-dark-teal:hover {
+  background: #A84E32 !important;
+  box-shadow: 0 6px 20px rgba(168, 78, 50, 0.4) !important;
+}
+
+/* Right Banner: Traditional Harvest Hampers */
+body[data-festive-theme="sankranthi"] .promo-card.promo-festive {
+  background: linear-gradient(135deg, #7A3E09 0%, #A84E32 50%, #C58A21 100%) !important;
+  border: 1px solid rgba(231, 174, 40, 0.45) !important;
+  box-shadow: 0 10px 30px rgba(122, 62, 9, 0.22) !important;
+  border-radius: 18px !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-festive .promo-eyebrow-pill {
+  background: rgba(255, 248, 232, 0.2) !important;
+  color: #FFF8E8 !important;
+  border: 1px solid rgba(231, 174, 40, 0.5) !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-festive .promo-title {
+  color: #FFF8E8 !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-festive .promo-desc {
+  color: rgba(255, 248, 232, 0.92) !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-festive .btn-festive-promo {
+  background: linear-gradient(135deg, #E7AE28 0%, #F5D77F 100%) !important;
+  color: #124A42 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(197, 138, 33, 0.45) !important;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-festive .btn-festive-promo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(197, 138, 33, 0.6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. BEST-SELLING PRODUCTS SECTION
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .products-section {
+  background: #FFF8E8 !important;
+  padding: 50px 0;
+}
+
+body[data-festive-theme="sankranthi"] .products-header .eyebrow,
+body[data-festive-theme="sankranthi"] .section-header .eyebrow {
+  color: #A84E32 !important;
+  background: rgba(231, 174, 40, 0.16) !important;
+}
+
+body[data-festive-theme="sankranthi"] .products-header .section-title {
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .products-header .section-subtitle {
+  color: #4A4538 !important;
+}
+
+/* Category Filter Chips */
+body[data-festive-theme="sankranthi"] .filter-btn {
+  background: #FFFFFF !important;
+  color: #4A4538 !important;
+  border: 1px solid rgba(197, 138, 33, 0.24) !important;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+body[data-festive-theme="sankranthi"] .filter-btn:hover {
+  border-color: #C58A21 !important;
+  color: #124A42 !important;
+  background: #FFF8E8 !important;
+}
+
+body[data-festive-theme="sankranthi"] .filter-btn.active {
+  background: #124A42 !important;
+  color: #FFF8E8 !important;
+  border-color: #124A42 !important;
+  box-shadow: 0 3px 12px rgba(18, 74, 66, 0.25) !important;
+}
+
+/* Product Cards */
+body[data-festive-theme="sankranthi"] .product-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(197, 138, 33, 0.2) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(18, 74, 66, 0.05) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+body[data-festive-theme="sankranthi"] .product-card:hover {
+  transform: translateY(-4px);
+  border-color: #C58A21 !important;
+  box-shadow: 0 10px 24px rgba(197, 138, 33, 0.16) !important;
+}
+
+body[data-festive-theme="sankranthi"] .product-card .product-title {
+  color: #124A42 !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="sankranthi"] .product-card .product-category {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .product-card .product-price {
+  color: #A84E32 !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="sankranthi"] .product-card .product-badge,
+body[data-festive-theme="sankranthi"] .product-card .badge-sale {
+  background: #A84E32 !important;
+  color: #FFF8E8 !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="sankranthi"] .product-card .btn-add-cart,
+body[data-festive-theme="sankranthi"] .product-card .btn-quick-enquire {
+  background: #124A42 !important;
+  color: #FFF8E8 !important;
+  border: none !important;
+}
+
+body[data-festive-theme="sankranthi"] .product-card .btn-add-cart:hover,
+body[data-festive-theme="sankranthi"] .product-card .btn-quick-enquire:hover {
+  background: #A84E32 !important;
+}
+
+body[data-festive-theme="sankranthi"] .products-actions .btn-secondary,
+body[data-festive-theme="sankranthi"] .products-actions .btn {
+  background: #124A42 !important;
+  color: #FFF8E8 !important;
+  border: none !important;
+  border-radius: 9999px;
+  font-weight: 750;
+}
+
+body[data-festive-theme="sankranthi"] .products-actions .btn-secondary:hover,
+body[data-festive-theme="sankranthi"] .products-actions .btn:hover {
+  background: #A84E32 !important;
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   8. WHY CHOOSE BHIMA PRINT SOLUTIONS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .why-choose-section {
+  background: #FAF4E6 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="sankranthi"] .why-choose-section .why-heading {
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .why-choose-section .why-subheading {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .why-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(197, 138, 33, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(18, 74, 66, 0.05) !important;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+body[data-festive-theme="sankranthi"] .why-card:hover {
+  transform: translateY(-4px);
+  border-color: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .why-card-title {
+  color: #124A42 !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="sankranthi"] .why-card-desc {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .why-card:nth-child(1) .why-icon-box {
+  background: rgba(231, 174, 40, 0.14) !important;
+  color: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .why-card:nth-child(2) .why-icon-box {
+  background: rgba(168, 78, 50, 0.14) !important;
+  color: #A84E32 !important;
+}
+
+body[data-festive-theme="sankranthi"] .why-card:nth-child(3) .why-icon-box {
+  background: rgba(18, 74, 66, 0.12) !important;
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .why-card:nth-child(4) .why-icon-box {
+  background: rgba(71, 115, 74, 0.14) !important;
+  color: #47734A !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. CORPORATE SOLUTIONS / PRINTING SOLUTIONS FOR YOUR BUSINESS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .corporate-banner-section {
+  background: #FFF8E8 !important;
+  padding: 40px 0;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF4E6 100%) !important;
+  border: 1px solid rgba(197, 138, 33, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(18, 74, 66, 0.06) !important;
+  border-radius: 20px !important;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card .corp-title {
+  color: #124A42 !important;
+  font-weight: 850;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card .corp-desc {
+  color: #3A2F22 !important;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card .check-icon {
+  background: rgba(71, 115, 74, 0.15) !important;
+  color: #47734A !important;
+  font-weight: 800;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card .corp-checklist li span {
+  color: #2E2214 !important;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card .btn-teal-pill {
+  background: #124A42 !important;
+  color: #FFF8E8 !important;
+  border: none !important;
+  font-weight: 750 !important;
+  box-shadow: 0 4px 16px rgba(18, 74, 66, 0.3) !important;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card .btn-teal-pill:hover {
+  background: #A84E32 !important;
+  box-shadow: 0 6px 20px rgba(168, 78, 50, 0.4) !important;
+}
+
+body[data-festive-theme="sankranthi"] .corporate-card .corp-badge {
+  background: rgba(255, 248, 232, 0.96) !important;
+  border: 1px solid rgba(197, 138, 33, 0.32) !important;
+  color: #124A42 !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. HOW IT WORKS
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .how-it-works-section {
+  background: #FAF4E6 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="sankranthi"] .how-it-works-section .section-title {
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .how-it-works-section .section-subtitle {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .step-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(197, 138, 33, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(18, 74, 66, 0.05) !important;
+}
+
+body[data-festive-theme="sankranthi"] .step-card-title {
+  color: #124A42 !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="sankranthi"] .step-card-desc {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .step-card .step-number {
+  color: rgba(197, 138, 33, 0.18) !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. TESTIMONIALS / WHAT OUR CUSTOMERS SAY
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .testimonials-section {
+  background: #FFF8E8 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="sankranthi"] .testimonials-card-main,
+body[data-festive-theme="sankranthi"] .testi-hero-card,
+body[data-festive-theme="sankranthi"] .testi-left {
+  background: linear-gradient(135deg, #124A42 0%, #0d3832 100%) !important;
+  border: 1px solid rgba(197, 138, 33, 0.35) !important;
+  color: #FFF8E8 !important;
+  border-radius: 18px !important;
+}
+
+body[data-festive-theme="sankranthi"] .testi-hero-card .eyebrow {
+  color: #E7AE28 !important;
+  background: rgba(231, 174, 40, 0.18) !important;
+}
+
+body[data-festive-theme="sankranthi"] .testi-hero-title {
+  color: #FFF8E8 !important;
+}
+
+body[data-festive-theme="sankranthi"] .testimonial-card,
+body[data-festive-theme="sankranthi"] .testi-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(197, 138, 33, 0.22) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(18, 74, 66, 0.05) !important;
+}
+
+body[data-festive-theme="sankranthi"] .testimonial-stars,
+body[data-festive-theme="sankranthi"] .testi-stars {
+  color: #E7AE28 !important;
+}
+
+body[data-festive-theme="sankranthi"] .testimonial-text,
+body[data-festive-theme="sankranthi"] .testi-quote {
+  color: #2E2214 !important;
+}
+
+body[data-festive-theme="sankranthi"] .testimonial-author,
+body[data-festive-theme="sankranthi"] .testi-author-name {
+  color: #124A42 !important;
+  font-weight: 750;
+}
+
+/* --------------------------------------------------------------------------
+   12. FREQUENTLY ASKED QUESTIONS (FAQ)
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .faqs-section {
+  background: #FAF4E6 !important;
+  padding: 60px 0;
+}
+
+body[data-festive-theme="sankranthi"] .faqs-section .section-title {
+  color: #124A42 !important;
+}
+
+body[data-festive-theme="sankranthi"] .faq-card,
+body[data-festive-theme="sankranthi"] .faq-item {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(197, 138, 33, 0.22) !important;
+  border-radius: 12px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body[data-festive-theme="sankranthi"] .faq-card:hover,
+body[data-festive-theme="sankranthi"] .faq-item:hover {
+  border-color: #C58A21 !important;
+  box-shadow: 0 4px 16px rgba(197, 138, 33, 0.12) !important;
+}
+
+body[data-festive-theme="sankranthi"] .faq-question {
+  color: #124A42 !important;
+  font-weight: 750;
+}
+
+body[data-festive-theme="sankranthi"] .faq-answer {
+  color: #3A2F22 !important;
+}
+
+body[data-festive-theme="sankranthi"] .faq-icon {
+  color: #C58A21 !important;
+  stroke: #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .faqs-section .view-all-link {
+  color: #A84E32 !important;
+  border: 1px solid rgba(168, 78, 50, 0.3) !important;
+  background: #FFFFFF !important;
+  border-radius: 9999px;
+  padding: 6px 16px;
+}
+
+body[data-festive-theme="sankranthi"] .faqs-section .view-all-link:hover {
+  border-color: #C58A21 !important;
+  color: #C58A21 !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. FINAL BOTTOM CTA BANNER
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .bottom-cta-section {
+  background: #FFF8E8 !important;
+  padding: 40px 0 60px;
+}
+
+body[data-festive-theme="sankranthi"] .bottom-cta-card {
+  background: linear-gradient(135deg, #FDF4E2 0%, #FFF8E8 50%, #F6E6CD 100%) !important;
+  border: 1.5px solid rgba(197, 138, 33, 0.35) !important;
+  box-shadow: 0 12px 36px rgba(197, 138, 33, 0.12) !important;
+  border-radius: 20px !important;
+}
+
+body[data-festive-theme="sankranthi"] .bottom-cta-title {
+  color: #124A42 !important;
+  font-weight: 850;
+}
+
+body[data-festive-theme="sankranthi"] .bottom-cta-desc {
+  color: #4A4538 !important;
+}
+
+body[data-festive-theme="sankranthi"] .bottom-cta-card .btn {
+  background: #124A42 !important;
+  color: #FFF8E8 !important;
+  border: none !important;
+  font-weight: 750 !important;
+  box-shadow: 0 4px 16px rgba(18, 74, 66, 0.3) !important;
+}
+
+body[data-festive-theme="sankranthi"] .bottom-cta-card .btn:hover {
+  background: #A84E32 !important;
+  box-shadow: 0 6px 20px rgba(168, 78, 50, 0.4) !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. FOOTER HARMONIZATION
+   -------------------------------------------------------------------------- */
+body[data-festive-theme="sankranthi"] .site-footer {
+  background: #091D1A !important;
+  border-top: 2px solid #C58A21 !important;
+}
+
+body[data-festive-theme="sankranthi"] .site-footer .footer-title {
+  color: #E7AE28 !important;
+}
+
+body[data-festive-theme="sankranthi"] .site-footer .footer-links a:hover {
+  color: #E7AE28 !important;
+}
+
+body[data-festive-theme="sankranthi"] .site-footer .footer-bottom {
+  border-top-color: rgba(197, 138, 33, 0.2) !important;
+}
+
+/* --------------------------------------------------------------------------
+   15. RESPONSIVE REFINEMENTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  body[data-festive-theme="sankranthi"] .festive-hero-gradient-scrim {
+    background: linear-gradient(180deg, 
+      rgba(255, 248, 232, 0.15) 0%, 
+      rgba(255, 248, 232, 0.65) 45%, 
+      rgba(255, 248, 232, 0.95) 100%) !important;
+  }
+}
