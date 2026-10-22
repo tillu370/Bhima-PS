@@ -36,6 +36,7 @@ export const FESTIVALS = [
     defaultPromoTitle: 'Personalised Diwali Gift Hampers',
     defaultPromoDesc: 'Custom ceramic mugs, engraved wooden frames & luxury corporate hampers crafted with love.',
     defaultPromoCta: 'Shop Diwali Gifts',
+    defaultPromoCtaLink: '/products?cat=corporate-gift-sets',
     defaultAnnouncementText: 'Diwali Specials | Personalised Gifts & Custom Prints',
     defaultAnnouncementCta: 'Explore Collection'
   },
@@ -72,6 +73,7 @@ export const FESTIVALS = [
     defaultPromoTitle: 'Personalised Christmas Hampers',
     defaultPromoDesc: 'Custom ceramic holiday mugs, warm engraved wooden frames & luxury corporate gift boxes.',
     defaultPromoCta: 'Shop Christmas Gifts',
+    defaultPromoCtaLink: '/products?cat=mugs',
     defaultAnnouncementText: 'Christmas Specials | Personalised Holiday Gifts & Prints',
     defaultAnnouncementCta: 'Explore Gifts'
   },
@@ -108,6 +110,7 @@ export const FESTIVALS = [
     defaultPromoTitle: 'Corporate & Personalised Sets',
     defaultPromoDesc: 'Start the year with branded desk planners, metallic tumblers, and executive pens.',
     defaultPromoCta: 'View New Year Sets',
+    defaultPromoCtaLink: '/products?cat=customised-pens',
     defaultAnnouncementText: 'New Year Specials | Custom Planners, Calendars & Keepsakes',
     defaultAnnouncementCta: 'Shop New Year'
   },
@@ -144,6 +147,7 @@ export const FESTIVALS = [
     defaultPromoTitle: 'Traditional Festive Hampers',
     defaultPromoDesc: 'Celebrate harvest traditions with customized ceramic mugs, photo frames and family keepsakes.',
     defaultPromoCta: 'Shop Festive Gifts',
+    defaultPromoCtaLink: '/products?cat=photo-frames',
     defaultAnnouncementText: 'Sankranthi Specials | Custom Photo Gifts & Traditional Keepsakes',
     defaultAnnouncementCta: 'Explore Collection'
   }
@@ -294,7 +298,7 @@ export function buildDefaultFestivalConfig(festivalId) {
     promo_title: f.defaultPromoTitle,
     promo_description: f.defaultPromoDesc,
     promo_cta_label: f.defaultPromoCta,
-    promo_cta_link: '/products?cat=photo-frames',
+    promo_cta_link: f.defaultPromoCtaLink || '/products',
     announcement_text: f.defaultAnnouncementText,
     announcement_cta_label: f.defaultAnnouncementCta,
     announcement_cta_link: '/products',
@@ -324,13 +328,18 @@ function mergeFestiveState(parsed = {}) {
   return {
     ...DEFAULT_FESTIVE_STATE,
     ...parsed,
-    themes: Object.fromEntries(FESTIVALS.map(festival => [
-      festival.id,
-      {
-        ...buildDefaultFestivalConfig(festival.id),
-        ...(parsed.themes?.[festival.id] || {})
+    themes: Object.fromEntries(FESTIVALS.map(festival => {
+      const defaults = buildDefaultFestivalConfig(festival.id);
+      const saved = parsed.themes?.[festival.id] || {};
+      const config = { ...defaults, ...saved };
+
+      // Replace the old shared destination while preserving links customized in the admin.
+      if (saved.promo_cta_link === '/products?cat=photo-frames') {
+        config.promo_cta_link = defaults.promo_cta_link;
       }
-    ]))
+
+      return [festival.id, config];
+    }))
   };
 }
 

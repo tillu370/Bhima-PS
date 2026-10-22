@@ -1,0 +1,159 @@
+/* Shared full-bleed layout for the festive hamper banner on every festival theme. */
+body[data-festive-theme] .promo-card.promo-festive {
+  --promo-overlay-rgb: 18, 39, 35;
+  position: relative !important;
+  display: block !important;
+  isolation: isolate;
+  min-height: clamp(290px, 27vw, 360px) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+body[data-festive-theme="diwali"] .promo-card.promo-festive {
+  --promo-overlay-rgb: 23, 13, 41;
+}
+
+body[data-festive-theme="christmas"] .promo-card.promo-festive {
+  --promo-overlay-rgb: 9, 42, 34;
+}
+
+body[data-festive-theme="new-year"] .promo-card.promo-festive {
+  --promo-overlay-rgb: 9, 24, 47;
+}
+
+body[data-festive-theme="sankranthi"] .promo-card.promo-festive {
+  --promo-overlay-rgb: 122, 62, 9;
+}
+
+body[data-festive-theme] .promo-card.promo-festive .promo-visual {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  border-radius: inherit !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+body[data-festive-theme] .promo-card.promo-festive .promo-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--promo-overlay-rgb), 0.94) 0%,
+    rgba(var(--promo-overlay-rgb), 0.87) 38%,
+    rgba(var(--promo-overlay-rgb), 0.62) 58%,
+    rgba(var(--promo-overlay-rgb), 0.12) 100%
+  );
+}
+
+body[data-festive-theme] .promo-card.promo-festive .promo-img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit;
+  object-fit: cover !important;
+  object-position: center right;
+  border-radius: 0 !important;
+}
+
+body[data-festive-theme] .promo-card.promo-festive .promo-content {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  width: min(68%, 520px);
+  max-width: none !important;
+  min-height: inherit;
+  padding: clamp(24px, 3.4vw, 42px);
+}
+
+body[data-festive-theme] .promo-card.promo-festive .promo-eyebrow-pill {
+  max-width: 100%;
+  margin-bottom: 13px;
+  line-height: 1.4;
+}
+
+body[data-festive-theme] .promo-card.promo-festive .promo-title {
+  max-width: 19ch;
+  margin: 0 0 12px;
+  font-size: clamp(1.45rem, 2.15vw, 2rem) !important;
+  line-height: 1.12 !important;
+  text-wrap: balance;
+}
+
+body[data-festive-theme] .promo-card.promo-festive .promo-desc {
+  max-width: 36ch;
+  margin: 0 0 21px;
+  font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+  line-height: 1.55;
+}
+
+body[data-festive-theme] .promo-card.promo-festive .btn-festive-promo {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 46px;
+  padding: 11px 21px !important;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.25;
+}
+
+@media (max-width: 760px) {
+  body[data-festive-theme] .promo-card.promo-festive {
+    min-height: 330px !important;
+  }
+
+  body[data-festive-theme] .promo-card.promo-festive .promo-content {
+    width: min(78%, 500px);
+    padding: 28px;
+  }
+
+  body[data-festive-theme] .promo-card.promo-festive .promo-visual::after {
+    background: linear-gradient(
+      90deg,
+      rgba(var(--promo-overlay-rgb), 0.95) 0%,
+      rgba(var(--promo-overlay-rgb), 0.84) 54%,
+      rgba(var(--promo-overlay-rgb), 0.38) 100%
+    );
+  }
+}
+
+@media (max-width: 480px) {
+  body[data-festive-theme] .promo-card.promo-festive {
+    min-height: 350px !important;
+  }
+
+  body[data-festive-theme] .promo-card.promo-festive .promo-content {
+    width: 100%;
+    padding: 24px 22px;
+  }
+
+  body[data-festive-theme] .promo-card.promo-festive .promo-title {
+    max-width: 17ch;
+  }
+
+  body[data-festive-theme] .promo-card.promo-festive .promo-desc {
+    max-width: 32ch;
+  }
+
+  body[data-festive-theme] .promo-card.promo-festive .promo-visual::after {
+    background: linear-gradient(
+      90deg,
+      rgba(var(--promo-overlay-rgb), 0.93),
+      rgba(var(--promo-overlay-rgb), 0.72)
+    );
+  }
+}

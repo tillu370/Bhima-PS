@@ -16,7 +16,7 @@ export function FestivePromoCard({ config, preview = false, onNavigate }) {
   };
 
   return (
-    <div className={'promo-card promo-festive ' + (isChristmas ? 'promo-xmas' : 'promo-diwali')}>
+    <div className={'promo-card promo-festive' + (isChristmas ? ' promo-xmas' : '')}>
       <div className="promo-content">
         <span className="promo-eyebrow-pill">
           <span aria-hidden="true">✦</span>
@@ -27,7 +27,7 @@ export function FestivePromoCard({ config, preview = false, onNavigate }) {
         <button
           type="button"
           className="btn-festive-promo"
-          onClick={() => go(config?.promo_cta_link || '/products?cat=photo-frames')}
+          onClick={() => go(config?.promo_cta_link || festival?.defaultPromoCtaLink || '/products')}
           aria-disabled={preview || undefined}
         >
           {config?.promo_cta_label || 'Explore the Collection'}
