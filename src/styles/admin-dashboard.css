@@ -927,3 +927,83 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Minimal Festive Themes controls: each theme exposes only Enable and Disable. */
+.festive-controls-only .festive-admin-overview-header {
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.festive-controls-only .festive-theme-controls-grid {
+  align-items: stretch;
+}
+
+.festive-controls-only .festive-theme-control-card {
+  cursor: default;
+  transform: none;
+}
+
+.festive-controls-only .festive-theme-control-card:hover {
+  transform: none;
+  border-color: #e2e8f0;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.festive-theme-control-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.festive-theme-control-actions button {
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.festive-theme-enable {
+  color: #fff;
+  background: #0f766e;
+  border-color: #0f766e !important;
+}
+
+.festive-theme-enable:hover:not(:disabled) {
+  background: #115e59;
+  border-color: #115e59 !important;
+}
+
+.festive-theme-disable {
+  color: #475569;
+  background: #fff;
+  border-color: #cbd5e1 !important;
+}
+
+.festive-theme-disable:hover:not(:disabled) {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca !important;
+}
+
+.festive-theme-control-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.festive-theme-control-actions button:focus-visible {
+  outline: 3px solid rgba(212, 175, 55, 0.65);
+  outline-offset: 2px;
+}
+
+.festive-theme-saving {
+  display: block;
+  margin-top: 9px;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
