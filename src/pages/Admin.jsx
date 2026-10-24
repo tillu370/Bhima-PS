@@ -37,11 +37,16 @@ function Modal({ title, onClose, children }) {
 // Drag-and-drop (or click-to-browse) image picker, shared by the product and
 // category forms. `file`/`preview` are lifted into the parent form so submit
 // can upload the picked file; `fallbackSrc` shows the image already saved.
-function ImageDropzone({ inputId, file, setFile, preview, setPreview, fallbackSrc }) {
+function ImageDropzone({ inputId, file, setFile, preview, setPreview, fallbackSrc, onClearSaved }) {
   const [over, setOver] = useState(false);
+  const [notice, setNotice] = useState('');
   const pick = fl => {
     if (!fl) return;
-    if (!/^image\/(jpeg|png|webp)$/.test(fl.type)) return;
+    const supported = /^image\/(jpeg|png|webp)$/.test(fl.type)
+      || (!fl.type && /\.(jpe?g|png|webp)$/i.test(fl.name));
+    if (!supported) return setNotice('Choose a JPG, PNG or WebP image.');
+    if (fl.size > 5 * 1024 * 1024) return setNotice('Image must be 5 MB or smaller.');
+    setNotice('');
     if (preview) URL.revokeObjectURL(preview);
     setFile(fl);
     setPreview(URL.createObjectURL(fl));
@@ -64,7 +69,7 @@ function ImageDropzone({ inputId, file, setFile, preview, setPreview, fallbackSr
       onDragLeave={() => setOver(false)}
       onDrop={e => { e.preventDefault(); setOver(false); pick(e.dataTransfer.files && e.dataTransfer.files[0]); }}
     >
-      <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={e => pick(e.target.files[0])} />
+      <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={e => { pick(e.target.files[0]); e.target.value = ''; }} />
       {shown
         ? <img className="dropzone-preview" src={shown} alt="" />
         : (
@@ -74,8 +79,70 @@ function ImageDropzone({ inputId, file, setFile, preview, setPreview, fallbackSr
           </div>
         )}
       {file && <div className="dropzone-filename"><span>{file.name}</span><button type="button" onClick={clear} aria-label="Remove selected image">✕</button></div>}
+      {!file && fallbackSrc && onClearSaved && <button type="button" className="dropzone-saved-clear" onClick={e => { e.stopPropagation(); onClearSaved(); }} aria-label="Remove current image">✕</button>}
+      {notice && <span className="dropzone-error" role="alert">{notice}</span>}
     </div>
   );
+}
+
+function VideoDropzone({ inputId, file, setFile, preview, setPreview, fallbackSrc, onClearSaved }) {
+  const [over, setOver] = useState(false);
+  const [notice, setNotice] = useState('');
+  const pick = nextFile => {
+    if (!nextFile) return;
+    const extension = nextFile.name.toLowerCase().split('.').pop();
+    const supported = /^video\/(mp4|webm|ogg|quicktime)$/.test(nextFile.type)
+      || (!nextFile.type && ['mp4', 'webm', 'ogg', 'mov'].includes(extension));
+    if (!supported) return setNotice('Choose an MP4, WebM, OGG or MOV video.');
+    if (nextFile.size > 50 * 1024 * 1024) return setNotice('Video must be 50 MB or smaller.');
+    setNotice('');
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(nextFile);
+    setPreview(URL.createObjectURL(nextFile));
+  };
+  const clear = e => {
+    e.stopPropagation();
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(null);
+    setPreview(null);
+  };
+  const shown = preview || fallbackSrc;
+  const open = () => document.getElementById(inputId)?.click();
+
+  return (
+    <div
+      className={'dropzone video-dropzone' + (over ? ' drag-over' : '') + (shown ? ' has-image' : '')}
+      role="button" tabIndex={0}
+      onClick={open}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}
+      onDragOver={e => { e.preventDefault(); setOver(true); }}
+      onDragLeave={() => setOver(false)}
+      onDrop={e => { e.preventDefault(); setOver(false); pick(e.dataTransfer.files && e.dataTransfer.files[0]); }}
+    >
+      <input id={inputId} type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime,.mp4,.webm,.ogg,.mov" hidden onChange={e => { pick(e.target.files[0]); e.target.value = ''; }} />
+      {shown ? <video className="dropzone-video-preview" src={shown} controls muted preload="metadata" onClick={e => e.stopPropagation()} /> : (
+        <div className="dropzone-empty">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="5" width="13" height="14" rx="2" /><path d="m16 10 5-3v10l-5-3z" /></svg>
+          <span>Drag &amp; drop a video, or click to browse</span>
+          <small>MP4, WebM, OGG or MOV · up to 50 MB</small>
+        </div>
+      )}
+      {file && <div className="dropzone-filename"><span>{file.name}</span><button type="button" onClick={clear} aria-label="Remove selected video">✕</button></div>}
+      {!file && fallbackSrc && onClearSaved && <button type="button" className="dropzone-saved-clear" onClick={e => { e.stopPropagation(); onClearSaved(); }} aria-label="Remove current video">✕</button>}
+      {notice && <span className="dropzone-error" role="alert">{notice}</span>}
+    </div>
+  );
+}
+
+async function uploadAdminFile(file, bucket, folder, maxBytes, label) {
+  if (file.size > maxBytes) throw new Error(`${label} is larger than ${Math.round(maxBytes / (1024 * 1024))} MB.`);
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 9)}-${safeName}`;
+  const { error } = await supabase.storage.from(bucket).upload(path, file, {
+    cacheControl: '3600', contentType: file.type, upsert: false
+  });
+  if (error) throw new Error(`${label} upload failed: ${error.message}`);
+  return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
 }
 
 // Loads data with loading / error / retry states.
@@ -279,6 +346,8 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [file2, setFile2] = useState(null);
+  const [preview2, setPreview2] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -294,24 +363,27 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
     if (!SLUG_RE.test(f.slug)) return setError('Slug may only contain lowercase letters, numbers and hyphens.');
     if (price !== null && (!Number.isFinite(price) || price < 0)) return setError('Enter a valid price, or leave it empty for "price on request".');
     setBusy(true);
-    let image_url = f.image_url.trim() || null;
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) { setBusy(false); return setError('Image is larger than 5 MB.'); }
-      const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-      const up = await supabase.storage.from('product-images').upload(path, file, { contentType: file.type });
-      if (up.error) { setBusy(false); return setError('Image upload failed: ' + up.error.message); }
-      image_url = supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    try {
+      const image_url = file
+        ? await uploadAdminFile(file, 'product-images', 'products', 5 * 1024 * 1024, 'Product image')
+        : (f.image_url.trim() || null);
+      const image_url_2 = file2
+        ? await uploadAdminFile(file2, 'product-images', 'products', 5 * 1024 * 1024, 'Secondary image')
+        : (f.image_url_2.trim() || null);
+      const row = {
+        name: f.name.trim(), slug: f.slug, category_id: f.category_id, price_from: price, sort_order: parseInt(f.sort_order, 10) || 0,
+        description: f.description.trim() || null, image_url, image_url_2, is_active: f.is_active, is_featured: f.is_featured,
+        frame_tier: isFrame ? (f.frame_tier || null) : null
+      };
+      const { error: err } = p ? await supabase.from('products').update(row).eq('id', p.id) : await supabase.from('products').insert(row);
+      setBusy(false);
+      if (err) return setError(err.code === '23505' ? 'That URL slug is already used by another product.' : err.message);
+      toast(p ? 'Product saved' : 'Product created');
+      onSaved();
+    } catch (uploadError) {
+      setBusy(false);
+      setError(uploadError.message || 'Could not upload the product images.');
     }
-    const row = {
-      name: f.name.trim(), slug: f.slug, category_id: f.category_id, price_from: price, sort_order: parseInt(f.sort_order, 10) || 0,
-      description: f.description.trim() || null, image_url, image_url_2: f.image_url_2.trim() || null, is_active: f.is_active, is_featured: f.is_featured,
-      frame_tier: isFrame ? (f.frame_tier || null) : null
-    };
-    const { error: err } = p ? await supabase.from('products').update(row).eq('id', p.id) : await supabase.from('products').insert(row);
-    setBusy(false);
-    if (err) return setError(err.code === '23505' ? 'That URL slug is already used by another product.' : err.message);
-    toast(p ? 'Product saved' : 'Product created');
-    onSaved();
   };
 
   return (
@@ -333,12 +405,12 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
         </div>
         <div className="field"><label htmlFor="pDesc">Description</label><textarea id="pDesc" maxLength={2000} value={f.description} onChange={set('description')} /></div>
         <div className="field">
-          <label htmlFor="pImgFile">Image (drag &amp; drop, or browse — JPG, PNG or WebP, max 5 MB)</label>
-          <ImageDropzone inputId="pImgFile" file={file} setFile={setFile} preview={preview} setPreview={setPreview} fallbackSrc={f.image_url ? imgUrl(f.image_url) : null} />
-          <label htmlFor="pImgUrl" style={{ marginTop: 8 }}>…or image URL / path</label>
-          <input id="pImgUrl" value={f.image_url} onChange={set('image_url')} />
-          <label htmlFor="pImgUrl2" style={{ marginTop: 8 }}>Second image URL (shown on hover in the product grid, optional)</label>
-          <input id="pImgUrl2" value={f.image_url_2} onChange={set('image_url_2')} placeholder="https://… or /images/…" />
+          <label htmlFor="pImgFile">Product image (JPG, PNG or WebP, max 5 MB)</label>
+          <ImageDropzone inputId="pImgFile" file={file} setFile={setFile} preview={preview} setPreview={setPreview} fallbackSrc={f.image_url ? imgUrl(f.image_url) : null} onClearSaved={() => setF(cur => ({ ...cur, image_url: '' }))} />
+        </div>
+        <div className="field">
+          <label htmlFor="pImgFile2">Secondary hover image (optional, JPG, PNG or WebP, max 5 MB)</label>
+          <ImageDropzone inputId="pImgFile2" file={file2} setFile={setFile2} preview={preview2} setPreview={setPreview2} fallbackSrc={f.image_url_2 ? imgUrl(f.image_url_2) : null} onClearSaved={() => setF(cur => ({ ...cur, image_url_2: '' }))} />
         </div>
         {isFrame && (
           <div className="field"><label htmlFor="pFrameTier">Price tier</label>
@@ -479,20 +551,20 @@ function CategoryForm({ category: c, onClose, onSaved }) {
     setError('');
     if (f.name.trim().length < 2 || !SLUG_RE.test(f.slug)) return setError('Enter a name and a valid slug (lowercase letters, numbers, hyphens).');
     setBusy(true);
-    let image_url = f.image_url.trim() || null;
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) { setBusy(false); return setError('Image is larger than 5 MB.'); }
-      const path = `categories/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-      const up = await supabase.storage.from('product-images').upload(path, file, { contentType: file.type });
-      if (up.error) { setBusy(false); return setError('Image upload failed: ' + up.error.message); }
-      image_url = supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    try {
+      const image_url = file
+        ? await uploadAdminFile(file, 'product-images', 'categories', 5 * 1024 * 1024, 'Category image')
+        : (f.image_url.trim() || null);
+      const row = { name: f.name.trim(), slug: f.slug, description: f.description.trim() || null, image_url, sort_order: parseInt(f.sort_order, 10) || 0, is_active: f.is_active };
+      const { error: err } = c ? await supabase.from('categories').update(row).eq('id', c.id) : await supabase.from('categories').insert(row);
+      setBusy(false);
+      if (err) return setError(err.code === '23505' ? 'That slug is already used.' : err.message);
+      toast('Category saved');
+      onSaved();
+    } catch (uploadError) {
+      setBusy(false);
+      setError(uploadError.message || 'Could not upload the category image.');
     }
-    const row = { name: f.name.trim(), slug: f.slug, description: f.description.trim() || null, image_url, sort_order: parseInt(f.sort_order, 10) || 0, is_active: f.is_active };
-    const { error: err } = c ? await supabase.from('categories').update(row).eq('id', c.id) : await supabase.from('categories').insert(row);
-    setBusy(false);
-    if (err) return setError(err.code === '23505' ? 'That slug is already used.' : err.message);
-    toast('Category saved');
-    onSaved();
   };
   return (
     <Modal title={c ? 'Edit category' : 'Add category'} onClose={onClose}>
@@ -502,10 +574,8 @@ function CategoryForm({ category: c, onClose, onSaved }) {
         <div className="field"><label htmlFor="cSlug">URL slug *</label><input id="cSlug" required maxLength={60} value={f.slug} onChange={set('slug')} /></div>
         <div className="field"><label htmlFor="cDesc">Description</label><input id="cDesc" maxLength={200} value={f.description} onChange={set('description')} /></div>
         <div className="field">
-          <label htmlFor="cImgFile">Tile image (drag &amp; drop, or browse — JPG, PNG or WebP, max 5 MB)</label>
-          <ImageDropzone inputId="cImgFile" file={file} setFile={setFile} preview={preview} setPreview={setPreview} fallbackSrc={f.image_url ? imgUrl(f.image_url, f.slug) : null} />
-          <label htmlFor="cImg" style={{ marginTop: 8 }}>…or image URL / path</label>
-          <input id="cImg" value={f.image_url} onChange={set('image_url')} placeholder="https://… or /images/…" />
+          <label htmlFor="cImgFile">Tile image (JPG, PNG or WebP, max 5 MB)</label>
+          <ImageDropzone inputId="cImgFile" file={file} setFile={setFile} preview={preview} setPreview={setPreview} fallbackSrc={f.image_url ? imgUrl(f.image_url, f.slug) : null} onClearSaved={() => setF(cur => ({ ...cur, image_url: '' }))} />
         </div>
         <div className="field"><label htmlFor="cOrder">Sort order</label><input id="cOrder" type="number" value={f.sort_order} onChange={set('sort_order')} /></div>
         <div className="check-row"><label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Visible in store</label></div>
@@ -839,15 +909,11 @@ function DealManager() {
 
     if (file) {
       try {
-        const ext = file.name.split('.').pop();
-        const path = 'deal-' + Date.now() + '.' + ext;
-        const { error: uploadError } = await supabase.storage.from('products').upload(path, file, { cacheControl: '3600', upsert: true });
-        if (!uploadError) {
-          const { data: pubData } = supabase.storage.from('products').getPublicUrl(path);
-          finalImageUrl = pubData.publicUrl;
-        }
+        finalImageUrl = await uploadAdminFile(file, 'product-images', 'deals', 5 * 1024 * 1024, 'Deal image');
       } catch (err) {
-        console.warn('Image upload error:', err);
+        setSaving(false);
+        toast(err.message || 'Deal image upload failed.', 'error');
+        return;
       }
     }
 
@@ -1099,13 +1165,7 @@ function DealManager() {
               preview={preview}
               setPreview={setPreview}
               fallbackSrc={imgUrl(deal.image_url)}
-            />
-            <input
-              type="text"
-              style={{ marginTop: 8 }}
-              value={deal.image_url || ''}
-              onChange={e => setField('image_url', e.target.value)}
-              placeholder="Or paste image URL (e.g. /images/mug-printing.jpg)"
+              onClearSaved={() => setDeal(prev => ({ ...prev, image_url: '' }))}
             />
           </div>
 
@@ -1425,31 +1485,53 @@ function PromoVideoManager() {
   const [f, setF] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoPreview, setVideoPreview] = useState(null);
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   useEffect(() => { if (state.data && !f) setF(state.data); }, [state.data, f]);
   const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
 
   const submit = async e => {
     e.preventDefault();
     setError('');
-    if (f.is_active && !f.video_url.trim()) return setError('Add a video URL before enabling this section, or leave it disabled.');
+    if (f.is_active && !videoFile && !f.video_url?.trim()) return setError('Upload a video before enabling this section, or leave it disabled.');
     setBusy(true);
-    const res = await savePromoVideo(f);
+    let payload = { ...f };
+    try {
+      if (videoFile) payload.video_url = await uploadAdminFile(videoFile, 'site-media', 'promo/videos', 50 * 1024 * 1024, 'Promotional video');
+      if (thumbnailFile) payload.thumbnail_url = await uploadAdminFile(thumbnailFile, 'site-media', 'promo/posters', 5 * 1024 * 1024, 'Video poster image');
+    } catch (uploadError) {
+      setBusy(false);
+      return setError(uploadError.message || 'Media upload failed.');
+    }
+    const res = await savePromoVideo(payload);
     setBusy(false);
     if (!res.success) return setError(res.error);
     toast('Promo video saved');
     setF(res.data);
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    if (thumbnailPreview) URL.revokeObjectURL(thumbnailPreview);
+    setVideoFile(null); setVideoPreview(null);
+    setThumbnailFile(null); setThumbnailPreview(null);
   };
 
   if (!f) return <div className="sk-block" style={{ minHeight: 220 }} />;
   return (
     <>
       <h2>Promotional Video</h2>
-      <p className="muted">A short brand / product / process video shown on the home page. Leave the section disabled, or the URL empty, and nothing broken shows on the storefront — the section is simply hidden.</p>
+      <p className="muted">Upload a short brand, product or process video for the home page. Drag a file onto either dropzone or click it to browse. Video files up to 50 MB and poster images up to 5 MB are supported.</p>
       <form onSubmit={submit} noValidate style={{ maxWidth: 560 }}>
         {error && <p className="form-error" role="alert">{error}</p>}
         <div className="check-row"><label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Show this section on the home page</label></div>
-        <div className="field"><label htmlFor="pvUrl">Video URL (MP4 or a direct video link) *</label><input id="pvUrl" value={f.video_url || ''} onChange={set('video_url')} placeholder="https://…/showcase.mp4" /></div>
-        <div className="field"><label htmlFor="pvThumb">Thumbnail / poster image URL</label><input id="pvThumb" value={f.thumbnail_url || ''} onChange={set('thumbnail_url')} placeholder="https://…/poster.jpg" /></div>
+        <div className="field">
+          <label htmlFor="pvVideoFile">Promotional video</label>
+          <VideoDropzone inputId="pvVideoFile" file={videoFile} setFile={setVideoFile} preview={videoPreview} setPreview={setVideoPreview} fallbackSrc={f.video_url || null} onClearSaved={() => setF(cur => ({ ...cur, video_url: '' }))} />
+        </div>
+        <div className="field">
+          <label htmlFor="pvThumbFile">Thumbnail / poster image (optional)</label>
+          <ImageDropzone inputId="pvThumbFile" file={thumbnailFile} setFile={setThumbnailFile} preview={thumbnailPreview} setPreview={setThumbnailPreview} fallbackSrc={f.thumbnail_url ? imgUrl(f.thumbnail_url) : null} onClearSaved={() => setF(cur => ({ ...cur, thumbnail_url: '' }))} />
+        </div>
         <div className="field"><label htmlFor="pvTitle">Title</label><input id="pvTitle" maxLength={120} value={f.title || ''} onChange={set('title')} /></div>
         <div className="field"><label htmlFor="pvDesc">Short description</label><textarea id="pvDesc" maxLength={300} value={f.description || ''} onChange={set('description')} /></div>
         <div className="field-row">
@@ -1458,10 +1540,10 @@ function PromoVideoManager() {
         </div>
         <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
       </form>
-      {f.is_active && f.video_url && (
+      {f.is_active && (videoPreview || f.video_url) && (
         <div style={{ marginTop: 20, maxWidth: 480 }}>
           <h3 style={{ fontSize: '1rem' }}>Preview</h3>
-          <video src={f.video_url} poster={f.thumbnail_url || undefined} controls muted style={{ width: '100%', borderRadius: 12 }} />
+          <video src={videoPreview || f.video_url} poster={thumbnailPreview || f.thumbnail_url || undefined} controls muted style={{ width: '100%', borderRadius: 12 }} />
         </div>
       )}
     </>

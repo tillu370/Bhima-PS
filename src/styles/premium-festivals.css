@@ -1,0 +1,882 @@
+/* Premium palettes and shared storefront treatment for the seven new festivals. */
+body[data-festive-theme="republic-day"] {
+  --festival-primary: #16543A;
+  --festival-secondary: #E1842B;
+  --festival-accent: #B68A42;
+  --festival-highlight: #DDF0E2;
+  --festival-canvas: #FFFBF3;
+  --festival-soft: #F4F1E7;
+  --festival-ink: #20352B;
+  --festival-muted: #59685F;
+  --festival-line: #E5DCC8;
+}
+
+body[data-festive-theme="independence-day"] {
+  --festival-primary: #104B35;
+  --festival-secondary: #D97724;
+  --festival-accent: #B99754;
+  --festival-highlight: #D9E9D8;
+  --festival-canvas: #FCFAF2;
+  --festival-soft: #F0F1E8;
+  --festival-ink: #1D342A;
+  --festival-muted: #59685E;
+  --festival-line: #DFE2D1;
+}
+
+body[data-festive-theme="vinayaka-chavithi"] {
+  --festival-primary: #75402B;
+  --festival-secondary: #CF792D;
+  --festival-accent: #4C7049;
+  --festival-highlight: #F3D899;
+  --festival-canvas: #FFF9EC;
+  --festival-soft: #F7F0DF;
+  --festival-ink: #352C22;
+  --festival-muted: #6B5B48;
+  --festival-line: #E9D9BA;
+}
+
+body[data-festive-theme="dasara"] {
+  --festival-primary: #64233D;
+  --festival-secondary: #842C3D;
+  --festival-accent: #B68A42;
+  --festival-highlight: #F2E2BF;
+  --festival-canvas: #FCF8F0;
+  --festival-soft: #F4EDE2;
+  --festival-ink: #392832;
+  --festival-muted: #6A5B60;
+  --festival-line: #E4D5C5;
+}
+
+body[data-festive-theme="holi"] {
+  --festival-primary: #653D91;
+  --festival-secondary: #D95791;
+  --festival-accent: #178A8D;
+  --festival-highlight: #E7B735;
+  --festival-canvas: #FFFCF7;
+  --festival-soft: #F8F0F2;
+  --festival-ink: #312B3D;
+  --festival-muted: #655D6A;
+  --festival-line: #EBDDE8;
+}
+
+body[data-festive-theme="valentines-day"] {
+  --festival-primary: #76233F;
+  --festival-secondary: #B94868;
+  --festival-accent: #C77B91;
+  --festival-highlight: #E9D5AE;
+  --festival-canvas: #FFF9F7;
+  --festival-soft: #F9ECEE;
+  --festival-ink: #3F2931;
+  --festival-muted: #705B62;
+  --festival-line: #ECD6DB;
+}
+
+body[data-festive-theme="raksha-bandhan"] {
+  --festival-primary: #742B31;
+  --festival-secondary: #AE512C;
+  --festival-accent: #B68A42;
+  --festival-highlight: #F1D28E;
+  --festival-canvas: #FFFAF0;
+  --festival-soft: #F7F0E2;
+  --festival-ink: #382A26;
+  --festival-muted: #69584A;
+  --festival-line: #E8D8BC;
+}
+
+body[data-festive-theme="republic-day"],
+body[data-festive-theme="independence-day"],
+body[data-festive-theme="vinayaka-chavithi"],
+body[data-festive-theme="dasara"],
+body[data-festive-theme="holi"],
+body[data-festive-theme="valentines-day"],
+body[data-festive-theme="raksha-bandhan"] {
+  --festive-deep: var(--festival-primary);
+  --festive-mid: var(--festival-secondary);
+  --festive-gold: var(--festival-accent);
+  --festive-champagne: var(--festival-highlight);
+  --festive-ivory: var(--festival-canvas);
+  --festive-copy: var(--festival-ink);
+  --festive-copy-muted: var(--festival-muted);
+  --festive-btn-ink: #fff;
+  --festive-scrim: 23, 42, 31;
+  --festive-tone: light;
+  --primary-yellow: var(--festival-accent);
+  --primary-yellow-hover: var(--festival-secondary);
+  --brand-gold: var(--festival-accent);
+  --dark-teal: var(--festival-primary);
+  --dark-teal-hover: var(--festival-secondary);
+  --teal-button: var(--festival-primary);
+  --teal-add-btn: var(--festival-primary);
+  --mint-bg: var(--festival-highlight);
+  --peach-bg: var(--festival-soft);
+  --bg-page: var(--festival-canvas);
+  --bg-subtle: var(--festival-soft);
+  --border-light: var(--festival-line);
+  --text-dark: var(--festival-ink);
+  --text-muted: var(--festival-muted);
+  background: var(--festival-canvas) !important;
+  color: var(--festival-ink);
+}
+
+body[data-festive-theme="republic-day"] .pastel-canvas-container,
+body[data-festive-theme="republic-day"] .pastel-switcher-bar,
+body[data-festive-theme="independence-day"] .pastel-canvas-container,
+body[data-festive-theme="independence-day"] .pastel-switcher-bar,
+body[data-festive-theme="vinayaka-chavithi"] .pastel-canvas-container,
+body[data-festive-theme="vinayaka-chavithi"] .pastel-switcher-bar,
+body[data-festive-theme="dasara"] .pastel-canvas-container,
+body[data-festive-theme="dasara"] .pastel-switcher-bar,
+body[data-festive-theme="holi"] .pastel-canvas-container,
+body[data-festive-theme="holi"] .pastel-switcher-bar,
+body[data-festive-theme="valentines-day"] .pastel-canvas-container,
+body[data-festive-theme="valentines-day"] .pastel-switcher-bar,
+body[data-festive-theme="raksha-bandhan"] .pastel-canvas-container,
+body[data-festive-theme="raksha-bandhan"] .pastel-switcher-bar {
+  display: none !important;
+}
+
+body[data-festive-theme="republic-day"] .top-bar,
+body[data-festive-theme="independence-day"] .top-bar,
+body[data-festive-theme="vinayaka-chavithi"] .top-bar,
+body[data-festive-theme="dasara"] .top-bar,
+body[data-festive-theme="holi"] .top-bar,
+body[data-festive-theme="valentines-day"] .top-bar,
+body[data-festive-theme="raksha-bandhan"] .top-bar {
+  background: linear-gradient(100deg, var(--festival-primary), color-mix(in srgb, var(--festival-primary) 76%, var(--festival-secondary))) !important;
+  border-bottom: 2px solid color-mix(in srgb, var(--festival-accent) 72%, transparent);
+  color: #fffaf0;
+}
+
+body[data-festive-theme="republic-day"] .top-bar .highlight-badge,
+body[data-festive-theme="independence-day"] .top-bar .highlight-badge,
+body[data-festive-theme="vinayaka-chavithi"] .top-bar .highlight-badge,
+body[data-festive-theme="dasara"] .top-bar .highlight-badge,
+body[data-festive-theme="holi"] .top-bar .highlight-badge,
+body[data-festive-theme="valentines-day"] .top-bar .highlight-badge,
+body[data-festive-theme="raksha-bandhan"] .top-bar .highlight-badge {
+  color: #fffaf0;
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .25);
+}
+
+body[data-festive-theme="republic-day"] .top-bar a.festive-topbar-cta,
+body[data-festive-theme="independence-day"] .top-bar a.festive-topbar-cta,
+body[data-festive-theme="vinayaka-chavithi"] .top-bar a.festive-topbar-cta,
+body[data-festive-theme="dasara"] .top-bar a.festive-topbar-cta,
+body[data-festive-theme="holi"] .top-bar a.festive-topbar-cta,
+body[data-festive-theme="valentines-day"] .top-bar a.festive-topbar-cta,
+body[data-festive-theme="raksha-bandhan"] .top-bar a.festive-topbar-cta {
+  color: var(--festival-primary) !important;
+  background: var(--festival-canvas);
+}
+
+body[data-festive-theme="republic-day"] .main-header,
+body[data-festive-theme="independence-day"] .main-header,
+body[data-festive-theme="vinayaka-chavithi"] .main-header,
+body[data-festive-theme="dasara"] .main-header,
+body[data-festive-theme="holi"] .main-header,
+body[data-festive-theme="valentines-day"] .main-header,
+body[data-festive-theme="raksha-bandhan"] .main-header {
+  background: color-mix(in srgb, var(--festival-canvas) 96%, white) !important;
+  border-bottom: 1px solid var(--festival-line);
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--festival-primary) 8%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .main-header .brand-name,
+body[data-festive-theme="independence-day"] .main-header .brand-name,
+body[data-festive-theme="vinayaka-chavithi"] .main-header .brand-name,
+body[data-festive-theme="dasara"] .main-header .brand-name,
+body[data-festive-theme="holi"] .main-header .brand-name,
+body[data-festive-theme="valentines-day"] .main-header .brand-name,
+body[data-festive-theme="raksha-bandhan"] .main-header .brand-name,
+body[data-festive-theme="republic-day"] .main-header .nav-link,
+body[data-festive-theme="independence-day"] .main-header .nav-link,
+body[data-festive-theme="vinayaka-chavithi"] .main-header .nav-link,
+body[data-festive-theme="dasara"] .main-header .nav-link,
+body[data-festive-theme="holi"] .main-header .nav-link,
+body[data-festive-theme="valentines-day"] .main-header .nav-link,
+body[data-festive-theme="raksha-bandhan"] .main-header .nav-link {
+  color: var(--festival-primary) !important;
+}
+
+body[data-festive-theme="republic-day"] .main-header .brand-sub,
+body[data-festive-theme="independence-day"] .main-header .brand-sub,
+body[data-festive-theme="vinayaka-chavithi"] .main-header .brand-sub,
+body[data-festive-theme="dasara"] .main-header .brand-sub,
+body[data-festive-theme="holi"] .main-header .brand-sub,
+body[data-festive-theme="valentines-day"] .main-header .brand-sub,
+body[data-festive-theme="raksha-bandhan"] .main-header .brand-sub {
+  color: var(--festival-secondary) !important;
+}
+
+body[data-festive-theme="republic-day"] .main-header .nav-link:hover,
+body[data-festive-theme="independence-day"] .main-header .nav-link:hover,
+body[data-festive-theme="vinayaka-chavithi"] .main-header .nav-link:hover,
+body[data-festive-theme="dasara"] .main-header .nav-link:hover,
+body[data-festive-theme="holi"] .main-header .nav-link:hover,
+body[data-festive-theme="valentines-day"] .main-header .nav-link:hover,
+body[data-festive-theme="raksha-bandhan"] .main-header .nav-link:hover {
+  color: var(--festival-secondary) !important;
+}
+
+/* The supplied banners leave calm ivory space on the left for editable copy. */
+body[data-festive-theme="republic-day"] .festive-hero-banner-section,
+body[data-festive-theme="independence-day"] .festive-hero-banner-section,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-banner-section,
+body[data-festive-theme="dasara"] .festive-hero-banner-section,
+body[data-festive-theme="holi"] .festive-hero-banner-section,
+body[data-festive-theme="valentines-day"] .festive-hero-banner-section,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-banner-section {
+  min-height: clamp(420px, 44vw, 600px);
+  background: var(--festival-canvas);
+  border: 0;
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-gradient-scrim,
+body[data-festive-theme="independence-day"] .festive-hero-gradient-scrim,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-gradient-scrim,
+body[data-festive-theme="dasara"] .festive-hero-gradient-scrim,
+body[data-festive-theme="holi"] .festive-hero-gradient-scrim,
+body[data-festive-theme="valentines-day"] .festive-hero-gradient-scrim,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-gradient-scrim {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--festival-canvas) 98%, transparent) 0%,
+    color-mix(in srgb, var(--festival-canvas) 94%, transparent) 31%,
+    color-mix(in srgb, var(--festival-canvas) 75%, transparent) 48%,
+    color-mix(in srgb, var(--festival-canvas) 24%, transparent) 65%,
+    transparent 82%);
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-glow-aura,
+body[data-festive-theme="independence-day"] .festive-hero-glow-aura,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-glow-aura,
+body[data-festive-theme="dasara"] .festive-hero-glow-aura,
+body[data-festive-theme="holi"] .festive-hero-glow-aura,
+body[data-festive-theme="valentines-day"] .festive-hero-glow-aura,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-glow-aura {
+  background: radial-gradient(circle, color-mix(in srgb, var(--festival-accent) 18%, transparent), transparent 72%);
+  filter: blur(58px);
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-texture-overlay,
+body[data-festive-theme="independence-day"] .festive-hero-texture-overlay,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-texture-overlay,
+body[data-festive-theme="dasara"] .festive-hero-texture-overlay,
+body[data-festive-theme="holi"] .festive-hero-texture-overlay,
+body[data-festive-theme="valentines-day"] .festive-hero-texture-overlay,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-texture-overlay {
+  background-size: 240px 240px;
+  opacity: .045;
+  mix-blend-mode: multiply;
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-content,
+body[data-festive-theme="independence-day"] .festive-hero-content,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-content,
+body[data-festive-theme="dasara"] .festive-hero-content,
+body[data-festive-theme="holi"] .festive-hero-content,
+body[data-festive-theme="valentines-day"] .festive-hero-content,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-content {
+  max-width: min(590px, 52%);
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-eyebrow,
+body[data-festive-theme="independence-day"] .festive-hero-eyebrow,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-eyebrow,
+body[data-festive-theme="dasara"] .festive-hero-eyebrow,
+body[data-festive-theme="holi"] .festive-hero-eyebrow,
+body[data-festive-theme="valentines-day"] .festive-hero-eyebrow,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-eyebrow {
+  color: var(--festival-primary);
+  background: color-mix(in srgb, var(--festival-canvas) 88%, white);
+  border-color: color-mix(in srgb, var(--festival-accent) 50%, transparent);
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--festival-primary) 10%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-eyebrow .spark-dot,
+body[data-festive-theme="independence-day"] .festive-hero-eyebrow .spark-dot,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-eyebrow .spark-dot,
+body[data-festive-theme="dasara"] .festive-hero-eyebrow .spark-dot,
+body[data-festive-theme="holi"] .festive-hero-eyebrow .spark-dot,
+body[data-festive-theme="valentines-day"] .festive-hero-eyebrow .spark-dot,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-eyebrow .spark-dot {
+  background: var(--festival-secondary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--festival-secondary) 65%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-title,
+body[data-festive-theme="independence-day"] .festive-hero-title,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-title,
+body[data-festive-theme="dasara"] .festive-hero-title,
+body[data-festive-theme="holi"] .festive-hero-title,
+body[data-festive-theme="valentines-day"] .festive-hero-title,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-title {
+  color: var(--festival-ink);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, .55);
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-title-highlight,
+body[data-festive-theme="independence-day"] .festive-hero-title-highlight,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-title-highlight,
+body[data-festive-theme="dasara"] .festive-hero-title-highlight,
+body[data-festive-theme="holi"] .festive-hero-title-highlight,
+body[data-festive-theme="valentines-day"] .festive-hero-title-highlight,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-title-highlight {
+  background: none;
+  color: var(--festival-primary);
+  -webkit-text-fill-color: var(--festival-primary);
+  filter: none;
+}
+
+body[data-festive-theme="republic-day"] .festive-hero-desc,
+body[data-festive-theme="independence-day"] .festive-hero-desc,
+body[data-festive-theme="vinayaka-chavithi"] .festive-hero-desc,
+body[data-festive-theme="dasara"] .festive-hero-desc,
+body[data-festive-theme="holi"] .festive-hero-desc,
+body[data-festive-theme="valentines-day"] .festive-hero-desc,
+body[data-festive-theme="raksha-bandhan"] .festive-hero-desc {
+  color: var(--festival-ink);
+  text-shadow: none;
+}
+
+body[data-festive-theme="republic-day"] .btn-festive-primary,
+body[data-festive-theme="independence-day"] .btn-festive-primary,
+body[data-festive-theme="vinayaka-chavithi"] .btn-festive-primary,
+body[data-festive-theme="dasara"] .btn-festive-primary,
+body[data-festive-theme="holi"] .btn-festive-primary,
+body[data-festive-theme="valentines-day"] .btn-festive-primary,
+body[data-festive-theme="raksha-bandhan"] .btn-festive-primary {
+  background: var(--festival-primary);
+  color: #fff !important;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--festival-primary) 24%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .btn-festive-secondary,
+body[data-festive-theme="independence-day"] .btn-festive-secondary,
+body[data-festive-theme="vinayaka-chavithi"] .btn-festive-secondary,
+body[data-festive-theme="dasara"] .btn-festive-secondary,
+body[data-festive-theme="holi"] .btn-festive-secondary,
+body[data-festive-theme="valentines-day"] .btn-festive-secondary,
+body[data-festive-theme="raksha-bandhan"] .btn-festive-secondary,
+body[data-festive-theme="republic-day"] .btn-festive-enquiry-pill,
+body[data-festive-theme="independence-day"] .btn-festive-enquiry-pill,
+body[data-festive-theme="vinayaka-chavithi"] .btn-festive-enquiry-pill,
+body[data-festive-theme="dasara"] .btn-festive-enquiry-pill,
+body[data-festive-theme="holi"] .btn-festive-enquiry-pill,
+body[data-festive-theme="valentines-day"] .btn-festive-enquiry-pill,
+body[data-festive-theme="raksha-bandhan"] .btn-festive-enquiry-pill {
+  color: var(--festival-primary) !important;
+  border-color: color-mix(in srgb, var(--festival-primary) 32%, transparent);
+  background: color-mix(in srgb, var(--festival-canvas) 88%, white);
+}
+
+body[data-festive-theme="republic-day"] .festive-feature-item,
+body[data-festive-theme="independence-day"] .festive-feature-item,
+body[data-festive-theme="vinayaka-chavithi"] .festive-feature-item,
+body[data-festive-theme="dasara"] .festive-feature-item,
+body[data-festive-theme="holi"] .festive-feature-item,
+body[data-festive-theme="valentines-day"] .festive-feature-item,
+body[data-festive-theme="raksha-bandhan"] .festive-feature-item {
+  color: var(--festival-ink);
+}
+
+body[data-festive-theme="republic-day"] .marquee,
+body[data-festive-theme="independence-day"] .marquee,
+body[data-festive-theme="vinayaka-chavithi"] .marquee,
+body[data-festive-theme="dasara"] .marquee,
+body[data-festive-theme="holi"] .marquee,
+body[data-festive-theme="valentines-day"] .marquee,
+body[data-festive-theme="raksha-bandhan"] .marquee {
+  background: var(--festival-primary);
+  color: #fffaf2;
+}
+
+body[data-festive-theme="republic-day"] .categories-section,
+body[data-festive-theme="republic-day"] .why-choose-section,
+body[data-festive-theme="republic-day"] .faqs-section,
+body[data-festive-theme="independence-day"] .categories-section,
+body[data-festive-theme="independence-day"] .why-choose-section,
+body[data-festive-theme="independence-day"] .faqs-section,
+body[data-festive-theme="vinayaka-chavithi"] .categories-section,
+body[data-festive-theme="vinayaka-chavithi"] .why-choose-section,
+body[data-festive-theme="vinayaka-chavithi"] .faqs-section,
+body[data-festive-theme="dasara"] .categories-section,
+body[data-festive-theme="dasara"] .why-choose-section,
+body[data-festive-theme="dasara"] .faqs-section,
+body[data-festive-theme="holi"] .categories-section,
+body[data-festive-theme="holi"] .why-choose-section,
+body[data-festive-theme="holi"] .faqs-section,
+body[data-festive-theme="valentines-day"] .categories-section,
+body[data-festive-theme="valentines-day"] .why-choose-section,
+body[data-festive-theme="valentines-day"] .faqs-section,
+body[data-festive-theme="raksha-bandhan"] .categories-section,
+body[data-festive-theme="raksha-bandhan"] .why-choose-section,
+body[data-festive-theme="raksha-bandhan"] .faqs-section {
+  background: var(--festival-canvas);
+}
+
+body[data-festive-theme="republic-day"] .products-section,
+body[data-festive-theme="republic-day"] .testimonials-section,
+body[data-festive-theme="independence-day"] .products-section,
+body[data-festive-theme="independence-day"] .testimonials-section,
+body[data-festive-theme="vinayaka-chavithi"] .products-section,
+body[data-festive-theme="vinayaka-chavithi"] .testimonials-section,
+body[data-festive-theme="dasara"] .products-section,
+body[data-festive-theme="dasara"] .testimonials-section,
+body[data-festive-theme="holi"] .products-section,
+body[data-festive-theme="holi"] .testimonials-section,
+body[data-festive-theme="valentines-day"] .products-section,
+body[data-festive-theme="valentines-day"] .testimonials-section,
+body[data-festive-theme="raksha-bandhan"] .products-section,
+body[data-festive-theme="raksha-bandhan"] .testimonials-section {
+  background: var(--festival-soft);
+}
+
+body[data-festive-theme="republic-day"] .section-title,
+body[data-festive-theme="independence-day"] .section-title,
+body[data-festive-theme="vinayaka-chavithi"] .section-title,
+body[data-festive-theme="dasara"] .section-title,
+body[data-festive-theme="holi"] .section-title,
+body[data-festive-theme="valentines-day"] .section-title,
+body[data-festive-theme="raksha-bandhan"] .section-title,
+body[data-festive-theme="republic-day"] .why-heading,
+body[data-festive-theme="independence-day"] .why-heading,
+body[data-festive-theme="vinayaka-chavithi"] .why-heading,
+body[data-festive-theme="dasara"] .why-heading,
+body[data-festive-theme="holi"] .why-heading,
+body[data-festive-theme="valentines-day"] .why-heading,
+body[data-festive-theme="raksha-bandhan"] .why-heading,
+body[data-festive-theme="republic-day"] .corp-title,
+body[data-festive-theme="independence-day"] .corp-title,
+body[data-festive-theme="vinayaka-chavithi"] .corp-title,
+body[data-festive-theme="dasara"] .corp-title,
+body[data-festive-theme="holi"] .corp-title,
+body[data-festive-theme="valentines-day"] .corp-title,
+body[data-festive-theme="raksha-bandhan"] .corp-title {
+  color: var(--festival-ink);
+}
+
+body[data-festive-theme="republic-day"] .eyebrow,
+body[data-festive-theme="independence-day"] .eyebrow,
+body[data-festive-theme="vinayaka-chavithi"] .eyebrow,
+body[data-festive-theme="dasara"] .eyebrow,
+body[data-festive-theme="holi"] .eyebrow,
+body[data-festive-theme="valentines-day"] .eyebrow,
+body[data-festive-theme="raksha-bandhan"] .eyebrow,
+body[data-festive-theme="republic-day"] .view-all-link,
+body[data-festive-theme="independence-day"] .view-all-link,
+body[data-festive-theme="vinayaka-chavithi"] .view-all-link,
+body[data-festive-theme="dasara"] .view-all-link,
+body[data-festive-theme="holi"] .view-all-link,
+body[data-festive-theme="valentines-day"] .view-all-link,
+body[data-festive-theme="raksha-bandhan"] .view-all-link {
+  color: var(--festival-primary);
+}
+
+body[data-festive-theme="republic-day"] .category-card,
+body[data-festive-theme="independence-day"] .category-card,
+body[data-festive-theme="vinayaka-chavithi"] .category-card,
+body[data-festive-theme="dasara"] .category-card,
+body[data-festive-theme="holi"] .category-card,
+body[data-festive-theme="valentines-day"] .category-card,
+body[data-festive-theme="raksha-bandhan"] .category-card {
+  background: color-mix(in srgb, var(--festival-canvas) 92%, white);
+  border-color: var(--festival-line);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--festival-primary) 5%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .category-card:hover,
+body[data-festive-theme="independence-day"] .category-card:hover,
+body[data-festive-theme="vinayaka-chavithi"] .category-card:hover,
+body[data-festive-theme="dasara"] .category-card:hover,
+body[data-festive-theme="holi"] .category-card:hover,
+body[data-festive-theme="valentines-day"] .category-card:hover,
+body[data-festive-theme="raksha-bandhan"] .category-card:hover {
+  border-color: var(--festival-accent);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--festival-primary) 12%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .category-name,
+body[data-festive-theme="independence-day"] .category-name,
+body[data-festive-theme="vinayaka-chavithi"] .category-name,
+body[data-festive-theme="dasara"] .category-name,
+body[data-festive-theme="holi"] .category-name,
+body[data-festive-theme="valentines-day"] .category-name,
+body[data-festive-theme="raksha-bandhan"] .category-name {
+  color: var(--festival-ink);
+}
+
+body[data-festive-theme="republic-day"] .category-arrow-btn,
+body[data-festive-theme="independence-day"] .category-arrow-btn,
+body[data-festive-theme="vinayaka-chavithi"] .category-arrow-btn,
+body[data-festive-theme="dasara"] .category-arrow-btn,
+body[data-festive-theme="holi"] .category-arrow-btn,
+body[data-festive-theme="valentines-day"] .category-arrow-btn,
+body[data-festive-theme="raksha-bandhan"] .category-arrow-btn {
+  background: var(--festival-highlight);
+  border-color: color-mix(in srgb, var(--festival-accent) 48%, white);
+  color: var(--festival-primary);
+}
+
+body[data-festive-theme="republic-day"] .promo-card,
+body[data-festive-theme="independence-day"] .promo-card,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card,
+body[data-festive-theme="dasara"] .promo-card,
+body[data-festive-theme="holi"] .promo-card,
+body[data-festive-theme="valentines-day"] .promo-card,
+body[data-festive-theme="raksha-bandhan"] .promo-card {
+  border: 1px solid var(--festival-line);
+  box-shadow: 0 10px 25px color-mix(in srgb, var(--festival-primary) 8%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .promo-card.promo-mint,
+body[data-festive-theme="independence-day"] .promo-card.promo-mint,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-mint,
+body[data-festive-theme="dasara"] .promo-card.promo-mint,
+body[data-festive-theme="holi"] .promo-card.promo-mint,
+body[data-festive-theme="valentines-day"] .promo-card.promo-mint,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-mint,
+body[data-festive-theme="republic-day"] .promo-card.promo-peach,
+body[data-festive-theme="independence-day"] .promo-card.promo-peach,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-peach,
+body[data-festive-theme="dasara"] .promo-card.promo-peach,
+body[data-festive-theme="holi"] .promo-card.promo-peach,
+body[data-festive-theme="valentines-day"] .promo-card.promo-peach,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-peach {
+  background: var(--festival-soft);
+}
+
+body[data-festive-theme="republic-day"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="independence-day"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="dasara"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="holi"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="valentines-day"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-mint .promo-title,
+body[data-festive-theme="republic-day"] .promo-card.promo-peach .promo-title,
+body[data-festive-theme="independence-day"] .promo-card.promo-peach .promo-title,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-peach .promo-title,
+body[data-festive-theme="dasara"] .promo-card.promo-peach .promo-title,
+body[data-festive-theme="holi"] .promo-card.promo-peach .promo-title,
+body[data-festive-theme="valentines-day"] .promo-card.promo-peach .promo-title,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-peach .promo-title {
+  color: var(--festival-primary);
+}
+
+body[data-festive-theme="republic-day"] .promo-card.promo-festive,
+body[data-festive-theme="independence-day"] .promo-card.promo-festive,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-festive,
+body[data-festive-theme="dasara"] .promo-card.promo-festive,
+body[data-festive-theme="holi"] .promo-card.promo-festive,
+body[data-festive-theme="valentines-day"] .promo-card.promo-festive,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-festive {
+  background: linear-gradient(135deg, var(--festival-primary), color-mix(in srgb, var(--festival-primary) 82%, var(--festival-secondary))) !important;
+  border-color: color-mix(in srgb, var(--festival-accent) 62%, transparent) !important;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--festival-primary) 18%, transparent) !important;
+}
+
+body[data-festive-theme="republic-day"] .promo-card.promo-festive .promo-title,
+body[data-festive-theme="independence-day"] .promo-card.promo-festive .promo-title,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-festive .promo-title,
+body[data-festive-theme="dasara"] .promo-card.promo-festive .promo-title,
+body[data-festive-theme="holi"] .promo-card.promo-festive .promo-title,
+body[data-festive-theme="valentines-day"] .promo-card.promo-festive .promo-title,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-festive .promo-title,
+body[data-festive-theme="republic-day"] .promo-card.promo-festive .promo-desc,
+body[data-festive-theme="independence-day"] .promo-card.promo-festive .promo-desc,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-festive .promo-desc,
+body[data-festive-theme="dasara"] .promo-card.promo-festive .promo-desc,
+body[data-festive-theme="holi"] .promo-card.promo-festive .promo-desc,
+body[data-festive-theme="valentines-day"] .promo-card.promo-festive .promo-desc,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-festive .promo-desc {
+  color: var(--festival-canvas) !important;
+}
+
+body[data-festive-theme="republic-day"] .promo-card.promo-festive .promo-eyebrow-pill,
+body[data-festive-theme="independence-day"] .promo-card.promo-festive .promo-eyebrow-pill,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-festive .promo-eyebrow-pill,
+body[data-festive-theme="dasara"] .promo-card.promo-festive .promo-eyebrow-pill,
+body[data-festive-theme="holi"] .promo-card.promo-festive .promo-eyebrow-pill,
+body[data-festive-theme="valentines-day"] .promo-card.promo-festive .promo-eyebrow-pill,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-festive .promo-eyebrow-pill {
+  color: var(--festival-highlight);
+  border-color: color-mix(in srgb, var(--festival-accent) 65%, transparent);
+  background: rgba(255, 255, 255, .1);
+}
+
+body[data-festive-theme="republic-day"] .promo-card.promo-festive .btn-festive-promo,
+body[data-festive-theme="independence-day"] .promo-card.promo-festive .btn-festive-promo,
+body[data-festive-theme="vinayaka-chavithi"] .promo-card.promo-festive .btn-festive-promo,
+body[data-festive-theme="dasara"] .promo-card.promo-festive .btn-festive-promo,
+body[data-festive-theme="holi"] .promo-card.promo-festive .btn-festive-promo,
+body[data-festive-theme="valentines-day"] .promo-card.promo-festive .btn-festive-promo,
+body[data-festive-theme="raksha-bandhan"] .promo-card.promo-festive .btn-festive-promo {
+  background: var(--festival-highlight) !important;
+  color: var(--festival-primary) !important;
+}
+
+body[data-festive-theme="republic-day"] .product-card,
+body[data-festive-theme="independence-day"] .product-card,
+body[data-festive-theme="vinayaka-chavithi"] .product-card,
+body[data-festive-theme="dasara"] .product-card,
+body[data-festive-theme="holi"] .product-card,
+body[data-festive-theme="valentines-day"] .product-card,
+body[data-festive-theme="raksha-bandhan"] .product-card {
+  background: #fff;
+  border-color: var(--festival-line);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--festival-primary) 6%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .product-title,
+body[data-festive-theme="independence-day"] .product-title,
+body[data-festive-theme="vinayaka-chavithi"] .product-title,
+body[data-festive-theme="dasara"] .product-title,
+body[data-festive-theme="holi"] .product-title,
+body[data-festive-theme="valentines-day"] .product-title,
+body[data-festive-theme="raksha-bandhan"] .product-title {
+  color: var(--festival-ink);
+}
+
+body[data-festive-theme="republic-day"] .discount-badge,
+body[data-festive-theme="independence-day"] .discount-badge,
+body[data-festive-theme="vinayaka-chavithi"] .discount-badge,
+body[data-festive-theme="dasara"] .discount-badge,
+body[data-festive-theme="holi"] .discount-badge,
+body[data-festive-theme="valentines-day"] .discount-badge,
+body[data-festive-theme="raksha-bandhan"] .discount-badge {
+  background: var(--festival-secondary);
+  color: #fff;
+}
+
+body[data-festive-theme="republic-day"] .why-card,
+body[data-festive-theme="independence-day"] .why-card,
+body[data-festive-theme="vinayaka-chavithi"] .why-card,
+body[data-festive-theme="dasara"] .why-card,
+body[data-festive-theme="holi"] .why-card,
+body[data-festive-theme="valentines-day"] .why-card,
+body[data-festive-theme="raksha-bandhan"] .why-card,
+body[data-festive-theme="republic-day"] .step-card,
+body[data-festive-theme="independence-day"] .step-card,
+body[data-festive-theme="vinayaka-chavithi"] .step-card,
+body[data-festive-theme="dasara"] .step-card,
+body[data-festive-theme="holi"] .step-card,
+body[data-festive-theme="valentines-day"] .step-card,
+body[data-festive-theme="raksha-bandhan"] .step-card {
+  background: #fff;
+  border-color: var(--festival-line);
+}
+
+body[data-festive-theme="republic-day"] .corporate-card,
+body[data-festive-theme="independence-day"] .corporate-card,
+body[data-festive-theme="vinayaka-chavithi"] .corporate-card,
+body[data-festive-theme="dasara"] .corporate-card,
+body[data-festive-theme="holi"] .corporate-card,
+body[data-festive-theme="valentines-day"] .corporate-card,
+body[data-festive-theme="raksha-bandhan"] .corporate-card {
+  background: linear-gradient(120deg, var(--festival-soft), var(--festival-canvas));
+  border: 1px solid var(--festival-line);
+}
+
+body[data-festive-theme="republic-day"] .step-num-badge,
+body[data-festive-theme="independence-day"] .step-num-badge,
+body[data-festive-theme="vinayaka-chavithi"] .step-num-badge,
+body[data-festive-theme="dasara"] .step-num-badge,
+body[data-festive-theme="holi"] .step-num-badge,
+body[data-festive-theme="valentines-day"] .step-num-badge,
+body[data-festive-theme="raksha-bandhan"] .step-num-badge {
+  background: var(--festival-highlight);
+  border-color: var(--festival-accent);
+  color: var(--festival-primary);
+}
+
+body[data-festive-theme="republic-day"] .testimonial-hero-card,
+body[data-festive-theme="independence-day"] .testimonial-hero-card,
+body[data-festive-theme="vinayaka-chavithi"] .testimonial-hero-card,
+body[data-festive-theme="dasara"] .testimonial-hero-card,
+body[data-festive-theme="holi"] .testimonial-hero-card,
+body[data-festive-theme="valentines-day"] .testimonial-hero-card,
+body[data-festive-theme="raksha-bandhan"] .testimonial-hero-card {
+  background: var(--festival-primary);
+}
+
+body[data-festive-theme="republic-day"] .testi-hero-subtitle,
+body[data-festive-theme="independence-day"] .testi-hero-subtitle,
+body[data-festive-theme="vinayaka-chavithi"] .testi-hero-subtitle,
+body[data-festive-theme="dasara"] .testi-hero-subtitle,
+body[data-festive-theme="holi"] .testi-hero-subtitle,
+body[data-festive-theme="valentines-day"] .testi-hero-subtitle,
+body[data-festive-theme="raksha-bandhan"] .testi-hero-subtitle {
+  color: var(--festival-highlight);
+}
+
+body[data-festive-theme="republic-day"] .testimonial-card,
+body[data-festive-theme="independence-day"] .testimonial-card,
+body[data-festive-theme="vinayaka-chavithi"] .testimonial-card,
+body[data-festive-theme="dasara"] .testimonial-card,
+body[data-festive-theme="holi"] .testimonial-card,
+body[data-festive-theme="valentines-day"] .testimonial-card,
+body[data-festive-theme="raksha-bandhan"] .testimonial-card {
+  background: #fff;
+  border-color: var(--festival-line);
+}
+
+body[data-festive-theme="republic-day"] .bottom-cta-card,
+body[data-festive-theme="independence-day"] .bottom-cta-card,
+body[data-festive-theme="vinayaka-chavithi"] .bottom-cta-card,
+body[data-festive-theme="dasara"] .bottom-cta-card,
+body[data-festive-theme="holi"] .bottom-cta-card,
+body[data-festive-theme="valentines-day"] .bottom-cta-card,
+body[data-festive-theme="raksha-bandhan"] .bottom-cta-card {
+  background: var(--festival-highlight);
+  border: 1px solid color-mix(in srgb, var(--festival-accent) 46%, transparent);
+}
+
+body[data-festive-theme="republic-day"] .cta-title,
+body[data-festive-theme="independence-day"] .cta-title,
+body[data-festive-theme="vinayaka-chavithi"] .cta-title,
+body[data-festive-theme="dasara"] .cta-title,
+body[data-festive-theme="holi"] .cta-title,
+body[data-festive-theme="valentines-day"] .cta-title,
+body[data-festive-theme="raksha-bandhan"] .cta-title,
+body[data-festive-theme="republic-day"] .cta-highlight,
+body[data-festive-theme="independence-day"] .cta-highlight,
+body[data-festive-theme="vinayaka-chavithi"] .cta-highlight,
+body[data-festive-theme="dasara"] .cta-highlight,
+body[data-festive-theme="holi"] .cta-highlight,
+body[data-festive-theme="valentines-day"] .cta-highlight,
+body[data-festive-theme="raksha-bandhan"] .cta-highlight {
+  color: var(--festival-primary);
+}
+
+body[data-festive-theme="republic-day"] .main-footer,
+body[data-festive-theme="independence-day"] .main-footer,
+body[data-festive-theme="vinayaka-chavithi"] .main-footer,
+body[data-festive-theme="dasara"] .main-footer,
+body[data-festive-theme="holi"] .main-footer,
+body[data-festive-theme="valentines-day"] .main-footer,
+body[data-festive-theme="raksha-bandhan"] .main-footer {
+  color: var(--festival-canvas);
+  background: var(--festival-primary);
+  border-top: 3px solid var(--festival-accent);
+}
+
+body[data-festive-theme="republic-day"] .main-footer .brand-name,
+body[data-festive-theme="independence-day"] .main-footer .brand-name,
+body[data-festive-theme="vinayaka-chavithi"] .main-footer .brand-name,
+body[data-festive-theme="dasara"] .main-footer .brand-name,
+body[data-festive-theme="holi"] .main-footer .brand-name,
+body[data-festive-theme="valentines-day"] .main-footer .brand-name,
+body[data-festive-theme="raksha-bandhan"] .main-footer .brand-name,
+body[data-festive-theme="republic-day"] .main-footer .footer-col-title,
+body[data-festive-theme="independence-day"] .main-footer .footer-col-title,
+body[data-festive-theme="vinayaka-chavithi"] .main-footer .footer-col-title,
+body[data-festive-theme="dasara"] .main-footer .footer-col-title,
+body[data-festive-theme="holi"] .main-footer .footer-col-title,
+body[data-festive-theme="valentines-day"] .main-footer .footer-col-title,
+body[data-festive-theme="raksha-bandhan"] .main-footer .footer-col-title {
+  color: var(--festival-highlight);
+}
+
+body[data-festive-theme="republic-day"] .main-footer .brand-sub,
+body[data-festive-theme="independence-day"] .main-footer .brand-sub,
+body[data-festive-theme="vinayaka-chavithi"] .main-footer .brand-sub,
+body[data-festive-theme="dasara"] .main-footer .brand-sub,
+body[data-festive-theme="holi"] .main-footer .brand-sub,
+body[data-festive-theme="valentines-day"] .main-footer .brand-sub,
+body[data-festive-theme="raksha-bandhan"] .main-footer .brand-sub,
+body[data-festive-theme="republic-day"] .main-footer .footer-desc,
+body[data-festive-theme="independence-day"] .main-footer .footer-desc,
+body[data-festive-theme="vinayaka-chavithi"] .main-footer .footer-desc,
+body[data-festive-theme="dasara"] .main-footer .footer-desc,
+body[data-festive-theme="holi"] .main-footer .footer-desc,
+body[data-festive-theme="valentines-day"] .main-footer .footer-desc,
+body[data-festive-theme="raksha-bandhan"] .main-footer .footer-desc {
+  color: color-mix(in srgb, var(--festival-canvas) 80%, var(--festival-primary));
+}
+
+body[data-festive-theme="republic-day"] .main-footer a,
+body[data-festive-theme="independence-day"] .main-footer a,
+body[data-festive-theme="vinayaka-chavithi"] .main-footer a,
+body[data-festive-theme="dasara"] .main-footer a,
+body[data-festive-theme="holi"] .main-footer a,
+body[data-festive-theme="valentines-day"] .main-footer a,
+body[data-festive-theme="raksha-bandhan"] .main-footer a {
+  color: #fffaf0;
+}
+
+body[data-festive-theme="republic-day"] .main-footer .footer-social-icons a,
+body[data-festive-theme="independence-day"] .main-footer .footer-social-icons a,
+body[data-festive-theme="vinayaka-chavithi"] .main-footer .footer-social-icons a,
+body[data-festive-theme="dasara"] .main-footer .footer-social-icons a,
+body[data-festive-theme="holi"] .main-footer .footer-social-icons a,
+body[data-festive-theme="valentines-day"] .main-footer .footer-social-icons a,
+body[data-festive-theme="raksha-bandhan"] .main-footer .footer-social-icons a {
+  background: color-mix(in srgb, var(--festival-canvas) 16%, var(--festival-primary));
+  color: var(--festival-highlight);
+}
+
+body[data-festive-theme="republic-day"] .sub-footer,
+body[data-festive-theme="independence-day"] .sub-footer,
+body[data-festive-theme="vinayaka-chavithi"] .sub-footer,
+body[data-festive-theme="dasara"] .sub-footer,
+body[data-festive-theme="holi"] .sub-footer,
+body[data-festive-theme="valentines-day"] .sub-footer,
+body[data-festive-theme="raksha-bandhan"] .sub-footer {
+  background: color-mix(in srgb, var(--festival-primary) 86%, black);
+  border-top: 1px solid color-mix(in srgb, var(--festival-accent) 35%, transparent);
+  color: #fffaf0;
+}
+
+@media (max-width: 760px) {
+  body[data-festive-theme="republic-day"] .festive-hero-banner-section,
+  body[data-festive-theme="independence-day"] .festive-hero-banner-section,
+  body[data-festive-theme="vinayaka-chavithi"] .festive-hero-banner-section,
+  body[data-festive-theme="dasara"] .festive-hero-banner-section,
+  body[data-festive-theme="holi"] .festive-hero-banner-section,
+  body[data-festive-theme="valentines-day"] .festive-hero-banner-section,
+  body[data-festive-theme="raksha-bandhan"] .festive-hero-banner-section {
+    min-height: 560px;
+    align-items: flex-end;
+  }
+
+  body[data-festive-theme="republic-day"] .festive-hero-bg-image,
+  body[data-festive-theme="independence-day"] .festive-hero-bg-image,
+  body[data-festive-theme="vinayaka-chavithi"] .festive-hero-bg-image,
+  body[data-festive-theme="dasara"] .festive-hero-bg-image,
+  body[data-festive-theme="holi"] .festive-hero-bg-image,
+  body[data-festive-theme="valentines-day"] .festive-hero-bg-image,
+  body[data-festive-theme="raksha-bandhan"] .festive-hero-bg-image {
+    height: 58%;
+    object-position: center top !important;
+  }
+
+  body[data-festive-theme="republic-day"] .festive-hero-gradient-scrim,
+  body[data-festive-theme="independence-day"] .festive-hero-gradient-scrim,
+  body[data-festive-theme="vinayaka-chavithi"] .festive-hero-gradient-scrim,
+  body[data-festive-theme="dasara"] .festive-hero-gradient-scrim,
+  body[data-festive-theme="holi"] .festive-hero-gradient-scrim,
+  body[data-festive-theme="valentines-day"] .festive-hero-gradient-scrim,
+  body[data-festive-theme="raksha-bandhan"] .festive-hero-gradient-scrim {
+    background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--festival-canvas) 45%, transparent) 31%, var(--festival-canvas) 58%, var(--festival-canvas) 100%);
+  }
+
+  body[data-festive-theme="republic-day"] .festive-hero-container,
+  body[data-festive-theme="independence-day"] .festive-hero-container,
+  body[data-festive-theme="vinayaka-chavithi"] .festive-hero-container,
+  body[data-festive-theme="dasara"] .festive-hero-container,
+  body[data-festive-theme="holi"] .festive-hero-container,
+  body[data-festive-theme="valentines-day"] .festive-hero-container,
+  body[data-festive-theme="raksha-bandhan"] .festive-hero-container {
+    padding: 260px 20px 30px;
+  }
+
+  body[data-festive-theme="republic-day"] .festive-hero-content,
+  body[data-festive-theme="independence-day"] .festive-hero-content,
+  body[data-festive-theme="vinayaka-chavithi"] .festive-hero-content,
+  body[data-festive-theme="dasara"] .festive-hero-content,
+  body[data-festive-theme="holi"] .festive-hero-content,
+  body[data-festive-theme="valentines-day"] .festive-hero-content,
+  body[data-festive-theme="raksha-bandhan"] .festive-hero-content {
+    max-width: 100%;
+  }
+}

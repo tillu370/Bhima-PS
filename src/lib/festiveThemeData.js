@@ -1,28 +1,47 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
 
-// A 1x1 transparent pixel: used as the subtle texture-overlay pattern for
-// festivals that don't have a dedicated tiling pattern image, so the overlay
-// renders nothing rather than a broken image or a stretched hero photo.
+// Older saved theme configs used this placeholder; mergeFestiveState upgrades it.
 const TRANSPARENT_PX = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7';
 
-// Branded gradient banner used as the hero / promo / splash image for a festival
-// that doesn't (yet) have dedicated photography uploaded. Renders entirely as an
-// inline SVG data URI, so there is never a broken-image state on the storefront.
-function festiveGradientImage(name, from, via, to, emoji) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="${from}"/><stop offset="0.55" stop-color="${via}"/><stop offset="1" stop-color="${to}"/>
-      </linearGradient>
-      <pattern id="d" width="46" height="46" patternUnits="userSpaceOnUse"><circle cx="23" cy="23" r="2.4" fill="#ffffff" opacity="0.14"/></pattern>
-    </defs>
-    <rect width="1672" height="941" fill="url(#g)"/><rect width="1672" height="941" fill="url(#d)"/>
-    <text x="836" y="430" text-anchor="middle" font-family="Georgia,serif" font-size="110" fill="#ffffff" opacity="0.92">${emoji}</text>
-    <text x="836" y="540" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="46" letter-spacing="4" fill="#ffffff" opacity="0.9">${name.toUpperCase()}</text>
-  </svg>`;
-  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-}
+// Public festive artwork supplied with the project. URL-encode spaces so the
+// same paths resolve on both the local Windows dev server and Linux hosting.
+const FESTIVE_ASSETS = {
+  'republic-day': {
+    hero: '/images/festive/Republic%20Day%201.png',
+    promo: '/images/festive/Republic%20Day%202.png',
+    pattern: '/images/festive/Republic%20Day%203.png'
+  },
+  'independence-day': {
+    hero: '/images/festive/Independence%20day%202.png',
+    pattern: '/images/festive/Independence%20day%203.png'
+  },
+  'vinayaka-chavithi': {
+    hero: '/images/festive/Vinayak%20Chavithi%201.png',
+    promo: '/images/festive/Vinayak%20Chavithi%202.png',
+    pattern: '/images/festive/Vinayak%20Chavithi%203.png'
+  },
+  dasara: {
+    hero: '/images/festive/Dasara%201.png',
+    promo: '/images/festive/Dasara%202.png',
+    pattern: '/images/festive/Dasara%203.png'
+  },
+  holi: {
+    hero: '/images/festive/Holi%201.png',
+    promo: '/images/festive/Holi%202.png',
+    pattern: '/images/festive/Holi%203.png'
+  },
+  'valentines-day': {
+    hero: '/images/festive/Feb%2014%201.png',
+    promo: '/images/festive/Feb%2014%202.png',
+    pattern: '/images/festive/Feb%2014%203.png'
+  },
+  'raksha-bandhan': {
+    hero: '/images/festive/Rakshabandhan%201.png',
+    promo: '/images/festive/Rakshabandhan%202.png',
+    pattern: '/images/festive/Rakshabandhan%203.png'
+  }
+};
 
 export const FESTIVALS = [
   {
@@ -179,14 +198,14 @@ export const FESTIVALS = [
     name: 'Republic Day',
     tagline: 'Tricolour Pride & Patriotic Gifting',
     season: '26 January',
-    thumb: festiveGradientImage('Republic Day', '#FF9933', '#FFFFFF', '#128807', '🇮🇳'),
-    primaryColor: '#0C2340', secondaryColor: '#FF9933', accentColor: '#128807', highlightColor: '#FFFFFF',
+    thumb: FESTIVE_ASSETS['republic-day'].hero,
+    primaryColor: '#16543A', secondaryColor: '#E1842B', accentColor: '#B68A42', highlightColor: '#DDF0E2',
     badgeText: 'Republic Day Theme',
     defaultStartDate: '2027-01-20', defaultEndDate: '2027-01-27',
-    heroImages: [{ id: 'rd-hero-1', name: 'Tricolour Celebration', path: festiveGradientImage('Republic Day', '#FF9933', '#FFFFFF', '#128807', '🇮🇳'), desc: 'Tricolour-inspired banner for patriotic gifting.' }],
-    promoImages: [{ id: 'rd-promo-1', name: 'Patriotic Gift Sets', path: festiveGradientImage('Republic Day', '#FF9933', '#FFFFFF', '#128807', '🇮🇳'), desc: 'Custom corporate and personal patriotic gifts.' }],
-    splashImage: festiveGradientImage('Republic Day', '#0C2340', '#FF9933', '#128807', '🇮🇳'),
-    patternImage: TRANSPARENT_PX, decorationImage: null,
+    heroImages: [{ id: 'rd-hero-1', name: 'India Gate Tricolour Gift Showcase', path: FESTIVE_ASSETS['republic-day'].hero, desc: 'Personalised gift collection framed by elegant tricolour accents and India Gate.' }],
+    promoImages: [{ id: 'rd-promo-1', name: 'Republic Day Gift Showcase', path: FESTIVE_ASSETS['republic-day'].promo, desc: 'Custom corporate and personal patriotic gifts.' }],
+    splashImage: FESTIVE_ASSETS['republic-day'].hero,
+    patternImage: FESTIVE_ASSETS['republic-day'].pattern, decorationImage: null,
     defaultEyebrow: 'REPUBLIC DAY SPECIALS', defaultHeadline: 'Celebrate Republic Day with Custom Prints',
     defaultDescription: 'Patriotic mugs, t-shirts, badges and corporate gifts personalised for the occasion.',
     defaultCtaLabel: 'Explore Republic Day Gifts', defaultCtaLink: '/products',
@@ -200,14 +219,14 @@ export const FESTIVALS = [
     name: 'Independence Day',
     tagline: 'Freedom Fest & National Pride',
     season: '15 August',
-    thumb: festiveGradientImage('Independence Day', '#FF9933', '#FFFFFF', '#128807', '⭐'),
-    primaryColor: '#0C2340', secondaryColor: '#FF9933', accentColor: '#128807', highlightColor: '#FFFFFF',
+    thumb: FESTIVE_ASSETS['independence-day'].hero,
+    primaryColor: '#104B35', secondaryColor: '#D97724', accentColor: '#B99754', highlightColor: '#D9E9D8',
     badgeText: 'Independence Day Theme',
     defaultStartDate: '2027-08-08', defaultEndDate: '2027-08-16',
-    heroImages: [{ id: 'id-hero-1', name: 'Freedom Fest Celebration', path: festiveGradientImage('Independence Day', '#FF9933', '#FFFFFF', '#128807', '⭐'), desc: 'National-pride banner for Independence Day gifting.' }],
-    promoImages: [{ id: 'id-promo-1', name: 'Freedom Fest Gift Sets', path: festiveGradientImage('Independence Day', '#FF9933', '#FFFFFF', '#128807', '⭐'), desc: 'Custom corporate and personal Independence Day gifts.' }],
-    splashImage: festiveGradientImage('Independence Day', '#0C2340', '#FF9933', '#128807', '⭐'),
-    patternImage: TRANSPARENT_PX, decorationImage: null,
+    heroImages: [{ id: 'id-hero-1', name: 'Freedom & India Gate Showcase', path: FESTIVE_ASSETS['independence-day'].hero, desc: 'Patriotic personalised gift showcase with refined tricolour details.' }],
+    promoImages: [{ id: 'id-promo-1', name: 'Freedom Fest Gift Showcase', path: FESTIVE_ASSETS['independence-day'].hero, desc: 'Custom corporate and personal Independence Day gifts.' }],
+    splashImage: FESTIVE_ASSETS['independence-day'].hero,
+    patternImage: FESTIVE_ASSETS['independence-day'].pattern, decorationImage: null,
     defaultEyebrow: 'INDEPENDENCE DAY SPECIALS', defaultHeadline: 'Celebrate Freedom with Custom Prints',
     defaultDescription: 'Patriotic mugs, t-shirts, badges and corporate gifts personalised for the occasion.',
     defaultCtaLabel: 'Explore Independence Day Gifts', defaultCtaLink: '/products',
@@ -221,14 +240,14 @@ export const FESTIVALS = [
     name: 'Vinayaka Chavithi',
     tagline: 'Ganesh Chaturthi Blessings',
     season: 'Aug - Sep',
-    thumb: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'),
-    primaryColor: '#6B2737', secondaryColor: '#C0392B', accentColor: '#D4AF37', highlightColor: '#F4DCA1',
+    thumb: FESTIVE_ASSETS['vinayaka-chavithi'].hero,
+    primaryColor: '#75402B', secondaryColor: '#CF792D', accentColor: '#4C7049', highlightColor: '#F3D899',
     badgeText: 'Vinayaka Chavithi Theme',
     defaultStartDate: '2027-08-25', defaultEndDate: '2027-09-10',
-    heroImages: [{ id: 'vc-hero-1', name: 'Ganesh Chaturthi Blessings', path: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'), desc: 'Festive banner for Vinayaka Chavithi gifting.' }],
-    promoImages: [{ id: 'vc-promo-1', name: 'Festive Gift Hampers', path: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'), desc: 'Custom gift hampers for the festival.' }],
-    splashImage: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'),
-    patternImage: TRANSPARENT_PX, decorationImage: null,
+    heroImages: [{ id: 'vc-hero-1', name: 'Vinayaka Chavithi Gifts', path: FESTIVE_ASSETS['vinayaka-chavithi'].hero, desc: 'Respectful festive gift showcase with a warm ivory canvas.' }],
+    promoImages: [{ id: 'vc-promo-1', name: 'Festive Gift Hampers', path: FESTIVE_ASSETS['vinayaka-chavithi'].promo, desc: 'Custom gift hampers for the festival.' }],
+    splashImage: FESTIVE_ASSETS['vinayaka-chavithi'].hero,
+    patternImage: FESTIVE_ASSETS['vinayaka-chavithi'].pattern, decorationImage: null,
     defaultEyebrow: 'FESTIVE SPECIALS', defaultHeadline: 'Celebrate Vinayaka Chavithi with Personalised Gifts',
     defaultDescription: 'Custom printed mugs, photo frames and festive corporate gifts for the celebration.',
     defaultCtaLabel: 'Explore Festive Gifts', defaultCtaLink: '/products',
@@ -242,14 +261,14 @@ export const FESTIVALS = [
     name: 'Dasara',
     tagline: 'Victory of Good over Evil',
     season: 'Sep - Oct',
-    thumb: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'),
-    primaryColor: '#7A0C0C', secondaryColor: '#B8860B', accentColor: '#D4A017', highlightColor: '#F4DCA1',
+    thumb: FESTIVE_ASSETS.dasara.hero,
+    primaryColor: '#64233D', secondaryColor: '#842C3D', accentColor: '#B68A42', highlightColor: '#F2E2BF',
     badgeText: 'Dasara Theme',
     defaultStartDate: '2027-09-20', defaultEndDate: '2027-10-05',
-    heroImages: [{ id: 'ds-hero-1', name: 'Dasara Celebration', path: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'), desc: 'Festive banner for Dasara gifting.' }],
-    promoImages: [{ id: 'ds-promo-1', name: 'Festive Gift Hampers', path: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'), desc: 'Custom gift hampers for Dasara.' }],
-    splashImage: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'),
-    patternImage: TRANSPARENT_PX, decorationImage: null,
+    heroImages: [{ id: 'ds-hero-1', name: 'Dasara Gift Showcase', path: FESTIVE_ASSETS.dasara.hero, desc: 'Premium festive keepsakes in a warm ivory and antique gold setting.' }],
+    promoImages: [{ id: 'ds-promo-1', name: 'Dasara Hampers', path: FESTIVE_ASSETS.dasara.promo, desc: 'Custom gift hampers for Dasara.' }],
+    splashImage: FESTIVE_ASSETS.dasara.hero,
+    patternImage: FESTIVE_ASSETS.dasara.pattern, decorationImage: null,
     defaultEyebrow: 'DASARA SPECIALS', defaultHeadline: 'Celebrate Dasara with Personalised Gifts',
     defaultDescription: 'Custom printed mugs, photo frames and festive corporate gifts for the celebration.',
     defaultCtaLabel: 'Explore Dasara Gifts', defaultCtaLink: '/products',
@@ -263,14 +282,14 @@ export const FESTIVALS = [
     name: 'Holi',
     tagline: 'Festival of Colours',
     season: 'March',
-    thumb: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'),
-    primaryColor: '#7E22CE', secondaryColor: '#E91E8C', accentColor: '#FFC107', highlightColor: '#4CAF50',
+    thumb: FESTIVE_ASSETS.holi.hero,
+    primaryColor: '#653D91', secondaryColor: '#D95791', accentColor: '#178A8D', highlightColor: '#E7B735',
     badgeText: 'Holi Theme',
     defaultStartDate: '2027-03-10', defaultEndDate: '2027-03-20',
-    heroImages: [{ id: 'holi-hero-1', name: 'Festival of Colours', path: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'), desc: 'Colourful banner for Holi gifting.' }],
-    promoImages: [{ id: 'holi-promo-1', name: 'Colourful Gift Hampers', path: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'), desc: 'Custom gift hampers for Holi.' }],
-    splashImage: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'),
-    patternImage: TRANSPARENT_PX, decorationImage: null,
+    heroImages: [{ id: 'holi-hero-1', name: 'Holi Colourful Gift Showcase', path: FESTIVE_ASSETS.holi.hero, desc: 'Bright personalised gift showcase with soft colour-powder details.' }],
+    promoImages: [{ id: 'holi-promo-1', name: 'Colourful Gift Hampers', path: FESTIVE_ASSETS.holi.promo, desc: 'Custom gift hampers for Holi.' }],
+    splashImage: FESTIVE_ASSETS.holi.hero,
+    patternImage: FESTIVE_ASSETS.holi.pattern, decorationImage: null,
     defaultEyebrow: 'HOLI SPECIALS', defaultHeadline: 'Celebrate Holi with Colourful Custom Gifts',
     defaultDescription: 'Custom printed mugs, t-shirts and festive corporate gifts for the celebration.',
     defaultCtaLabel: 'Explore Holi Gifts', defaultCtaLink: '/products',
@@ -284,14 +303,14 @@ export const FESTIVALS = [
     name: "Valentine's Day",
     tagline: 'Love & Personalised Gifting',
     season: '14 February',
-    thumb: festiveGradientImage("Valentine's Day", '#D81B60', '#FF6F91', '#FFC1CC', '❤️'),
-    primaryColor: '#8E0038', secondaryColor: '#D81B60', accentColor: '#FF6F91', highlightColor: '#FFC1CC',
+    thumb: FESTIVE_ASSETS['valentines-day'].hero,
+    primaryColor: '#76233F', secondaryColor: '#B94868', accentColor: '#C77B91', highlightColor: '#E9D5AE',
     badgeText: "Valentine's Day Theme",
     defaultStartDate: '2027-02-07', defaultEndDate: '2027-02-15',
-    heroImages: [{ id: 'val-hero-1', name: 'Love & Gifting', path: festiveGradientImage("Valentine's Day", '#D81B60', '#FF6F91', '#FFC1CC', '❤️'), desc: 'Romantic banner for Valentine’s Day gifting.' }],
-    promoImages: [{ id: 'val-promo-1', name: 'Romantic Gift Sets', path: festiveGradientImage("Valentine's Day", '#D81B60', '#FF6F91', '#FFC1CC', '❤️'), desc: 'Custom romantic gift sets.' }],
-    splashImage: festiveGradientImage("Valentine's Day", '#8E0038', '#D81B60', '#FF6F91', '❤️'),
-    patternImage: TRANSPARENT_PX, decorationImage: null,
+    heroImages: [{ id: 'val-hero-1', name: 'Valentine Gift Collection', path: FESTIVE_ASSETS['valentines-day'].hero, desc: 'Romantic personalised gifts in a blush and rose setting.' }],
+    promoImages: [{ id: 'val-promo-1', name: 'Romantic Gift Sets', path: FESTIVE_ASSETS['valentines-day'].promo, desc: 'Custom romantic gift sets.' }],
+    splashImage: FESTIVE_ASSETS['valentines-day'].hero,
+    patternImage: FESTIVE_ASSETS['valentines-day'].pattern, decorationImage: null,
     defaultEyebrow: "VALENTINE'S SPECIALS", defaultHeadline: 'Gift Love, Personalised',
     defaultDescription: 'Custom printed mugs, photo frames and couple gifts for your special someone.',
     defaultCtaLabel: "Explore Valentine's Gifts", defaultCtaLink: '/products',
@@ -305,14 +324,14 @@ export const FESTIVALS = [
     name: 'Raksha Bandhan',
     tagline: 'Bonds of Love',
     season: 'Aug',
-    thumb: festiveGradientImage('Raksha Bandhan', '#B71C1C', '#D4AF37', '#FFB300', '🩸'),
-    primaryColor: '#7A0C0C', secondaryColor: '#B71C1C', accentColor: '#FFB300', highlightColor: '#F4DCA1',
+    thumb: FESTIVE_ASSETS['raksha-bandhan'].hero,
+    primaryColor: '#742B31', secondaryColor: '#AE512C', accentColor: '#B68A42', highlightColor: '#F1D28E',
     badgeText: 'Raksha Bandhan Theme',
     defaultStartDate: '2027-08-10', defaultEndDate: '2027-08-20',
-    heroImages: [{ id: 'rb-hero-1', name: 'Bonds of Love', path: festiveGradientImage('Raksha Bandhan', '#B71C1C', '#D4AF37', '#FFB300', '🩸'), desc: 'Festive banner for Raksha Bandhan gifting.' }],
-    promoImages: [{ id: 'rb-promo-1', name: 'Rakhi Gift Hampers', path: festiveGradientImage('Raksha Bandhan', '#B71C1C', '#D4AF37', '#FFB300', '🩸'), desc: 'Custom gift hampers for Raksha Bandhan.' }],
-    splashImage: festiveGradientImage('Raksha Bandhan', '#7A0C0C', '#B71C1C', '#FFB300', '🩸'),
-    patternImage: TRANSPARENT_PX, decorationImage: null,
+    heroImages: [{ id: 'rb-hero-1', name: 'Raksha Bandhan Gift Collection', path: FESTIVE_ASSETS['raksha-bandhan'].hero, desc: 'Warm sibling keepsakes with marigold and antique gold details.' }],
+    promoImages: [{ id: 'rb-promo-1', name: 'Rakhi Gift Hampers', path: FESTIVE_ASSETS['raksha-bandhan'].promo, desc: 'Custom gift hampers for Raksha Bandhan.' }],
+    splashImage: FESTIVE_ASSETS['raksha-bandhan'].hero,
+    patternImage: FESTIVE_ASSETS['raksha-bandhan'].pattern, decorationImage: null,
     defaultEyebrow: 'RAKSHA BANDHAN SPECIALS', defaultHeadline: 'Celebrate Raksha Bandhan with Personalised Gifts',
     defaultDescription: 'Custom printed mugs, photo frames and festive gifts for siblings.',
     defaultCtaLabel: 'Explore Rakhi Gifts', defaultCtaLink: '/products',
@@ -450,9 +469,9 @@ export function getFestiveTheme(themeId) {
       id: f.id,
       name: f.name,
       icon: 'spark',
-      layout: 'center',
+      layout: 'left',
       objectPosition: 'center center',
-      heroBannerOptions: f.heroImages.map(h => ({ path: h.path, layout: 'center' })),
+      heroBannerOptions: f.heroImages.map(h => ({ path: h.path, layout: 'left' })),
       pattern: f.patternImage,
       cornerAccent: null,
       splash: f.splashImage,
@@ -509,6 +528,7 @@ export function buildDefaultFestivalConfig(festivalId) {
 
 export const DEFAULT_FESTIVE_STATE = {
   active_festival_id: 'none', // 'none' | one of FESTIVALS[].id
+  manual_override: false,
   themes: Object.fromEntries(FESTIVALS.map(f => [f.id, buildDefaultFestivalConfig(f.id)])),
   updated_at: new Date().toISOString()
 };
@@ -525,6 +545,23 @@ function mergeFestiveState(parsed = {}) {
       const defaults = buildDefaultFestivalConfig(festival.id);
       const saved = parsed.themes?.[festival.id] || {};
       const config = { ...defaults, ...saved };
+
+      // Earlier drafts for these seven themes stored generated gradient SVGs or
+      // a transparent pixel. Upgrade those defaults to the supplied artwork,
+      // while leaving any real, individually chosen image path untouched.
+      const supplied = FESTIVE_ASSETS[festival.id];
+      if (supplied) {
+        for (const [key, path] of [
+          ['hero_image', supplied.hero],
+          ['promo_image', supplied.promo || supplied.hero],
+          ['splash_image', supplied.hero],
+          ['pattern_image', supplied.pattern]
+        ]) {
+          if (!saved[key] || saved[key].startsWith('data:image/svg+xml') || saved[key] === TRANSPARENT_PX) {
+            config[key] = path;
+          }
+        }
+      }
 
       // Replace the old shared destination while preserving links customized in the admin.
       if (saved.promo_cta_link === '/products?cat=photo-frames') {
@@ -556,7 +593,7 @@ export function getFestivePreviewOverride() {
         || params.get('christmas_preview')
         || params.get('newyear_preview')
         || params.get('sankranthi_preview');
-      if (p === 'diwali' || p === 'christmas' || p === 'new-year' || p === 'sankranthi') return p;
+      if (FESTIVALS.some(festival => festival.id === p)) return p;
       if (p === 'true' || p === '1') {
         const search = window.location.search;
         if (search.includes('christmas')) return 'christmas';
@@ -599,7 +636,7 @@ export function setFestivePreviewOverride(val, draftConfig = null) {
 
 /**
  * Evaluates which festival should be active on the storefront.
- * Returns: 'none' | 'diwali' | 'christmas' | 'new-year' | 'sankranthi'
+ * Returns: 'none' | one of FESTIVALS[].id
  */
 export function resolveActiveFestiveTheme(state = DEFAULT_FESTIVE_STATE, previewOverride = null, now = new Date()) {
   if (previewOverride && previewOverride !== 'none' && FESTIVALS.some(f => f.id === previewOverride)) {
@@ -616,6 +653,10 @@ export function resolveActiveFestiveTheme(state = DEFAULT_FESTIVE_STATE, preview
     }
   }
 
+  // A deliberate admin deactivation suppresses scheduled themes until an
+  // auto-schedule is explicitly enabled again.
+  if (state.manual_override) return 'none';
+
   // 2. Check if any festival is manually enabled
   for (const f of FESTIVALS) {
     const conf = state.themes[f.id];
@@ -624,16 +665,22 @@ export function resolveActiveFestiveTheme(state = DEFAULT_FESTIVE_STATE, preview
     }
   }
 
-  // 3. Check auto scheduling for each festival
+  // 3. Resolve overlapping schedules by preferring the most recently starting
+  // window, then the shorter window. FESTIVALS order is the final stable tie-break.
   const today = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-');
-  for (const f of FESTIVALS) {
+  const scheduled = [];
+  for (const [order, f] of FESTIVALS.entries()) {
     const conf = state.themes[f.id];
     if (conf && conf.auto_schedule && conf.start_date && conf.end_date) {
       if (today >= conf.start_date && today <= conf.end_date) {
-        return f.id;
+        scheduled.push({ id: f.id, start: conf.start_date, end: conf.end_date, order });
       }
     }
   }
+
+  const duration = item => Date.parse(item.end + 'T00:00:00Z') - Date.parse(item.start + 'T00:00:00Z');
+  scheduled.sort((a, b) => b.start.localeCompare(a.start) || duration(a) - duration(b) || a.order - b.order);
+  if (scheduled.length) return scheduled[0].id;
 
   return 'none';
 }

@@ -12,6 +12,10 @@ import { DiwaliSplashScreen } from './DiwaliSplashScreen.jsx';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
 import { useUi } from '../context/UiContext.jsx';
 
+const PALETTE_THEME_IDS = new Set([
+  'republic-day', 'independence-day', 'vinayaka-chavithi', 'dasara', 'holi', 'valentines-day', 'raksha-bandhan'
+]);
+
 // On route change: jump to the #hash target if there is one, otherwise to the top.
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -46,11 +50,27 @@ export default function Layout() {
       document.body.setAttribute('data-festive-theme', theme.id || 'diwali');
       if (theme.id === 'diwali') document.body.setAttribute('data-diwali-theme', 'active');
       else document.body.removeAttribute('data-diwali-theme');
+      if (PALETTE_THEME_IDS.has(theme.id)) {
+        document.body.style.setProperty('--festival-primary', theme.primaryColor);
+        document.body.style.setProperty('--festival-secondary', theme.secondaryColor);
+        document.body.style.setProperty('--festival-accent', theme.accentColor);
+        document.body.style.setProperty('--festival-highlight', theme.highlightColor);
+        const color = (theme.primaryColor || '#172A1F').replace('#', '');
+        const channels = color.length === 6
+          ? [0, 2, 4].map(offset => parseInt(color.slice(offset, offset + 2), 16))
+          : [23, 42, 31];
+        document.body.style.setProperty('--festive-scrim', channels.join(', '));
+      } else {
+        ['--festival-primary', '--festival-secondary', '--festival-accent', '--festival-highlight', '--festive-scrim']
+          .forEach(variable => document.body.style.removeProperty(variable));
+      }
     } else {
       document.body.removeAttribute('data-festive-theme');
       document.body.removeAttribute('data-diwali-theme');
+      ['--festival-primary', '--festival-secondary', '--festival-accent', '--festival-highlight', '--festive-scrim']
+        .forEach(variable => document.body.style.removeProperty(variable));
     }
-  }, [isDiwali, theme.id]);
+  }, [isDiwali, theme.id, theme.primaryColor, theme.secondaryColor, theme.accentColor, theme.highlightColor]);
 
   return (
     <>

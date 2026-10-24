@@ -40,7 +40,16 @@ export function FestiveThemeAdmin() {
   const setFestivalDates = async (festivalId, patch) => {
     if (savingFestivalId || loading) return;
     const current = state.themes?.[festivalId] || buildDefaultFestivalConfig(festivalId);
-    const nextState = { ...state, themes: { ...state.themes, [festivalId]: { ...current, ...patch } } };
+    const nextConfig = { ...current, ...patch };
+    if (nextConfig.start_date && nextConfig.end_date && nextConfig.start_date > nextConfig.end_date) {
+      toast('The end date must be on or after the start date.', 'error');
+      return;
+    }
+    const nextState = {
+      ...state,
+      ...(patch.auto_schedule === true ? { manual_override: false } : {}),
+      themes: { ...state.themes, [festivalId]: nextConfig }
+    };
     setSavingFestivalId(festivalId);
     try {
       const result = await saveFestiveState(nextState);
@@ -71,7 +80,6 @@ export function FestiveThemeAdmin() {
         {
           ...current,
           enabled: enabled && item.id === festivalId,
-          auto_schedule: false
         }
       ];
     }));
@@ -79,6 +87,7 @@ export function FestiveThemeAdmin() {
     const nextState = {
       ...state,
       active_festival_id: enabled ? festivalId : 'none',
+      manual_override: !enabled,
       themes
     };
 
@@ -105,7 +114,7 @@ export function FestiveThemeAdmin() {
             <h2>Festive Themes</h2>
           </div>
           <p className="festive-overview-desc">
-            Use Enable or Disable to control which festival theme appears on the storefront.
+            Preview any theme, then enable one for the storefront or schedule it for a date range. Manual deactivation pauses scheduled themes until auto-scheduling is enabled again. If schedules overlap, the latest start date wins; equal starts use the shorter window, then the order shown here.
           </p>
         </div>
 
