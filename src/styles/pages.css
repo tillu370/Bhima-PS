@@ -267,21 +267,13 @@ a.product-img-box { display: block; }
 }
 
 /* ---------------------------------------------------------------- promotional video */
-.promo-video-section { padding: 56px 0; }
-.promo-video-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 40px;
-  align-items: center;
-}
+.promo-video-section { padding: 48px 0; }
 .promo-video-player-wrap {
+  max-width: 960px;
+  margin: 0 auto;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, .12);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, .15);
   background: #0b1b3f;
 }
 .promo-video-player { width: 100%; aspect-ratio: 16 / 9; display: block; background: #0b1b3f; }
-.promo-video-desc { color: var(--text-muted, #475569); margin: 10px 0 18px; }
-@media (max-width: 860px) {
-  .promo-video-grid { grid-template-columns: 1fr; gap: 20px; }
-}

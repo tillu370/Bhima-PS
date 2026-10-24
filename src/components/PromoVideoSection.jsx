@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { fetchPromoVideo, getCachedPromoVideo } from '../lib/videoData.js';
 
 // Short brand / product / process video on the home page. Hidden entirely
@@ -18,7 +17,7 @@ export function PromoVideoSection() {
 
   return (
     <section className="promo-video-section" aria-label="Promotional video">
-      <div className="container promo-video-grid">
+      <div className="container">
         <div className="promo-video-player-wrap">
           <video
             className="promo-video-player"
@@ -29,13 +28,6 @@ export function PromoVideoSection() {
             preload="metadata"
             playsInline
           />
-        </div>
-        <div className="promo-video-copy">
-          {video.title && <h2 className="section-title">{video.title}</h2>}
-          {video.description && <p className="promo-video-desc">{video.description}</p>}
-          {video.cta_label && (
-            <Link className="btn btn-primary" to={video.cta_link || '/products'}>{video.cta_label}</Link>
-          )}
         </div>
       </div>
     </section>
