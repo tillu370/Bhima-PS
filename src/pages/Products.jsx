@@ -6,11 +6,13 @@ import { fetchCategories } from '../lib/data.js';
 import { supabase } from '../lib/supabase.js';
 import { errMsg } from '../lib/utils.js';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
+import { FRAME_TIERS, isFrameCategory } from '../lib/frameTiers.js';
 
 export default function Products() {
   const [params, setParams] = useSearchParams();
   const cat = params.get('cat') || 'all';
   const q = params.get('q') || '';
+  const tier = params.get('tier') || 'all';
   const [sort, setSort] = useState('order');
   const [cats, setCats] = useState([]);
   const [products, setProducts] = useState([]);
@@ -22,7 +24,7 @@ export default function Products() {
     try {
       const [c, res] = await Promise.all([
         fetchCategories(),
-        supabase.from('products').select('id,slug,name,description,price_from,image_url,image_url_2,created_at,sort_order,categories(slug,name,image_url)').eq('is_active', true).order('sort_order')
+        supabase.from('products').select('id,slug,name,description,price_from,image_url,image_url_2,created_at,sort_order,category_id,frame_tier,categories(id,slug,name,image_url)').eq('is_active', true).order('sort_order')
       ]);
       if (res.error) throw res.error;
       setCats(c); setProducts(res.data); setState('ok');
@@ -30,23 +32,32 @@ export default function Products() {
   }, []);
   useEffect(() => { load(); }, [load]);
 
+  const showTierFilter = cat !== 'all' && isFrameCategory(cat);
+
   const list = useMemo(() => {
     const term = q.trim().toLowerCase();
     const out = products.filter(p => {
       const inCat = cat === 'all' || (p.categories && p.categories.slug === cat);
+      const inTier = !showTierFilter || tier === 'all' || p.frame_tier === tier;
       const hay = (p.name + ' ' + (p.description || '') + ' ' + (p.categories ? p.categories.name : '')).toLowerCase();
-      return inCat && (!term || hay.includes(term));
+      return inCat && inTier && (!term || hay.includes(term));
     });
     if (sort === 'price-asc') out.sort((a, b) => a.price_from - b.price_from);
     else if (sort === 'price-desc') out.sort((a, b) => b.price_from - a.price_from);
     else if (sort === 'name') out.sort((a, b) => a.name.localeCompare(b.name));
     else if (sort === 'new') out.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     return out;
-  }, [products, cat, q, sort]);
+  }, [products, cat, tier, showTierFilter, q, sort]);
 
   const setCat = slug => {
     const p = new URLSearchParams(params);
     if (slug === 'all') p.delete('cat'); else p.set('cat', slug);
+    p.delete('tier');
+    setParams(p);
+  };
+  const setTier = t => {
+    const p = new URLSearchParams(params);
+    if (t === 'all') p.delete('tier'); else p.set('tier', t);
     setParams(p);
   };
   const reset = () => setParams({});
@@ -73,6 +84,14 @@ export default function Products() {
             <option value="new">Newest</option>
           </select>
         </div>
+
+        {showTierFilter && (
+          <div className="filter-pills" role="group" aria-label="Filter photo frames by price tier" style={{ marginTop: 10 }}>
+            {[{ value: 'all', label: 'All tiers' }, ...FRAME_TIERS].map(t => (
+              <button key={t.value} className={'pill-btn' + (t.value === tier ? ' active' : '')} aria-pressed={t.value === tier} onClick={() => setTier(t.value)}>{t.label}</button>
+            ))}
+          </div>
+        )}
 
         {state === 'ok' && <p className="result-count" aria-live="polite">{list.length} product{list.length === 1 ? '' : 's'}{q ? ` for "${q}"` : ''}</p>}
         {state === 'loading' && <div className="products-grid"><ProductSkeletons /></div>}

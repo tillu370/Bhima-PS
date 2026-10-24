@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
+import { applyDiscountPercent, bestCampaignForProduct, useActiveDiscountCampaigns } from '../lib/discountData.js';
 import { errMsg, hasPrice, money } from '../lib/utils.js';
 import { SafeImage } from './SafeImage.jsx';
 
@@ -17,6 +18,9 @@ export function ProductCard({ product: p, eager = false }) {
   const wished = wishlist.has(p.id);
   const href = '/product/' + encodeURIComponent(p.slug);
   const isFestivePick = isDiwali && (p.is_featured || ['mugs', 'photo-frames', 'led-frames', 'corporate-gifts'].includes(p.categories?.slug));
+  const campaigns = useActiveDiscountCampaigns();
+  const campaign = hasPrice(p.price_from) ? bestCampaignForProduct(p, campaigns) : null;
+  const discountedPrice = campaign ? applyDiscountPercent(p.price_from, campaign.percent) : null;
 
   const add = () => {
     cart.add(p, 1);
@@ -38,6 +42,11 @@ export function ProductCard({ product: p, eager = false }) {
           <span aria-hidden="true">✦</span> Festive Pick
         </span>
       )}
+      {campaign && (
+        <span className="discount-badge" aria-label={`${campaign.percent}% off`}>
+          {Math.round(campaign.percent)}% OFF
+        </span>
+      )}
       <button className={'wishlist-btn' + (wished ? ' active' : '')} onClick={wish} aria-label={`Save ${p.name} to wishlist`} aria-pressed={wished}>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
       </button>
@@ -48,9 +57,11 @@ export function ProductCard({ product: p, eager = false }) {
       <div className="product-info">
         <h3 className="product-title"><Link to={href}>{p.name}</Link></h3>
         <div className="product-bottom">
-          {hasPrice(p.price_from)
-            ? <span className="product-price"><strong>{money(p.price_from)}</strong> <small>onwards</small></span>
-            : <span className="product-price"><strong className="on-request">Ask price</strong> <small>on request</small></span>}
+          {campaign
+            ? <span className="product-price"><strong>{money(discountedPrice)}</strong> <s className="product-price-strike">{money(p.price_from)}</s> <small>onwards</small></span>
+            : hasPrice(p.price_from)
+              ? <span className="product-price"><strong>{money(p.price_from)}</strong> <small>onwards</small></span>
+              : <span className="product-price"><strong className="on-request">Ask price</strong> <small>on request</small></span>}
           <button className={'btn-add' + (added ? ' added' : '')} onClick={add}>{added ? 'Added' : 'Add'}</button>
         </div>
       </div>

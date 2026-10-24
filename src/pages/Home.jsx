@@ -6,6 +6,7 @@ import { DiwaliHeroBanner } from '../components/DiwaliHeroBanner.jsx';
 import { HomePromoBanners } from '../components/HomePromoBanners.jsx';
 import { SafeImage } from '../components/SafeImage.jsx';
 import { FaqGrid } from '../components/FaqGrid.jsx';
+import { PromoVideoSection } from '../components/PromoVideoSection.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
@@ -141,6 +142,9 @@ export default function Home() {
 
       {/* ==================== BEST SELLING PRODUCTS ==================== */}
       <HomeProducts />
+
+      {/* ==================== PROMOTIONAL VIDEO ==================== */}
+      <PromoVideoSection />
 
       {/* ==================== WHY CHOOSE BHIMA PRINT SOLUTIONS ==================== */}
       <section className="why-choose-section" id="why-choose">

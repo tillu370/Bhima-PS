@@ -46,17 +46,21 @@ export const bestDiscount = i => {
   const hit = i.discountTiers.filter(t => i.qty >= t.min_qty).sort((a, b) => b.percent - a.percent)[0];
   return hit || null;
 };
+// A line's effective discount percent: a running percentage discount campaign
+// (`campaignPercent`, re-fetched from the database with the rest of the cart)
+// takes priority over the bulk-quantity tier so the two never stack.
+export const effectiveDiscountPercent = i => (i.campaignPercent ? i.campaignPercent : bestDiscount(i)?.percent || null);
 export const unitPrice = i => {
   if (!hasPrice(i.price)) return null;
-  const d = bestDiscount(i);
-  return d ? i.price * (1 - d.percent / 100) : i.price;
+  const pct = effectiveDiscountPercent(i);
+  return pct ? i.price * (1 - pct / 100) : i.price;
 };
 
 // Cart wording that works for priced items and "price on request" items.
 export const eachText = i => {
   if (!hasPrice(i.price)) return 'Price on request';
-  const d = bestDiscount(i);
-  return d ? `${money(unitPrice(i))} each (${d.percent}% off)` : `from ${money(i.price)} each`;
+  const pct = effectiveDiscountPercent(i);
+  return pct ? `${money(unitPrice(i))} each (${pct}% off)` : `from ${money(i.price)} each`;
 };
 export const lineText = i => (hasPrice(i.price) ? `from ${money(i.qty * unitPrice(i))}` : 'On request');
 export const totalText = cart => {

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchCurrentDeal, isDealDismissedToday, dismissDealToday, DEFAULT_DEAL } from '../lib/dealData.js';
-import { whatsappUrl } from '../lib/config.js';
+import { buildWhatsAppUrl } from '../lib/whatsappData.js';
 import { money } from '../lib/utils.js';
 import { SafeImage } from './SafeImage.jsx';
 
@@ -60,7 +60,7 @@ export function DealOfTheDayModal() {
 
   const handleClaimWhatsApp = () => {
     const text = `Hello Bhima Print Solutions! I would like to claim today's Deal of the Day:\n\n*${deal.title}*\nPrice: ${money(deal.deal_price)} (was ${money(deal.original_price)})\nDiscount: ${deal.discount_tag || 'Special Offer'}\n\nPlease confirm availability and let me know how to proceed!`;
-    window.open(whatsappUrl(text), '_blank', 'noopener,noreferrer');
+    window.open(buildWhatsAppUrl(text), '_blank', 'noopener,noreferrer');
     close();
   };
 

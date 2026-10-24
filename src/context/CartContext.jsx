@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { fetchCategories } from '../lib/data.js';
 import { supabase } from '../lib/supabase.js';
+import { bestCampaignForProduct, fetchActiveDiscountCampaigns } from '../lib/discountData.js';
 import { unitPrice } from '../lib/utils.js';
 
 const CartContext = createContext(null);
@@ -31,6 +32,16 @@ export function CartProvider({ children }) {
     return () => { on = false; };
   }, []);
 
+  // Active percentage discount campaigns, re-fetched from the database so the cart
+  // and checkout always price lines off validated, current data (never a stale
+  // client-side value), and never stack with the bulk-quantity tiers above.
+  const [campaigns, setCampaigns] = useState([]);
+  useEffect(() => {
+    let on = true;
+    fetchActiveDiscountCampaigns().then(c => { if (on) setCampaigns(c); }).catch(() => {});
+    return () => { on = false; };
+  }, []);
+
   const persist = useCallback(next => {
     setItems(next);
     try { localStorage.setItem(KEY, JSON.stringify(next)); } catch (e) { /* storage blocked: memory only */ }
@@ -51,7 +62,7 @@ export function CartProvider({ children }) {
       const hit = cur.find(i => !i.design && i.id === p.id);
       const next = hit
         ? cur.map(i => (i === hit ? { ...i, qty: Math.min(100000, i.qty + q) } : i))
-        : [...cur, { id: p.id, lineId: p.id, slug: p.slug, name: p.name, price: p.price_from == null ? null : Number(p.price_from), image: p.image_url || p.categories?.image_url || '', qty: q, notes: '', categorySlug: p.categories?.slug || null }];
+        : [...cur, { id: p.id, lineId: p.id, slug: p.slug, name: p.name, price: p.price_from == null ? null : Number(p.price_from), image: p.image_url || p.categories?.image_url || '', qty: q, notes: '', categorySlug: p.categories?.slug || null, categoryId: p.category_id || p.categories?.id || null }];
       try { localStorage.setItem(KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
       return next;
     });
@@ -61,7 +72,7 @@ export function CartProvider({ children }) {
       const next = [...cur, {
         id: p.id, lineId: p.id + ':' + Math.random().toString(36).slice(2, 10), slug: p.slug, name: p.name,
         price: p.price_from == null ? null : Number(p.price_from), image: design.preview, qty: clampQty(qty),
-        notes: String(notes || '').slice(0, 500), design, categorySlug: p.categories?.slug || null
+        notes: String(notes || '').slice(0, 500), design, categorySlug: p.categories?.slug || null, categoryId: p.category_id || p.categories?.id || null
       }];
       try { localStorage.setItem(KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
       return next;
@@ -76,19 +87,22 @@ export function CartProvider({ children }) {
   const refresh = useCallback(async () => {
     const cur = read();
     if (!cur.length) return cur;
-    const { data, error } = await supabase.from('products').select('id,slug,name,price_from,image_url,is_active,categories(slug)').in('id', cur.map(i => i.id));
+    const { data, error } = await supabase.from('products').select('id,slug,name,price_from,image_url,is_active,category_id,categories(id,slug)').in('id', cur.map(i => i.id));
     if (error) throw error;
     const byId = new Map(data.map(p => [p.id, p]));
     const fresh = cur.filter(i => byId.get(i.id) && byId.get(i.id).is_active).map(i => {
       const p = byId.get(i.id);
-      return { ...i, name: p.name, slug: p.slug, price: p.price_from == null ? null : Number(p.price_from), image: i.design ? i.image : (p.image_url || ''), categorySlug: p.categories?.slug || null };
+      return { ...i, name: p.name, slug: p.slug, price: p.price_from == null ? null : Number(p.price_from), image: i.design ? i.image : (p.image_url || ''), categorySlug: p.categories?.slug || null, categoryId: p.category_id || p.categories?.id || null };
     });
     if (JSON.stringify(fresh) !== JSON.stringify(cur)) persist(fresh);
     return fresh;
   }, [persist]);
 
   const value = useMemo(() => {
-    const priced = items.map(i => ({ ...i, discountTiers: (i.categorySlug && discountBySlug[i.categorySlug]) || null }));
+    const priced = items.map(i => {
+      const campaign = bestCampaignForProduct({ id: i.id, category_id: i.categoryId, categories: { id: i.categoryId } }, campaigns);
+      return { ...i, discountTiers: (i.categorySlug && discountBySlug[i.categorySlug]) || null, campaignPercent: campaign ? Number(campaign.percent) : null, campaignName: campaign?.name || null };
+    });
     return {
       items: priced,
       count: priced.reduce((n, i) => n + i.qty, 0),
@@ -97,7 +111,7 @@ export function CartProvider({ children }) {
       hasPriced: priced.some(i => i.price != null),
       add, addCustom, setQty, setNotes, remove, clear, refresh
     };
-  }, [items, discountBySlug, add, addCustom, setQty, setNotes, remove, clear, refresh]);
+  }, [items, discountBySlug, campaigns, add, addCustom, setQty, setNotes, remove, clear, refresh]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

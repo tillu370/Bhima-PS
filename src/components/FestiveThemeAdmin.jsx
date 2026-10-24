@@ -37,6 +37,27 @@ export function FestiveThemeAdmin() {
 
   const activeFestivalId = resolveActiveFestiveTheme(state);
 
+  const setFestivalDates = async (festivalId, patch) => {
+    if (savingFestivalId || loading) return;
+    const current = state.themes?.[festivalId] || buildDefaultFestivalConfig(festivalId);
+    const nextState = { ...state, themes: { ...state.themes, [festivalId]: { ...current, ...patch } } };
+    setSavingFestivalId(festivalId);
+    try {
+      const result = await saveFestiveState(nextState);
+      setState(result.data || nextState);
+      if (!result.success) toast(result.warning || 'Saved locally, but publishing failed.', 'error');
+    } catch (error) {
+      toast('Could not save: ' + (error.message || 'please try again.'), 'error');
+    } finally {
+      setSavingFestivalId(null);
+    }
+  };
+
+  const previewFestival = festivalId => {
+    setFestivePreviewOverride(festivalId);
+    window.open('/?festive_preview=' + festivalId, '_blank', 'noopener,noreferrer');
+  };
+
   const setFestivalEnabled = async (festivalId, enabled) => {
     if (savingFestivalId || loading) return;
 
@@ -104,6 +125,7 @@ export function FestiveThemeAdmin() {
         {FESTIVALS.map(festival => {
           const isActive = activeFestivalId === festival.id;
           const isSaving = savingFestivalId === festival.id;
+          const conf = state.themes?.[festival.id] || buildDefaultFestivalConfig(festival.id);
 
           return (
             <article className="festive-theme-card festive-theme-control-card" key={festival.id}>
@@ -143,6 +165,35 @@ export function FestiveThemeAdmin() {
                   >
                     Disable
                   </button>
+                  <button type="button" className="festive-theme-disable" onClick={() => previewFestival(festival.id)} disabled={loading}>
+                    Preview
+                  </button>
+                </div>
+
+                <div className="festive-theme-schedule" style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '.82rem' }}>
+                    <input
+                      type="checkbox"
+                      checked={!!conf.auto_schedule}
+                      disabled={loading || !!savingFestivalId}
+                      onChange={e => setFestivalDates(festival.id, { auto_schedule: e.target.checked })}
+                    />
+                    Auto-activate between these dates
+                  </label>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <input
+                      type="date" style={{ fontSize: '.78rem', flex: 1 }} value={conf.start_date || ''}
+                      disabled={loading || !!savingFestivalId}
+                      onChange={e => setFestivalDates(festival.id, { start_date: e.target.value })}
+                      aria-label={festival.name + ' auto-activation start date'}
+                    />
+                    <input
+                      type="date" style={{ fontSize: '.78rem', flex: 1 }} value={conf.end_date || ''}
+                      disabled={loading || !!savingFestivalId}
+                      onChange={e => setFestivalDates(festival.id, { end_date: e.target.value })}
+                      aria-label={festival.name + ' auto-activation end date'}
+                    />
+                  </div>
                 </div>
                 {isSaving && <span className="festive-theme-saving" role="status">Saving…</span>}
               </div>

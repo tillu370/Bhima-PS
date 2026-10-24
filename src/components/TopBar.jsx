@@ -2,11 +2,14 @@ import { Link } from 'react-router-dom';
 import { A } from './A.jsx';
 import { SOCIAL } from '../lib/config.js';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
+import { buildGeneralEnquiryMessage, buildWhatsAppUrl, useWhatsAppNumber } from '../lib/whatsappData.js';
 
 export function TopBar({ previewConfig, preview = false }) {
   const liveTheme = useDiwaliTheme();
   const isDiwali = previewConfig ? true : liveTheme.isDiwali;
   const config = previewConfig || liveTheme.config;
+  const waNumber = useWhatsAppNumber();
+  const waHref = buildWhatsAppUrl(buildGeneralEnquiryMessage());
 
   return (
     <div className="top-bar" onClick={preview ? e => {
@@ -55,7 +58,7 @@ export function TopBar({ previewConfig, preview = false }) {
         <div className="top-bar-right">
           <span className="follow-text">Follow Us:</span>
           <div className="social-icons">
-            {SOCIAL.whatsapp && (<A href={SOCIAL.whatsapp} aria-label="WhatsApp">
+            {waNumber && (<A href={waHref} aria-label="WhatsApp">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.979-.275-.101-.476-.15-.677.15-.2.301-.777.979-.953 1.18-.176.2-.351.226-.652.075-.301-.151-1.272-.469-2.423-1.496-.897-.8-1.503-1.789-1.68-2.09-.176-.301-.019-.464.132-.614.136-.135.301-.351.452-.527.15-.176.2-.301.301-.502.101-.201.05-.377-.025-.527-.075-.151-.677-1.632-.928-2.235-.245-.587-.494-.507-.677-.517l-.578-.01c-.2 0-.527.075-.803.377s-1.054 1.029-1.054 2.509 1.079 2.911 1.229 3.112c.151.201 2.124 3.243 5.144 4.549.718.311 1.279.497 1.716.636.722.23 1.378.197 1.898.12.579-.087 1.78-.727 2.031-1.43.251-.703.251-1.305.176-1.43-.075-.126-.276-.201-.577-.352zM12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.662 1.434 5.176L2 22l4.981-1.397C8.423 21.492 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
             </A>)}
             {SOCIAL.instagram && (<A href={SOCIAL.instagram} aria-label="Instagram">

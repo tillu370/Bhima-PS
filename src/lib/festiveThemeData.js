@@ -1,6 +1,29 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
 
+// A 1x1 transparent pixel: used as the subtle texture-overlay pattern for
+// festivals that don't have a dedicated tiling pattern image, so the overlay
+// renders nothing rather than a broken image or a stretched hero photo.
+const TRANSPARENT_PX = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7';
+
+// Branded gradient banner used as the hero / promo / splash image for a festival
+// that doesn't (yet) have dedicated photography uploaded. Renders entirely as an
+// inline SVG data URI, so there is never a broken-image state on the storefront.
+function festiveGradientImage(name, from, via, to, emoji) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${from}"/><stop offset="0.55" stop-color="${via}"/><stop offset="1" stop-color="${to}"/>
+      </linearGradient>
+      <pattern id="d" width="46" height="46" patternUnits="userSpaceOnUse"><circle cx="23" cy="23" r="2.4" fill="#ffffff" opacity="0.14"/></pattern>
+    </defs>
+    <rect width="1672" height="941" fill="url(#g)"/><rect width="1672" height="941" fill="url(#d)"/>
+    <text x="836" y="430" text-anchor="middle" font-family="Georgia,serif" font-size="110" fill="#ffffff" opacity="0.92">${emoji}</text>
+    <text x="836" y="540" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="46" letter-spacing="4" fill="#ffffff" opacity="0.9">${name.toUpperCase()}</text>
+  </svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
 export const FESTIVALS = [
   {
     id: 'diwali',
@@ -150,6 +173,153 @@ export const FESTIVALS = [
     defaultPromoCtaLink: '/products?cat=photo-frames',
     defaultAnnouncementText: 'Sankranthi Specials | Custom Photo Gifts & Traditional Keepsakes',
     defaultAnnouncementCta: 'Explore Collection'
+  },
+  {
+    id: 'republic-day',
+    name: 'Republic Day',
+    tagline: 'Tricolour Pride & Patriotic Gifting',
+    season: '26 January',
+    thumb: festiveGradientImage('Republic Day', '#FF9933', '#FFFFFF', '#128807', '🇮🇳'),
+    primaryColor: '#0C2340', secondaryColor: '#FF9933', accentColor: '#128807', highlightColor: '#FFFFFF',
+    badgeText: 'Republic Day Theme',
+    defaultStartDate: '2027-01-20', defaultEndDate: '2027-01-27',
+    heroImages: [{ id: 'rd-hero-1', name: 'Tricolour Celebration', path: festiveGradientImage('Republic Day', '#FF9933', '#FFFFFF', '#128807', '🇮🇳'), desc: 'Tricolour-inspired banner for patriotic gifting.' }],
+    promoImages: [{ id: 'rd-promo-1', name: 'Patriotic Gift Sets', path: festiveGradientImage('Republic Day', '#FF9933', '#FFFFFF', '#128807', '🇮🇳'), desc: 'Custom corporate and personal patriotic gifts.' }],
+    splashImage: festiveGradientImage('Republic Day', '#0C2340', '#FF9933', '#128807', '🇮🇳'),
+    patternImage: TRANSPARENT_PX, decorationImage: null,
+    defaultEyebrow: 'REPUBLIC DAY SPECIALS', defaultHeadline: 'Celebrate Republic Day with Custom Prints',
+    defaultDescription: 'Patriotic mugs, t-shirts, badges and corporate gifts personalised for the occasion.',
+    defaultCtaLabel: 'Explore Republic Day Gifts', defaultCtaLink: '/products',
+    defaultPromoEyebrow: 'TRICOLOUR SPECIALS', defaultPromoTitle: 'Patriotic Custom Gifts',
+    defaultPromoDesc: 'Custom printed mugs, badges and corporate sets for Republic Day celebrations.',
+    defaultPromoCta: 'Shop Republic Day Gifts', defaultPromoCtaLink: '/products',
+    defaultAnnouncementText: 'Republic Day Specials | Patriotic Custom Prints & Gifts', defaultAnnouncementCta: 'Explore Collection'
+  },
+  {
+    id: 'independence-day',
+    name: 'Independence Day',
+    tagline: 'Freedom Fest & National Pride',
+    season: '15 August',
+    thumb: festiveGradientImage('Independence Day', '#FF9933', '#FFFFFF', '#128807', '⭐'),
+    primaryColor: '#0C2340', secondaryColor: '#FF9933', accentColor: '#128807', highlightColor: '#FFFFFF',
+    badgeText: 'Independence Day Theme',
+    defaultStartDate: '2027-08-08', defaultEndDate: '2027-08-16',
+    heroImages: [{ id: 'id-hero-1', name: 'Freedom Fest Celebration', path: festiveGradientImage('Independence Day', '#FF9933', '#FFFFFF', '#128807', '⭐'), desc: 'National-pride banner for Independence Day gifting.' }],
+    promoImages: [{ id: 'id-promo-1', name: 'Freedom Fest Gift Sets', path: festiveGradientImage('Independence Day', '#FF9933', '#FFFFFF', '#128807', '⭐'), desc: 'Custom corporate and personal Independence Day gifts.' }],
+    splashImage: festiveGradientImage('Independence Day', '#0C2340', '#FF9933', '#128807', '⭐'),
+    patternImage: TRANSPARENT_PX, decorationImage: null,
+    defaultEyebrow: 'INDEPENDENCE DAY SPECIALS', defaultHeadline: 'Celebrate Freedom with Custom Prints',
+    defaultDescription: 'Patriotic mugs, t-shirts, badges and corporate gifts personalised for the occasion.',
+    defaultCtaLabel: 'Explore Independence Day Gifts', defaultCtaLink: '/products',
+    defaultPromoEyebrow: 'FREEDOM FEST SPECIALS', defaultPromoTitle: 'Patriotic Custom Gifts',
+    defaultPromoDesc: 'Custom printed mugs, badges and corporate sets for Independence Day celebrations.',
+    defaultPromoCta: 'Shop Independence Day Gifts', defaultPromoCtaLink: '/products',
+    defaultAnnouncementText: 'Independence Day Specials | Patriotic Custom Prints & Gifts', defaultAnnouncementCta: 'Explore Collection'
+  },
+  {
+    id: 'vinayaka-chavithi',
+    name: 'Vinayaka Chavithi',
+    tagline: 'Ganesh Chaturthi Blessings',
+    season: 'Aug - Sep',
+    thumb: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'),
+    primaryColor: '#6B2737', secondaryColor: '#C0392B', accentColor: '#D4AF37', highlightColor: '#F4DCA1',
+    badgeText: 'Vinayaka Chavithi Theme',
+    defaultStartDate: '2027-08-25', defaultEndDate: '2027-09-10',
+    heroImages: [{ id: 'vc-hero-1', name: 'Ganesh Chaturthi Blessings', path: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'), desc: 'Festive banner for Vinayaka Chavithi gifting.' }],
+    promoImages: [{ id: 'vc-promo-1', name: 'Festive Gift Hampers', path: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'), desc: 'Custom gift hampers for the festival.' }],
+    splashImage: festiveGradientImage('Vinayaka Chavithi', '#6B2737', '#C0392B', '#D4AF37', '🐘'),
+    patternImage: TRANSPARENT_PX, decorationImage: null,
+    defaultEyebrow: 'FESTIVE SPECIALS', defaultHeadline: 'Celebrate Vinayaka Chavithi with Personalised Gifts',
+    defaultDescription: 'Custom printed mugs, photo frames and festive corporate gifts for the celebration.',
+    defaultCtaLabel: 'Explore Festive Gifts', defaultCtaLink: '/products',
+    defaultPromoEyebrow: 'VINAYAKA CHAVITHI SPECIALS', defaultPromoTitle: 'Festive Custom Gifts',
+    defaultPromoDesc: 'Celebrate with customised ceramic mugs, photo frames and family keepsakes.',
+    defaultPromoCta: 'Shop Festive Gifts', defaultPromoCtaLink: '/products',
+    defaultAnnouncementText: 'Vinayaka Chavithi Specials | Custom Photo Gifts & Keepsakes', defaultAnnouncementCta: 'Explore Collection'
+  },
+  {
+    id: 'dasara',
+    name: 'Dasara',
+    tagline: 'Victory of Good over Evil',
+    season: 'Sep - Oct',
+    thumb: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'),
+    primaryColor: '#7A0C0C', secondaryColor: '#B8860B', accentColor: '#D4A017', highlightColor: '#F4DCA1',
+    badgeText: 'Dasara Theme',
+    defaultStartDate: '2027-09-20', defaultEndDate: '2027-10-05',
+    heroImages: [{ id: 'ds-hero-1', name: 'Dasara Celebration', path: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'), desc: 'Festive banner for Dasara gifting.' }],
+    promoImages: [{ id: 'ds-promo-1', name: 'Festive Gift Hampers', path: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'), desc: 'Custom gift hampers for Dasara.' }],
+    splashImage: festiveGradientImage('Dasara', '#7A0C0C', '#B8860B', '#D4A017', '⚔️'),
+    patternImage: TRANSPARENT_PX, decorationImage: null,
+    defaultEyebrow: 'DASARA SPECIALS', defaultHeadline: 'Celebrate Dasara with Personalised Gifts',
+    defaultDescription: 'Custom printed mugs, photo frames and festive corporate gifts for the celebration.',
+    defaultCtaLabel: 'Explore Dasara Gifts', defaultCtaLink: '/products',
+    defaultPromoEyebrow: 'DASARA SPECIALS', defaultPromoTitle: 'Festive Custom Gifts',
+    defaultPromoDesc: 'Celebrate with customised ceramic mugs, photo frames and family keepsakes.',
+    defaultPromoCta: 'Shop Festive Gifts', defaultPromoCtaLink: '/products',
+    defaultAnnouncementText: 'Dasara Specials | Custom Photo Gifts & Keepsakes', defaultAnnouncementCta: 'Explore Collection'
+  },
+  {
+    id: 'holi',
+    name: 'Holi',
+    tagline: 'Festival of Colours',
+    season: 'March',
+    thumb: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'),
+    primaryColor: '#7E22CE', secondaryColor: '#E91E8C', accentColor: '#FFC107', highlightColor: '#4CAF50',
+    badgeText: 'Holi Theme',
+    defaultStartDate: '2027-03-10', defaultEndDate: '2027-03-20',
+    heroImages: [{ id: 'holi-hero-1', name: 'Festival of Colours', path: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'), desc: 'Colourful banner for Holi gifting.' }],
+    promoImages: [{ id: 'holi-promo-1', name: 'Colourful Gift Hampers', path: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'), desc: 'Custom gift hampers for Holi.' }],
+    splashImage: festiveGradientImage('Holi', '#E91E8C', '#2196F3', '#FFC107', '🌈'),
+    patternImage: TRANSPARENT_PX, decorationImage: null,
+    defaultEyebrow: 'HOLI SPECIALS', defaultHeadline: 'Celebrate Holi with Colourful Custom Gifts',
+    defaultDescription: 'Custom printed mugs, t-shirts and festive corporate gifts for the celebration.',
+    defaultCtaLabel: 'Explore Holi Gifts', defaultCtaLink: '/products',
+    defaultPromoEyebrow: 'HOLI SPECIALS', defaultPromoTitle: 'Colourful Custom Gifts',
+    defaultPromoDesc: 'Celebrate with customised mugs, t-shirts and festive keepsakes.',
+    defaultPromoCta: 'Shop Holi Gifts', defaultPromoCtaLink: '/products',
+    defaultAnnouncementText: 'Holi Specials | Colourful Custom Prints & Gifts', defaultAnnouncementCta: 'Explore Collection'
+  },
+  {
+    id: 'valentines-day',
+    name: "Valentine's Day",
+    tagline: 'Love & Personalised Gifting',
+    season: '14 February',
+    thumb: festiveGradientImage("Valentine's Day", '#D81B60', '#FF6F91', '#FFC1CC', '❤️'),
+    primaryColor: '#8E0038', secondaryColor: '#D81B60', accentColor: '#FF6F91', highlightColor: '#FFC1CC',
+    badgeText: "Valentine's Day Theme",
+    defaultStartDate: '2027-02-07', defaultEndDate: '2027-02-15',
+    heroImages: [{ id: 'val-hero-1', name: 'Love & Gifting', path: festiveGradientImage("Valentine's Day", '#D81B60', '#FF6F91', '#FFC1CC', '❤️'), desc: 'Romantic banner for Valentine’s Day gifting.' }],
+    promoImages: [{ id: 'val-promo-1', name: 'Romantic Gift Sets', path: festiveGradientImage("Valentine's Day", '#D81B60', '#FF6F91', '#FFC1CC', '❤️'), desc: 'Custom romantic gift sets.' }],
+    splashImage: festiveGradientImage("Valentine's Day", '#8E0038', '#D81B60', '#FF6F91', '❤️'),
+    patternImage: TRANSPARENT_PX, decorationImage: null,
+    defaultEyebrow: "VALENTINE'S SPECIALS", defaultHeadline: 'Gift Love, Personalised',
+    defaultDescription: 'Custom printed mugs, photo frames and couple gifts for your special someone.',
+    defaultCtaLabel: "Explore Valentine's Gifts", defaultCtaLink: '/products',
+    defaultPromoEyebrow: "VALENTINE'S SPECIALS", defaultPromoTitle: 'Romantic Custom Gifts',
+    defaultPromoDesc: 'Celebrate love with customised mugs, photo frames and couple keepsakes.',
+    defaultPromoCta: "Shop Valentine's Gifts", defaultPromoCtaLink: '/products',
+    defaultAnnouncementText: "Valentine's Specials | Romantic Custom Prints & Gifts", defaultAnnouncementCta: 'Explore Collection'
+  },
+  {
+    id: 'raksha-bandhan',
+    name: 'Raksha Bandhan',
+    tagline: 'Bonds of Love',
+    season: 'Aug',
+    thumb: festiveGradientImage('Raksha Bandhan', '#B71C1C', '#D4AF37', '#FFB300', '🩸'),
+    primaryColor: '#7A0C0C', secondaryColor: '#B71C1C', accentColor: '#FFB300', highlightColor: '#F4DCA1',
+    badgeText: 'Raksha Bandhan Theme',
+    defaultStartDate: '2027-08-10', defaultEndDate: '2027-08-20',
+    heroImages: [{ id: 'rb-hero-1', name: 'Bonds of Love', path: festiveGradientImage('Raksha Bandhan', '#B71C1C', '#D4AF37', '#FFB300', '🩸'), desc: 'Festive banner for Raksha Bandhan gifting.' }],
+    promoImages: [{ id: 'rb-promo-1', name: 'Rakhi Gift Hampers', path: festiveGradientImage('Raksha Bandhan', '#B71C1C', '#D4AF37', '#FFB300', '🩸'), desc: 'Custom gift hampers for Raksha Bandhan.' }],
+    splashImage: festiveGradientImage('Raksha Bandhan', '#7A0C0C', '#B71C1C', '#FFB300', '🩸'),
+    patternImage: TRANSPARENT_PX, decorationImage: null,
+    defaultEyebrow: 'RAKSHA BANDHAN SPECIALS', defaultHeadline: 'Celebrate Raksha Bandhan with Personalised Gifts',
+    defaultDescription: 'Custom printed mugs, photo frames and festive gifts for siblings.',
+    defaultCtaLabel: 'Explore Rakhi Gifts', defaultCtaLink: '/products',
+    defaultPromoEyebrow: 'RAKSHA BANDHAN SPECIALS', defaultPromoTitle: 'Rakhi Custom Gifts',
+    defaultPromoDesc: 'Celebrate sibling bonds with customised mugs, photo frames and keepsakes.',
+    defaultPromoCta: 'Shop Rakhi Gifts', defaultPromoCtaLink: '/products',
+    defaultAnnouncementText: 'Raksha Bandhan Specials | Custom Photo Gifts & Keepsakes', defaultAnnouncementCta: 'Explore Collection'
   }
 ];
 
@@ -274,6 +444,34 @@ export function getFestiveTheme(themeId) {
     }
   };
 
+  for (const f of FESTIVALS) {
+    if (THEME_RENDER_DATA[f.id]) continue;
+    THEME_RENDER_DATA[f.id] = {
+      id: f.id,
+      name: f.name,
+      icon: 'spark',
+      layout: 'center',
+      objectPosition: 'center center',
+      heroBannerOptions: f.heroImages.map(h => ({ path: h.path, layout: 'center' })),
+      pattern: f.patternImage,
+      cornerAccent: null,
+      splash: f.splashImage,
+      splashEyebrow: f.badgeText.toUpperCase(),
+      splashHeadline: f.name,
+      splashHighlight: f.tagline,
+      splashSubtext: f.defaultDescription,
+      defaults: {
+        hero_eyebrow: f.defaultEyebrow,
+        hero_headline: f.defaultHeadline,
+        hero_description: f.defaultDescription,
+        hero_cta_label: f.defaultCtaLabel,
+        hero_cta_link: f.defaultCtaLink,
+        hero_secondary_cta_label: 'Shop Personalised Prints',
+        hero_secondary_cta_link: '/products'
+      }
+    };
+  }
+
   return THEME_RENDER_DATA[themeId] || THEME_RENDER_DATA.diwali;
 }
 
@@ -310,13 +508,8 @@ export function buildDefaultFestivalConfig(festivalId) {
 }
 
 export const DEFAULT_FESTIVE_STATE = {
-  active_festival_id: 'none', // 'none' | 'diwali' | 'christmas' | 'new-year' | 'sankranthi'
-  themes: {
-    diwali: buildDefaultFestivalConfig('diwali'),
-    christmas: buildDefaultFestivalConfig('christmas'),
-    'new-year': buildDefaultFestivalConfig('new-year'),
-    sankranthi: buildDefaultFestivalConfig('sankranthi')
-  },
+  active_festival_id: 'none', // 'none' | one of FESTIVALS[].id
+  themes: Object.fromEntries(FESTIVALS.map(f => [f.id, buildDefaultFestivalConfig(f.id)])),
   updated_at: new Date().toISOString()
 };
 

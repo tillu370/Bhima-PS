@@ -8,8 +8,12 @@ import { useDialog } from '../lib/useDialog.js';
 import { errMsg, fmtDate, imgUrl, money, slugify } from '../lib/utils.js';
 import { fetchCurrentDeal, saveDeal, DEFAULT_DEAL } from '../lib/dealData.js';
 import { DiwaliThemeManager } from '../components/DiwaliThemeManager.jsx';
+import { FESTIVALS } from '../lib/festiveThemeData.js';
+import { normalizeWhatsAppNumber, saveWhatsAppNumber, validateWhatsAppNumber, buildWhatsAppUrl, buildGeneralEnquiryMessage, useWhatsAppNumber } from '../lib/whatsappData.js';
+import { fetchPromoVideo, savePromoVideo, DEFAULT_PROMO_VIDEO } from '../lib/videoData.js';
+import { FRAME_TIERS, isFrameCategory, frameTierLabel, fetchFrameTierRanges, saveFrameTierRange } from '../lib/frameTiers.js';
 
-const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal', 'festival'];
+const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal', 'discounts', 'whatsapp', 'video', 'festival'];
 const ORDER_STATUSES = ['new', 'contacted', 'confirmed', 'printing', 'delivered', 'cancelled'];
 const ENQ_STATUSES = ['new', 'contacted', 'closed'];
 const REVIEW_STATUSES = ['pending', 'approved', 'rejected'];
@@ -270,7 +274,8 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   const [f, setF] = useState({
     name: p ? p.name : '', slug: p ? p.slug : '', category_id: p ? p.category_id : (cats[0] ? cats[0].id : ''),
     price: p && p.price_from != null ? String(p.price_from) : '', sort_order: p ? p.sort_order : 0, description: p ? p.description || '' : '',
-    image_url: p ? p.image_url || '' : '', image_url_2: p ? p.image_url_2 || '' : '', is_active: p ? p.is_active : true, is_featured: p ? p.is_featured : false
+    image_url: p ? p.image_url || '' : '', image_url_2: p ? p.image_url_2 || '' : '', is_active: p ? p.is_active : true, is_featured: p ? p.is_featured : false,
+    frame_tier: p ? p.frame_tier || '' : ''
   });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -279,6 +284,7 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
 
   const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const onName = e => setF(cur => ({ ...cur, name: e.target.value, slug: p ? cur.slug : slugify(e.target.value) }));
+  const isFrame = isFrameCategory(cats.find(c => c.id === f.category_id)?.slug);
 
   const submit = async e => {
     e.preventDefault();
@@ -298,7 +304,8 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
     }
     const row = {
       name: f.name.trim(), slug: f.slug, category_id: f.category_id, price_from: price, sort_order: parseInt(f.sort_order, 10) || 0,
-      description: f.description.trim() || null, image_url, image_url_2: f.image_url_2.trim() || null, is_active: f.is_active, is_featured: f.is_featured
+      description: f.description.trim() || null, image_url, image_url_2: f.image_url_2.trim() || null, is_active: f.is_active, is_featured: f.is_featured,
+      frame_tier: isFrame ? (f.frame_tier || null) : null
     };
     const { error: err } = p ? await supabase.from('products').update(row).eq('id', p.id) : await supabase.from('products').insert(row);
     setBusy(false);
@@ -333,6 +340,14 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
           <label htmlFor="pImgUrl2" style={{ marginTop: 8 }}>Second image URL (shown on hover in the product grid, optional)</label>
           <input id="pImgUrl2" value={f.image_url_2} onChange={set('image_url_2')} placeholder="https://… or /images/…" />
         </div>
+        {isFrame && (
+          <div className="field"><label htmlFor="pFrameTier">Price tier</label>
+            <select id="pFrameTier" value={f.frame_tier} onChange={set('frame_tier')}>
+              <option value="">No tier</option>
+              {FRAME_TIERS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </div>
+        )}
         <div className="check-row">
           <label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Visible in store</label>
           <label><input type="checkbox" checked={f.is_featured} onChange={set('is_featured')} /> Featured on home page</label>
@@ -343,12 +358,55 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   );
 }
 
+function FrameTierRanges() {
+  const { toast } = useUi();
+  const state = useLoad(fetchFrameTierRanges, []);
+  const [open, setOpen] = useState(false);
+  const [busyTier, setBusyTier] = useState(null);
+
+  const save = async (tier, min_price, max_price) => {
+    setBusyTier(tier);
+    const res = await saveFrameTierRange(tier, min_price, max_price);
+    setBusyTier(null);
+    if (!res.success) return toast(res.error, 'error');
+    toast('Price range saved');
+    state.reload();
+  };
+
+  return (
+    <div className="state-box" style={{ marginBottom: 16, textAlign: 'left' }}>
+      <button type="button" className="link-btn" onClick={() => setOpen(o => !o)}>{open ? '▾' : '▸'} Photo frame price tier ranges (optional, for reference only)</button>
+      {open && (
+        <Async state={state}>{ranges => (
+          <div className="field-row" style={{ marginTop: 10, flexWrap: 'wrap' }}>
+            {FRAME_TIERS.map(t => {
+              const r = ranges[t.value] || {};
+              return (
+                <div key={t.value} className="field" style={{ minWidth: 220 }}>
+                  <label>{t.label}</label>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <input id={'min-' + t.value} type="number" min="0" step="1" defaultValue={r.min_price ?? ''} placeholder="Min ₹"
+                      onBlur={e => save(t.value, e.target.value, document.getElementById('max-' + t.value)?.value ?? r.max_price)} />
+                    <input id={'max-' + t.value} type="number" min="0" step="1" defaultValue={r.max_price ?? ''} placeholder="Max ₹"
+                      onBlur={e => save(t.value, document.getElementById('min-' + t.value)?.value ?? r.min_price, e.target.value)} />
+                  </div>
+                  {busyTier === t.value && <small className="muted">Saving…</small>}
+                </div>
+              );
+            })}
+          </div>
+        )}</Async>
+      )}
+    </div>
+  );
+}
+
 function Products() {
   const { toast } = useUi();
   const state = useLoad(async () => {
     const [c, p] = await Promise.all([
       supabase.from('categories').select('*').order('sort_order'),
-      supabase.from('products').select('*, categories(name)').order('sort_order')
+      supabase.from('products').select('*, categories(name,slug)').order('sort_order')
     ]);
     return { cats: must(c), products: must(p) };
   }, []);
@@ -368,6 +426,7 @@ function Products() {
   return (
     <>
       <div className="panel-head"><h2>Products</h2><button className="btn btn-primary btn-sm" onClick={() => setEditing(null)}>Add product</button></div>
+      <FrameTierRanges />
       <Async state={state}>{({ cats, products }) => {
         const needle = q.trim().toLowerCase();
         const list = products.filter(p => !needle || [p.name, p.slug, p.categories?.name].some(v => (v || '').toLowerCase().includes(needle)));
@@ -391,7 +450,7 @@ function Products() {
                       <td data-label="Name"><strong>{p.name}</strong><br /><small style={{ color: '#64748b' }}>/{p.slug}</small></td>
                       <td data-label="Category">{p.categories ? p.categories.name : '-'}</td>
                       <td data-label="From">{p.price_from == null ? 'On request' : money(p.price_from)}</td>
-                      <td data-label="Status"><span className={'badge ' + (p.is_active ? 'on' : 'off')}>{p.is_active ? 'Active' : 'Hidden'}</span>{p.is_featured && <> <span className="badge confirmed">Featured</span></>}</td>
+                      <td data-label="Status"><span className={'badge ' + (p.is_active ? 'on' : 'off')}>{p.is_active ? 'Active' : 'Hidden'}</span>{p.is_featured && <> <span className="badge confirmed">Featured</span></>}{p.frame_tier && <> <span className="badge">{frameTierLabel(p.frame_tier)}</span></>}</td>
                       <td data-label=""><div className="row-actions"><button className="btn btn-secondary btn-sm" onClick={() => setEditing(p)}>Edit</button><button className="btn btn-danger btn-sm" onClick={() => remove(p)}>Delete</button></div></td>
                     </tr>
                   ))}
@@ -518,40 +577,103 @@ function Categories() {
   );
 }
 
+// Reviews are created and managed exclusively by admins (customers cannot submit
+// reviews — enforced server-side via RLS, see the admin-enhancements migration).
+function ReviewForm({ review: r, products, onClose, onSaved }) {
+  const { toast } = useUi();
+  const [f, setF] = useState({
+    product_id: r ? r.product_id : (products[0]?.id || ''), name: r ? r.name : '', rating: r ? r.rating : 5,
+    comment: r ? r.comment || '' : '', status: r ? r.status : 'approved'
+  });
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const set = k => e => setF(cur => ({ ...cur, [k]: e.target.value }));
+
+  const submit = async e => {
+    e.preventDefault();
+    setError('');
+    if (!f.product_id) return setError('Choose a product.');
+    if (f.name.trim().length < 2) return setError('Enter the customer’s display name.');
+    const rating = parseInt(f.rating, 10);
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) return setError('Choose a rating between 1 and 5.');
+    setBusy(true);
+    const row = { product_id: f.product_id, name: f.name.trim(), rating, comment: f.comment.trim().slice(0, 2000) || null, status: f.status };
+    const { error: err } = r ? await supabase.from('reviews').update(row).eq('id', r.id) : await supabase.from('reviews').insert(row);
+    setBusy(false);
+    if (err) return setError(err.message);
+    toast(r ? 'Review saved' : 'Review added');
+    onSaved();
+  };
+
+  return (
+    <Modal title={r ? 'Edit review' : 'Add review on behalf of a customer'} onClose={onClose}>
+      <form onSubmit={submit} noValidate>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <div className="field"><label htmlFor="rvProduct">Product *</label>
+          <select id="rvProduct" required value={f.product_id} onChange={set('product_id')}>
+            {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select></div>
+        <div className="field-row">
+          <div className="field"><label htmlFor="rvName">Display name *</label><input id="rvName" required maxLength={100} value={f.name} onChange={set('name')} placeholder="e.g. Anitha K." /></div>
+          <div className="field"><label htmlFor="rvRating">Rating *</label>
+            <select id="rvRating" value={f.rating} onChange={set('rating')}>
+              {[5, 4, 3, 2, 1].map(n => <option key={n} value={n}>{n} star{n > 1 ? 's' : ''}</option>)}
+            </select></div>
+        </div>
+        <div className="field"><label htmlFor="rvComment">Review text</label><textarea id="rvComment" maxLength={2000} rows={3} value={f.comment} onChange={set('comment')} /></div>
+        <div className="field"><label htmlFor="rvStatus">Status *</label>
+          <select id="rvStatus" value={f.status} onChange={set('status')}>
+            {REVIEW_STATUSES.map(s => <option key={s} value={s}>{s === 'approved' ? 'Published (visible to customers)' : s === 'rejected' ? 'Unpublished' : 'Pending'}</option>)}
+          </select></div>
+        <button className="btn btn-primary btn-block" type="submit" disabled={busy}>{busy ? 'Saving…' : r ? 'Save changes' : 'Add review'}</button>
+      </form>
+    </Modal>
+  );
+}
+
 function Reviews() {
   const { toast } = useUi();
-  const state = useLoad(async () => must(await supabase.from('reviews').select('*, products(name,slug)').order('created_at', { ascending: false })), []);
-  const [filter, setFilter] = useState('pending');
+  const state = useLoad(async () => {
+    const [r, p] = await Promise.all([
+      supabase.from('reviews').select('*, products(name,slug)').order('created_at', { ascending: false }),
+      supabase.from('products').select('id,name').order('sort_order')
+    ]);
+    return { rows: must(r), products: must(p) };
+  }, []);
+  const [filter, setFilter] = useState('');
   const [q, setQ] = useState('');
+  const [editing, setEditing] = useState(undefined);
 
   const setStatus = async (r, status) => {
     const { error } = await supabase.from('reviews').update({ status }).eq('id', r.id);
     if (error) { toast(error.message, 'error'); return; }
-    state.setData(rows => rows.map(x => (x.id === r.id ? { ...x, status } : x)));
-    toast(status === 'approved' ? 'Review approved — now visible on the product page' : 'Review updated');
+    state.setData(cur => ({ ...cur, rows: cur.rows.map(x => (x.id === r.id ? { ...x, status } : x)) }));
+    toast(status === 'approved' ? 'Review published — now visible on the product page' : 'Review updated');
   };
   const remove = async r => {
     if (!window.confirm(`Delete this review from "${r.name}"?`)) return;
     const { error } = await supabase.from('reviews').delete().eq('id', r.id);
     if (error) { toast(error.message, 'error'); return; }
-    state.setData(rows => rows.filter(x => x.id !== r.id));
+    state.setData(cur => ({ ...cur, rows: cur.rows.filter(x => x.id !== r.id) }));
     toast('Review deleted');
   };
 
   return (
-    <Async state={state}>{rows => {
+    <Async state={state}>{({ rows, products }) => {
       const needle = q.trim().toLowerCase();
       const list = rows.filter(r => (!filter || r.status === filter)
         && (!needle || [r.name, r.comment, r.products?.name].some(v => (v || '').toLowerCase().includes(needle))));
       return (
         <>
+          <div className="panel-head"><h2>Reviews</h2><button className="btn btn-primary btn-sm" disabled={!products.length} onClick={() => setEditing(null)}>Add review</button></div>
+          <p className="muted" style={{ marginTop: -6 }}>Reviews are created and published by admins only — there is no customer submission form, on this site or via the API.</p>
           <div className="admin-filters">
             <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, product or text…" aria-label="Search reviews" />
             <select value={filter} onChange={e => setFilter(e.target.value)} aria-label="Filter by status">
               <option value="">All statuses</option>{REVIEW_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-          {!rows.length ? <div className="state-box"><h3>No reviews yet</h3><p>Customer reviews submitted on a product page land here for approval.</p></div>
+          {!rows.length ? <div className="state-box"><h3>No reviews yet</h3><p>Use "Add review" to publish a review on a customer's behalf.</p></div>
            : !list.length ? <div className="state-box"><h3>No reviews match</h3><p>Try a different search word or status.</p></div> : (
             <ul className="review-list admin-review-list">
               {list.map(r => (
@@ -565,14 +687,16 @@ function Reviews() {
                   </div>
                   {r.comment && <p>{r.comment}</p>}
                   <div className="row-actions">
-                    {r.status !== 'approved' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(r, 'approved')}>Approve</button>}
-                    {r.status !== 'rejected' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(r, 'rejected')}>Reject</button>}
+                    <button className="btn btn-secondary btn-sm" onClick={() => setEditing(r)}>Edit</button>
+                    {r.status !== 'approved' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(r, 'approved')}>Publish</button>}
+                    {r.status !== 'rejected' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(r, 'rejected')}>Unpublish</button>}
                     <button className="btn btn-danger btn-sm" onClick={() => remove(r)}>Delete</button>
                   </div>
                 </li>
               ))}
             </ul>
           )}
+          {editing !== undefined && <ReviewForm review={editing} products={products} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); state.reload(); }} />}
         </>
       );
     }}</Async>
@@ -1050,6 +1174,257 @@ function DealManager() {
   );
 }
 
+/* --------------------------------------------------------------- discounts */
+const DISCOUNT_SCOPES = [
+  { value: 'all', label: 'All products' },
+  { value: 'category', label: 'One category' },
+  { value: 'products', label: 'Specific products' }
+];
+
+function DiscountForm({ campaign: c, cats, products, onClose, onSaved }) {
+  const { toast } = useUi();
+  const [f, setF] = useState({
+    name: c ? c.name : '', percent: c ? String(c.percent) : '10',
+    scope: c ? c.scope : 'all', category_id: c?.category_id || (cats[0]?.id || ''),
+    product_ids: c ? c.product_ids || [] : [],
+    start_date: c?.start_date || '', end_date: c?.end_date || '', is_active: c ? c.is_active : true
+  });
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+  const toggleProduct = id => setF(cur => ({ ...cur, product_ids: cur.product_ids.includes(id) ? cur.product_ids.filter(x => x !== id) : [...cur.product_ids, id] }));
+
+  const submit = async e => {
+    e.preventDefault();
+    setError('');
+    const percent = parseFloat(f.percent);
+    if (f.name.trim().length < 2) return setError('Please enter a campaign name.');
+    if (!Number.isFinite(percent) || percent <= 0 || percent > 90) return setError('Enter a discount percentage between 1 and 90.');
+    if (f.scope === 'category' && !f.category_id) return setError('Choose a category for this campaign.');
+    if (f.scope === 'products' && !f.product_ids.length) return setError('Choose at least one product for this campaign.');
+    if (f.start_date && f.end_date && f.start_date > f.end_date) return setError('The start date must be before the end date.');
+    setBusy(true);
+    const row = {
+      name: f.name.trim(), percent, scope: f.scope,
+      category_id: f.scope === 'category' ? f.category_id : null,
+      product_ids: f.scope === 'products' ? f.product_ids : [],
+      start_date: f.start_date || null, end_date: f.end_date || null, is_active: f.is_active
+    };
+    const { error: err } = c ? await supabase.from('discount_campaigns').update(row).eq('id', c.id) : await supabase.from('discount_campaigns').insert(row);
+    setBusy(false);
+    if (err) return setError(err.message);
+    toast(c ? 'Campaign saved' : 'Campaign created');
+    onSaved();
+  };
+
+  return (
+    <Modal title={c ? 'Edit discount campaign' : 'New discount campaign'} onClose={onClose}>
+      <form onSubmit={submit} noValidate>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <div className="field"><label htmlFor="dName">Campaign name *</label><input id="dName" required maxLength={120} value={f.name} onChange={set('name')} placeholder="e.g. Festive Season Sale" /></div>
+        <div className="field-row">
+          <div className="field"><label htmlFor="dPercent">Discount % *</label><input id="dPercent" type="number" min="1" max="90" step="1" required value={f.percent} onChange={set('percent')} /></div>
+          <div className="field"><label htmlFor="dScope">Applies to *</label>
+            <select id="dScope" value={f.scope} onChange={set('scope')}>
+              {DISCOUNT_SCOPES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+            </select></div>
+        </div>
+        {f.scope === 'category' && (
+          <div className="field"><label htmlFor="dCat">Category *</label>
+            <select id="dCat" value={f.category_id} onChange={set('category_id')}>
+              {cats.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+            </select></div>
+        )}
+        {f.scope === 'products' && (
+          <div className="field">
+            <label>Products * ({f.product_ids.length} selected)</label>
+            <div className="table-wrap" style={{ maxHeight: 220, overflowY: 'auto' }}>
+              {products.map(p => (
+                <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 8px' }}>
+                  <input type="checkbox" checked={f.product_ids.includes(p.id)} onChange={() => toggleProduct(p.id)} /> {p.name}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="field-row">
+          <div className="field"><label htmlFor="dStart">Start date (optional)</label><input id="dStart" type="date" value={f.start_date} onChange={set('start_date')} /></div>
+          <div className="field"><label htmlFor="dEnd">End date (optional)</label><input id="dEnd" type="date" value={f.end_date} onChange={set('end_date')} /></div>
+        </div>
+        <div className="check-row"><label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Active</label></div>
+        <p className="muted" style={{ fontSize: '.85rem' }}>Discounted prices are rounded to the nearest rupee and shown with the original price struck through. A product never gets two discounts at once — a running campaign always takes priority over a bulk-quantity discount.</p>
+        <button className="btn btn-primary btn-block" type="submit" disabled={busy}>{busy ? 'Saving…' : c ? 'Save changes' : 'Create campaign'}</button>
+      </form>
+    </Modal>
+  );
+}
+
+function DiscountManager() {
+  const { toast } = useUi();
+  const state = useLoad(async () => {
+    const [d, c, p] = await Promise.all([
+      supabase.from('discount_campaigns').select('*').order('created_at', { ascending: false }),
+      supabase.from('categories').select('id,name').order('sort_order'),
+      supabase.from('products').select('id,name').order('sort_order')
+    ]);
+    return { campaigns: must(d), cats: must(c), products: must(p) };
+  }, []);
+  const [editing, setEditing] = useState(undefined);
+
+  const toggleActive = async c => {
+    const { error } = await supabase.from('discount_campaigns').update({ is_active: !c.is_active }).eq('id', c.id);
+    if (error) return toast(error.message, 'error');
+    state.reload();
+  };
+  const remove = async c => {
+    if (!window.confirm(`Delete the campaign "${c.name}"?`)) return;
+    const { error } = await supabase.from('discount_campaigns').delete().eq('id', c.id);
+    if (error) return toast(error.message, 'error');
+    toast('Campaign deleted');
+    state.reload();
+  };
+
+  const today = new Date().toISOString().slice(0, 10);
+  const scopeLabel = (c, cats) => c.scope === 'all' ? 'All products' : c.scope === 'category' ? (cats.find(x => x.id === c.category_id)?.name || 'Category') : `${c.product_ids.length} product${c.product_ids.length === 1 ? '' : 's'}`;
+  const isLive = c => c.is_active && (!c.start_date || today >= c.start_date) && (!c.end_date || today <= c.end_date);
+
+  return (
+    <>
+      <div className="panel-head"><h2>Discount Campaigns</h2><button className="btn btn-primary btn-sm" onClick={() => setEditing(null)}>New campaign</button></div>
+      <p className="muted" style={{ marginTop: -6 }}>Percentage-based "X% OFF" badges shown on the storefront. These are separate from Deal of the Day.</p>
+      <Async state={state}>{({ campaigns, cats, products }) => (
+        <>
+          {!campaigns.length ? <div className="state-box"><h3>No discount campaigns yet</h3></div> : (
+            <div className="table-wrap">
+              <table className="data-table">
+                <thead><tr><th>Name</th><th>Discount</th><th>Applies to</th><th>Dates</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  {campaigns.map(c => (
+                    <tr key={c.id}>
+                      <td data-label="Name"><strong>{c.name}</strong></td>
+                      <td data-label="Discount">{c.percent}% OFF</td>
+                      <td data-label="Applies to">{scopeLabel(c, cats)}</td>
+                      <td data-label="Dates">{c.start_date || 'Anytime'} → {c.end_date || 'No end'}</td>
+                      <td data-label="Status"><span className={'badge ' + (isLive(c) ? 'on' : 'off')}>{isLive(c) ? 'Live' : (c.is_active ? 'Scheduled / Expired' : 'Inactive')}</span></td>
+                      <td data-label="">
+                        <div className="row-actions">
+                          <button className="btn btn-secondary btn-sm" onClick={() => setEditing(c)}>Edit</button>
+                          <button className="btn btn-secondary btn-sm" onClick={() => toggleActive(c)}>{c.is_active ? 'Deactivate' : 'Activate'}</button>
+                          <button className="btn btn-danger btn-sm" onClick={() => remove(c)}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {editing !== undefined && <DiscountForm campaign={editing} cats={cats} products={products} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); state.reload(); }} />}
+        </>
+      )}</Async>
+    </>
+  );
+}
+
+/* --------------------------------------------------------------- whatsapp */
+function WhatsAppSettings() {
+  const { toast } = useUi();
+  const liveNumber = useWhatsAppNumber();
+  const [value, setValue] = useState('');
+  const [touched, setTouched] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => { if (!touched) setValue(liveNumber); }, [liveNumber, touched]);
+
+  const preview = buildWhatsAppUrl(buildGeneralEnquiryMessage());
+  const validation = touched ? validateWhatsAppNumber(value) : '';
+
+  const submit = async e => {
+    e.preventDefault();
+    setError('');
+    const v = validateWhatsAppNumber(value);
+    if (v) return setError(v);
+    setBusy(true);
+    const res = await saveWhatsAppNumber(value);
+    setBusy(false);
+    if (!res.success) return setError(res.error);
+    setValue(res.number); setTouched(false);
+    toast('WhatsApp number updated — all WhatsApp buttons on the site now use this number.');
+  };
+
+  return (
+    <>
+      <h2>WhatsApp Settings</h2>
+      <p className="muted">This number powers every WhatsApp button and link across the storefront (chat bubble, footer, checkout, deal alerts and product enquiries). There is only one place to change it.</p>
+      <form onSubmit={submit} noValidate style={{ maxWidth: 480 }}>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <div className="field">
+          <label htmlFor="waNum">Business WhatsApp number (with country code, no + or spaces) *</label>
+          <input id="waNum" required value={value} onChange={e => { setValue(normalizeWhatsAppNumber(e.target.value)); setTouched(true); }} placeholder="919491811360" inputMode="numeric" />
+          {validation && <p className="form-error" role="alert">{validation}</p>}
+        </div>
+        <button className="btn btn-primary" type="submit" disabled={busy || !!validation}>{busy ? 'Saving…' : 'Save number'}</button>
+      </form>
+      <div style={{ marginTop: 20 }}>
+        <h3 style={{ fontSize: '1rem' }}>Preview</h3>
+        {validateWhatsAppNumber(value) ? <p className="muted">Enter a valid number to preview the chat link.</p> : (
+          <a className="btn btn-secondary btn-sm" href={buildWhatsAppUrl(buildGeneralEnquiryMessage())} target="_blank" rel="noopener noreferrer">Open WhatsApp chat preview →</a>
+        )}
+      </div>
+    </>
+  );
+}
+
+/* --------------------------------------------------------------- promo video */
+function PromoVideoManager() {
+  const { toast } = useUi();
+  const state = useLoad(async () => await fetchPromoVideo(), []);
+  const [f, setF] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => { if (state.data && !f) setF(state.data); }, [state.data, f]);
+  const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+
+  const submit = async e => {
+    e.preventDefault();
+    setError('');
+    if (f.is_active && !f.video_url.trim()) return setError('Add a video URL before enabling this section, or leave it disabled.');
+    setBusy(true);
+    const res = await savePromoVideo(f);
+    setBusy(false);
+    if (!res.success) return setError(res.error);
+    toast('Promo video saved');
+    setF(res.data);
+  };
+
+  if (!f) return <div className="sk-block" style={{ minHeight: 220 }} />;
+  return (
+    <>
+      <h2>Promotional Video</h2>
+      <p className="muted">A short brand / product / process video shown on the home page. Leave the section disabled, or the URL empty, and nothing broken shows on the storefront — the section is simply hidden.</p>
+      <form onSubmit={submit} noValidate style={{ maxWidth: 560 }}>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <div className="check-row"><label><input type="checkbox" checked={f.is_active} onChange={set('is_active')} /> Show this section on the home page</label></div>
+        <div className="field"><label htmlFor="pvUrl">Video URL (MP4 or a direct video link) *</label><input id="pvUrl" value={f.video_url || ''} onChange={set('video_url')} placeholder="https://…/showcase.mp4" /></div>
+        <div className="field"><label htmlFor="pvThumb">Thumbnail / poster image URL</label><input id="pvThumb" value={f.thumbnail_url || ''} onChange={set('thumbnail_url')} placeholder="https://…/poster.jpg" /></div>
+        <div className="field"><label htmlFor="pvTitle">Title</label><input id="pvTitle" maxLength={120} value={f.title || ''} onChange={set('title')} /></div>
+        <div className="field"><label htmlFor="pvDesc">Short description</label><textarea id="pvDesc" maxLength={300} value={f.description || ''} onChange={set('description')} /></div>
+        <div className="field-row">
+          <div className="field"><label htmlFor="pvCtaLabel">CTA label</label><input id="pvCtaLabel" maxLength={60} value={f.cta_label || ''} onChange={set('cta_label')} /></div>
+          <div className="field"><label htmlFor="pvCtaLink">CTA link</label><input id="pvCtaLink" maxLength={200} value={f.cta_link || ''} onChange={set('cta_link')} /></div>
+        </div>
+        <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
+      </form>
+      {f.is_active && f.video_url && (
+        <div style={{ marginTop: 20, maxWidth: 480 }}>
+          <h3 style={{ fontSize: '1rem' }}>Preview</h3>
+          <video src={f.video_url} poster={f.thumbnail_url || undefined} controls muted style={{ width: '100%', borderRadius: 12 }} />
+        </div>
+      )}
+    </>
+  );
+}
+
 /* ----------------------------------------------------------------------- page */
 // Small "new" counts shown as a badge next to the Orders / Enquiries nav links, so admins can see
 // at a glance whether anything needs attention without opening each tab.
@@ -1083,7 +1458,7 @@ export default function Admin() {
   if (!user) return <>{hero}<PageSection><StateBox title="Admin login required" action={<Link className="btn btn-primary" to="/login?next=/admin">Log in</Link>}>Log in with an admin account.</StateBox></PageSection></>;
   if (!isAdmin) return <>{hero}<PageSection><StateBox title="Access denied" action={<Link className="btn btn-primary" to="/account">Go to My Account</Link>}>This account does not have admin access.</StateBox></PageSection></>;
 
-  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers, deal: DealManager, festival: DiwaliThemeManager }[tab];
+  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers, deal: DealManager, discounts: DiscountManager, whatsapp: WhatsAppSettings, video: PromoVideoManager, festival: DiwaliThemeManager }[tab];
   return (
     <>
       {hero}
@@ -1095,11 +1470,14 @@ export default function Admin() {
                 const n = (t === 'orders' || t === 'enquiries' || t === 'reviews') ? navCounts[t] : null;
                 const label = t === 'deal'
                   ? 'Deal of the Day'
+                  : t === 'discounts' ? 'Discounts'
+                  : t === 'whatsapp' ? 'WhatsApp'
+                  : t === 'video' ? 'Promo Video'
                   : (t === 'festival' ? 'Festive Theme' : (t[0].toUpperCase() + t.slice(1)));
                 return (
                   <button key={t} role="tab" aria-selected={tab === t} onClick={() => goTab(t)}>
                     <span>{label}</span>
-                    {t === 'festival' && <span className="festive-tab-badge" style={{ fontSize: '0.72rem', padding: '1px 6px', borderRadius: 9999, background: '#fef3c7', color: '#92400e', fontWeight: 800 }}>✦ 4</span>}
+                    {t === 'festival' && <span className="festive-tab-badge" style={{ fontSize: '0.72rem', padding: '1px 6px', borderRadius: 9999, background: '#fef3c7', color: '#92400e', fontWeight: 800 }}>✦ {FESTIVALS.length}</span>}
                     {!!n && <span className="count">{n}</span>}
                   </button>
                 );
@@ -1107,7 +1485,7 @@ export default function Admin() {
               <Link to="/account">My Account</Link>
             </nav>
             <div className={'panel' + (tab === 'festival' ? ' admin-panel-clean' : '')} role="tabpanel">
-              {tab !== 'products' && tab !== 'categories' && tab !== 'deal' && tab !== 'festival' && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
+              {!['products', 'categories', 'reviews', 'deal', 'discounts', 'whatsapp', 'video', 'festival'].includes(tab) && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
               {tab === 'overview' ? <Overview goTab={goTab} key={tab} /> : <View key={tab} />}
             </div>
           </div>
