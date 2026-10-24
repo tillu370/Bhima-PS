@@ -771,6 +771,33 @@ function DealManager() {
     setDeal(prev => ({ ...prev, [field]: val }));
   };
 
+  // Original price, deal price and discount % are kept in sync: editing any one
+  // of the three recalculates the other two, so they never drift apart.
+  const handleOrigPriceChange = val => {
+    setDeal(prev => {
+      const o = Number(val) || 0;
+      const d = Number(prev.deal_price) || 0;
+      const pct = o > 0 ? Math.max(0, Math.min(99, Math.round(((o - d) / o) * 100))) : 0;
+      return { ...prev, original_price: val, discount_tag: o > 0 && d > 0 ? pct + '% OFF' : prev.discount_tag };
+    });
+  };
+  const handleDealPriceChange = val => {
+    setDeal(prev => {
+      const o = Number(prev.original_price) || 0;
+      const d = Number(val) || 0;
+      const pct = o > 0 ? Math.max(0, Math.min(99, Math.round(((o - d) / o) * 100))) : 0;
+      return { ...prev, deal_price: val, discount_tag: o > 0 ? pct + '% OFF' : prev.discount_tag };
+    });
+  };
+  const handlePctChange = val => {
+    setDeal(prev => {
+      const o = Number(prev.original_price) || 0;
+      const pct = Math.max(0, Math.min(99, Number(val) || 0));
+      const newDealPrice = o > 0 ? Math.round(o * (1 - pct / 100)) : prev.deal_price;
+      return { ...prev, deal_price: newDealPrice, discount_tag: pct + '% OFF' };
+    });
+  };
+
   const applyPreset = preset => {
     setDeal(prev => ({
       ...prev,
@@ -844,6 +871,7 @@ function DealManager() {
 
   const origNum = Number(deal.original_price) || 0;
   const dealNum = Number(deal.deal_price) || 0;
+  const derivedPct = origNum > 0 ? Math.max(0, Math.min(99, Math.round(((origNum - dealNum) / origNum) * 100))) : '';
   const hasSavings = origNum > dealNum;
   const savings = hasSavings ? origNum - dealNum : 0;
   const displayImage = preview || deal.image_url;
@@ -987,7 +1015,7 @@ function DealManager() {
               />
             </div>
             <div className="field">
-              <label htmlFor="dealDiscount">Discount Tag</label>
+              <label htmlFor="dealDiscount">Discount Tag (auto-updates with price/% below)</label>
               <input
                 id="dealDiscount"
                 value={deal.discount_tag || ''}
@@ -1028,7 +1056,7 @@ function DealManager() {
                 min="0"
                 step="1"
                 value={deal.original_price ?? ''}
-                onChange={e => setField('original_price', e.target.value)}
+                onChange={e => handleOrigPriceChange(e.target.value)}
                 placeholder="350"
               />
             </div>
@@ -1040,10 +1068,25 @@ function DealManager() {
                 min="0"
                 step="1"
                 value={deal.deal_price ?? ''}
-                onChange={e => setField('deal_price', e.target.value)}
+                onChange={e => handleDealPriceChange(e.target.value)}
                 placeholder="249"
                 required
               />
+            </div>
+            <div className="field">
+              <label htmlFor="dealPct">Discount %</label>
+              <input
+                id="dealPct"
+                type="number"
+                min="0"
+                max="99"
+                step="1"
+                value={derivedPct}
+                onChange={e => handlePctChange(e.target.value)}
+                placeholder="30"
+                disabled={!origNum}
+              />
+              {!origNum && <small className="muted">Enter an original price first</small>}
             </div>
           </div>
 
