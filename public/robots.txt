@@ -6,4 +6,4 @@ Disallow: /login
 Disallow: /account
 Disallow: /admin
 
-Sitemap: https://your-domain-here.com/sitemap.xml
+Sitemap: https://bhimaprintsolutions.in/sitemap.xml
