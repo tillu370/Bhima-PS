@@ -7,8 +7,11 @@ const STORAGE_KEY = 'bps_whatsapp_number';
 // A WhatsApp number must be digits only, country code included, 7-15 digits (E.164 without the '+').
 export const PHONE_DIGITS_RE = /^[0-9]{7,15}$/;
 
+// wa.me needs the country code: "9491811360" would be read as a +94 (Sri Lanka)
+// number, so a bare 10-digit Indian mobile (or 0-prefixed one) gets 91 added.
 export function normalizeWhatsAppNumber(raw) {
   const digits = String(raw || '').replace(/\D/g, '');
+  if (/^0?[6-9]\d{9}$/.test(digits)) return '91' + digits.slice(-10);
   return digits;
 }
 
@@ -21,7 +24,7 @@ export function validateWhatsAppNumber(raw) {
 
 export function getCachedWhatsAppNumber() {
   try {
-    const cached = localStorage.getItem(STORAGE_KEY);
+    const cached = normalizeWhatsAppNumber(localStorage.getItem(STORAGE_KEY));
     if (cached && PHONE_DIGITS_RE.test(cached)) return cached;
   } catch (e) { /* ignore */ }
   return DEFAULT_NUMBER;
@@ -37,9 +40,10 @@ function setCachedWhatsAppNumber(number) {
 export async function fetchWhatsAppNumber() {
   try {
     const { data, error } = await supabase.from('site_settings').select('whatsapp_number').eq('id', 'global').maybeSingle();
-    if (!error && data && PHONE_DIGITS_RE.test(data.whatsapp_number || '')) {
-      setCachedWhatsAppNumber(data.whatsapp_number);
-      return data.whatsapp_number;
+    const number = normalizeWhatsAppNumber(data?.whatsapp_number);
+    if (!error && PHONE_DIGITS_RE.test(number)) {
+      setCachedWhatsAppNumber(number);
+      return number;
     }
   } catch (err) { /* offline or table not yet migrated: fall back to cache */ }
   return getCachedWhatsAppNumber();

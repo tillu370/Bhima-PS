@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
 import { useDialog } from '../lib/useDialog.js';
-import { errMsg, fmtDate, imgUrl, money, slugify } from '../lib/utils.js';
+import { errMsg, fmtDate, imgUrl, localDateStr, money, slugify } from '../lib/utils.js';
 import { fetchCurrentDeal, saveDeal, DEFAULT_DEAL } from '../lib/dealData.js';
 import { DiwaliThemeManager } from '../components/DiwaliThemeManager.jsx';
 import { FESTIVALS } from '../lib/festiveThemeData.js';
@@ -1387,7 +1387,7 @@ function DiscountManager() {
     state.reload();
   };
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDateStr();
   const scopeLabel = (c, cats) => c.scope === 'all' ? 'All products' : c.scope === 'category' ? (cats.find(x => x.id === c.category_id)?.name || 'Category') : `${c.product_ids.length} product${c.product_ids.length === 1 ? '' : 's'}`;
   const isLive = c => c.is_active && (!c.start_date || today >= c.start_date) && (!c.end_date || today <= c.end_date);
 

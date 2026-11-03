@@ -16,7 +16,12 @@ export const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   '<text x="200" y="262" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="21" fill="#0b1b3f">Photo coming soon</text></svg>');
 
 // price_from is null for items priced on request.
-export const hasPrice = v => v !== null && v !== undefined && v !== '';
+// YYYY-MM-DD in the visitor's own timezone; toISOString() would give the UTC date,
+// which in India rolls over at 5:30 AM instead of midnight.
+export const localDateStr = (d = new Date()) =>
+  [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+
+export const hasPrice = v =>v !== null && v !== undefined && v !== '';
 export const priceText = v => (hasPrice(v) ? money(v) : 'On request');
 
 // Product images are stored as "./images/x.jpg" (local) or full https URLs (uploaded to Supabase Storage).

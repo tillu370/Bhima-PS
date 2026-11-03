@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
+import { localDateStr } from './utils.js';
 
 // Percentage-based discount campaigns ("10% OFF" badges), independent of the
 // single "Deal of the Day" feature. A campaign applies to all products, one
@@ -18,7 +19,7 @@ export function fetchActiveDiscountCampaigns({ fresh = false } = {}) {
   return campaignsPromise;
 }
 
-const todayStr = () => new Date().toISOString().slice(0, 10);
+const todayStr = () => localDateStr();
 
 export function isCampaignLive(c, today = todayStr()) {
   if (!c.is_active) return false;

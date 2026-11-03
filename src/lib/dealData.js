@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js';
+import { localDateStr } from './utils.js';
 
 export const DEFAULT_DEAL = {
   id: 'active',
@@ -89,7 +90,7 @@ export function isDealDismissedToday(deal) {
     const stamp = localStorage.getItem(DISMISSED_KEY);
     if (!stamp) return false;
     const parsed = JSON.parse(stamp);
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localDateStr();
     // If dismissed today for the same or older deal update, do not show
     if (parsed.date === today && parsed.updated_at === (deal?.updated_at || '')) {
       return true;
@@ -100,7 +101,7 @@ export function isDealDismissedToday(deal) {
 
 export function dismissDealToday(deal) {
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localDateStr();
     localStorage.setItem(DISMISSED_KEY, JSON.stringify({
       date: today,
       updated_at: deal?.updated_at || ''
