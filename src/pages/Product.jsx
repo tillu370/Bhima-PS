@@ -82,7 +82,7 @@ export default function Product() {
       if (err) throw err;
       if (!data) { setState('missing'); document.title = 'Product not found | Bhima Print Solutions'; return; }
       setP(data); setState('ok');
-      if (data.slug === 't-shirt-printing' || data.categories?.slug === 't-shirts') {
+      if (data.slug === 't-shirt-printing') {
         setSelectedColor(TSHIRT_COLORS[0]);
       } else {
         setSelectedColor(null);
@@ -100,7 +100,7 @@ export default function Product() {
   const clamp = v => Math.max(1, Math.min(100000, parseInt(v, 10) || 1));
   const wished = p ? wishlist.has(p.id) : false;
 
-  const isTshirt = p?.slug === 't-shirt-printing' || p?.categories?.slug === 't-shirts';
+  const isTshirt = p?.slug === 't-shirt-printing';
   const displayImage = (isTshirt && selectedColor?.image) || imgUrl(p?.image_url, p?.categories?.image_url);
   const campaigns = useActiveDiscountCampaigns();
   const campaign = p && hasPrice(p.price_from) ? bestCampaignForProduct(p, campaigns) : null;
