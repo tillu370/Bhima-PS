@@ -24,7 +24,7 @@ export function HomeProducts() {
     try {
       const [c, res] = await Promise.all([
         fetchCategories(),
-        supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,category_id,categories(id,slug,name,image_url)')
+        supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,is_featured,category_id,categories(id,slug,name,image_url)')
           .eq('is_active', true).eq('is_featured', true).order('sort_order')
       ]);
       if (res.error) throw res.error;
@@ -42,7 +42,7 @@ export function HomeProducts() {
     if (!needsFallback) return;
     let on = true;
     setLoadingFallbackFor(active);
-    supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,category_id,categories!inner(id,slug,name,image_url)')
+    supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,is_featured,category_id,categories!inner(id,slug,name,image_url)')
       .eq('is_active', true).eq('categories.slug', active).order('sort_order').limit(8)
       .then(({ data, error: err }) => {
         if (!on) return;

@@ -87,7 +87,7 @@ function Studio({ slug }) {
 
   useEffect(() => () => previewsRef.current.forEach(u => URL.revokeObjectURL(u)), []);
 
-  const isTshirt = product?.categories?.slug === 't-shirts' || product?.slug === 't-shirt-printing' || slug === 't-shirt-printing';
+  const isTshirt = product?.slug === 't-shirt-printing';
   const mockupSrc = (isTshirt && selectedColor?.image) || imgUrl(product?.image_url, product?.categories?.image_url);
   const sizeList = product && SIZE_SETS[product.categories?.slug];
   const sizeTotal = sizeList ? sizeList.reduce((n, s) => n + (parseInt(sizes[s], 10) || 0), 0) : 0;

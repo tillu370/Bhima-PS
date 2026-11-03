@@ -10,7 +10,7 @@ export const DEFAULT_DEAL = {
   deal_price: 249,
   discount_tag: '30% OFF',
   image_url: '/images/mug-printing.jpg',
-  product_slug: 'mug-printing',
+  product_slug: 'magic-color-changing-mug',
   button_text: 'Claim Deal on WhatsApp',
   button_link: '',
   banner_note: '⚡ Limited Quantity Available for Today Only!',

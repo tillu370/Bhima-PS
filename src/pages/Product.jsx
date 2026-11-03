@@ -89,7 +89,7 @@ export default function Product() {
       }
       document.title = data.name + ' | Bhima Print Solutions';
       if (data.categories) {
-        const r = await supabase.from('products').select('id,slug,name,price_from,image_url,categories!inner(slug,name,image_url)')
+        const r = await supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,is_featured,category_id,categories!inner(id,slug,name,image_url)')
           .eq('is_active', true).eq('categories.slug', data.categories.slug).neq('id', data.id).limit(4);
         setRelated(r.data || []);
       } else setRelated([]);

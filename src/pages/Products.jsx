@@ -24,7 +24,7 @@ export default function Products() {
     try {
       const [c, res] = await Promise.all([
         fetchCategories(),
-        supabase.from('products').select('id,slug,name,description,price_from,image_url,image_url_2,created_at,sort_order,category_id,frame_tier,categories(id,slug,name,image_url)').eq('is_active', true).order('sort_order')
+        supabase.from('products').select('id,slug,name,description,price_from,image_url,image_url_2,created_at,sort_order,is_featured,category_id,frame_tier,categories(id,slug,name,image_url)').eq('is_active', true).order('sort_order')
       ]);
       if (res.error) throw res.error;
       setCats(c); setProducts(res.data); setState('ok');

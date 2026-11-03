@@ -967,7 +967,7 @@ function DealManager() {
               deal_price: 249,
               discount_tag: '30% OFF',
               image_url: '/images/mug-printing.jpg',
-              product_slug: 'mug-printing',
+              product_slug: 'magic-color-changing-mug',
               banner_note: '⚡ Limited Stock for Today Only!'
             })}
           >
