@@ -7,6 +7,7 @@ import { HomePromoBanners } from '../components/HomePromoBanners.jsx';
 import { SafeImage } from '../components/SafeImage.jsx';
 import { FaqGrid } from '../components/FaqGrid.jsx';
 import { PromoVideoSection } from '../components/PromoVideoSection.jsx';
+import { HomeTestimonials } from '../components/HomeTestimonials.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
@@ -341,59 +342,8 @@ export default function Home() {
             </button>
           </div>
 
-          {/* 3 Testimonial Cards */}
-          <div className="testimonial-cards-container">
-            {/* Review 1 */}
-            <div className="testimonial-card">
-              <div className="stars-row">
-                ★★★★★
-              </div>
-              <p className="review-quote">
-                "Excellent quality and super fast service. Our college fest banners came out perfect!"
-              </p>
-              <div className="reviewer-meta">
-                <span className="reviewer-avatar" aria-hidden="true">RV</span>
-                <div>
-                  <h4 className="reviewer-name">Rohit Varma</h4>
-                  <p className="reviewer-role">ANITS, Vizag</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Review 2 */}
-            <div className="testimonial-card">
-              <div className="stars-row">
-                ★★★★★
-              </div>
-              <p className="review-quote">
-                "Loved the personalised mugs! Great print quality and packaging. Highly recommended!"
-              </p>
-              <div className="reviewer-meta">
-                <span className="reviewer-avatar" aria-hidden="true">PR</span>
-                <div>
-                  <h4 className="reviewer-name">Priya Reddy</h4>
-                  <p className="reviewer-role">Customer</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Review 3 */}
-            <div className="testimonial-card">
-              <div className="stars-row">
-                ★★★★★
-              </div>
-              <p className="review-quote">
-                "Professional team, easy process and on-time delivery. We've been doing our corporate orders with them regularly!"
-              </p>
-              <div className="reviewer-meta">
-                <span className="reviewer-avatar" aria-hidden="true">SK</span>
-                <div>
-                  <h4 className="reviewer-name">Suresh Kumar</h4>
-                  <p className="reviewer-role">Business Owner</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* 3 Testimonial Cards, pulled from Admin > Reviews */}
+          <HomeTestimonials />
         </div>
         </div>
       </section>

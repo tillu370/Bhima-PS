@@ -20,7 +20,7 @@ export function HomeProducts() {
       const [c, res] = await Promise.all([
         fetchCategories(),
         supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,category_id,categories(id,slug,name,image_url)')
-          .eq('is_active', true).eq('is_featured', true).order('sort_order').limit(8)
+          .eq('is_active', true).eq('is_featured', true).order('sort_order')
       ]);
       if (res.error) throw res.error;
       setCats(c); setProducts(res.data); setState('ok');
@@ -28,7 +28,10 @@ export function HomeProducts() {
   }, []);
   useEffect(() => { load(); }, [load]);
 
-  const shown = products.filter(p => active === 'all' || (p.categories && p.categories.slug === active));
+  // "All" shows a curated top 8; a chosen category shows every featured product in it,
+  // since limiting to the top 8 first (before filtering) could hide a category entirely.
+  const filtered = products.filter(p => active === 'all' || (p.categories && p.categories.slug === active));
+  const shown = active === 'all' ? filtered.slice(0, 8) : filtered;
 
   useScrollReveal('.products-section .product-card:not(.skeleton)', [state, active, products.length]);
   return (
