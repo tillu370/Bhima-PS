@@ -196,6 +196,9 @@ a.product-img-box { display: block; }
 .modal-card.wide { max-width: 640px; }
 .check-row { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
 .check-row label { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.check-row-wrap { display: flex !important; align-items: flex-start !important; gap: 10px !important; font-weight: 600; }
+.check-row-wrap input[type="checkbox"] { width: 18px; height: 18px; flex: none; margin-top: 2px; accent-color: var(--teal-button, #0d9488); }
+.check-row-wrap span { line-height: 1.4; }
 .img-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 14px; background: #f1f5f9; margin-top: 8px; }
 
 .color-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }

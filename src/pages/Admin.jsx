@@ -434,10 +434,10 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
           <ImageDropzone inputId="pImgFile2" file={file2} setFile={setFile2} preview={preview2} setPreview={setPreview2} fallbackSrc={f.image_url_2 ? imgUrl(f.image_url_2) : null} onClearSaved={() => setF(cur => ({ ...cur, image_url_2: '' }))} />
         </div>
         {isApparel && (
-          <div className="field">
-            <label className="check-row" style={{ marginBottom: customizable ? 10 : 0 }}>
+          <div className="check-row" style={{ marginBottom: customizable ? 10 : 16 }}>
+            <label className="check-row-wrap">
               <input type="checkbox" checked={customizable} onChange={e => setCustomizable(e.target.checked)} />
-              Customized (ready-made T-shirts can skip this — turn on only if the customer should choose a colour)
+              <span>Customized (ready-made T-shirts can skip this — turn on only if the customer should choose a colour)</span>
             </label>
           </div>
         )}
