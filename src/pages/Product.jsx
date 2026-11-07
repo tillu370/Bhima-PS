@@ -7,10 +7,10 @@ import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
 import { errMsg, fmtDate, hasPrice, imgUrl, money } from '../lib/utils.js';
-import { TSHIRT_COLORS } from '../data/tshirtColors.js';
 import { buildProductEnquiryMessage, buildWhatsAppUrl } from '../lib/whatsappData.js';
 import { applyDiscountPercent, bestCampaignForProduct, useActiveDiscountCampaigns } from '../lib/discountData.js';
 import { frameTierLabel } from '../lib/frameTiers.js';
+import { normalizeColors } from '../lib/productColors.js';
 
 const Stars = ({ value, size = 16 }) => (
   <span className="stars" aria-hidden="true">
@@ -78,15 +78,12 @@ export default function Product() {
     setState('loading'); setQty(1);
     try {
       const { data, error: err } = await supabase.from('products')
-        .select('id,slug,name,description,price_from,image_url,category_id,frame_tier,categories(id,slug,name,image_url)').eq('slug', slug).eq('is_active', true).maybeSingle();
+        .select('id,slug,name,description,price_from,image_url,category_id,frame_tier,colors,categories(id,slug,name,image_url)').eq('slug', slug).eq('is_active', true).maybeSingle();
       if (err) throw err;
       if (!data) { setState('missing'); document.title = 'Product not found | Bhima Print Solutions'; return; }
       setP(data); setState('ok');
-      if (data.slug === 't-shirt-printing') {
-        setSelectedColor(TSHIRT_COLORS[0]);
-      } else {
-        setSelectedColor(null);
-      }
+      const colorList = normalizeColors(data.colors);
+      setSelectedColor(colorList[0] || null);
       document.title = data.name + ' | Bhima Print Solutions';
       if (data.categories) {
         const r = await supabase.from('products').select('id,slug,name,price_from,image_url,image_url_2,is_featured,category_id,categories!inner(id,slug,name,image_url)')
@@ -100,18 +97,19 @@ export default function Product() {
   const clamp = v => Math.max(1, Math.min(100000, parseInt(v, 10) || 1));
   const wished = p ? wishlist.has(p.id) : false;
 
-  const isTshirt = p?.slug === 't-shirt-printing';
-  const displayImage = (isTshirt && selectedColor?.image) || imgUrl(p?.image_url, p?.categories?.image_url);
+  const colors = normalizeColors(p?.colors);
+  const hasColors = colors.length > 0;
+  const displayImage = (hasColors && selectedColor?.image_url && imgUrl(selectedColor.image_url)) || imgUrl(p?.image_url, p?.categories?.image_url);
   const campaigns = useActiveDiscountCampaigns();
   const campaign = p && hasPrice(p.price_from) ? bestCampaignForProduct(p, campaigns) : null;
   const discountedPrice = campaign ? applyDiscountPercent(p.price_from, campaign.percent) : null;
 
   const handleAdd = (andCheckout = false) => {
     const q = clamp(qty);
-    if (isTshirt && selectedColor) {
+    if (hasColors && selectedColor) {
       cart.addCustom(p, q, '', {
-        color: { id: selectedColor.id, name: selectedColor.name, hex: selectedColor.hex, image: selectedColor.image },
-        preview: selectedColor.image
+        color: { name: selectedColor.name, hex: selectedColor.hex, image: selectedColor.image_url },
+        preview: selectedColor.image_url || p.image_url
       });
     } else {
       cart.add(p, q);
@@ -139,8 +137,8 @@ export default function Product() {
         {state === 'ok' && p && (
           <>
             <div className="pd-grid">
-              <div className="pd-image" style={isTshirt ? { aspectRatio: '5 / 4' } : undefined}>
-                <img src={displayImage} alt={p.name} style={isTshirt ? { objectFit: 'contain' } : undefined} />
+              <div className="pd-image">
+                <img src={displayImage} alt={p.name} />
               </div>
               <div className="pd-info">
                 {p.categories && <Link className="eyebrow" to={`/products?cat=${encodeURIComponent(p.categories.slug)}`}>{p.categories.name}</Link>}
@@ -154,43 +152,24 @@ export default function Product() {
                 <p className="pd-desc">{p.description}</p>
                 <p className="pd-note">{hasPrice(p.price_from) ? 'This is a starting price. Final price depends on quantity, size and finish. We confirm it with you before we begin printing.' : 'Send us the quantity and your design or photo and we reply with the price on WhatsApp before we begin.'}</p>
 
-                {isTshirt && (
-                  <div style={{ margin: '14px 0 18px', padding: '14px 16px', background: '#f8fafc', borderRadius: 16, border: '1px solid var(--border-light)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
-                      <span style={{ fontSize: '.88rem', fontWeight: 700, color: 'var(--ink)' }}>Available Colours ({TSHIRT_COLORS.length})</span>
+                {hasColors && (
+                  <div className="color-picker-box">
+                    <div className="color-picker-head">
+                      <span>Available Colours ({colors.length})</span>
                       {selectedColor && (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '.78rem', background: '#fff', padding: '3px 10px', borderRadius: 999, border: '1px solid var(--border-light)' }}>
-                          <span style={{ width: 10, height: 10, borderRadius: '50%', background: selectedColor.hex, border: '1px solid rgba(0,0,0,0.15)' }} />
+                        <span className="color-picker-selected">
+                          <span className="swatch-dot" style={{ background: selectedColor.hex }} />
                           <strong>{selectedColor.name}</strong>
-                          <code style={{ color: 'var(--text-muted)', fontFamily: 'monospace' }}>{selectedColor.hex}</code>
+                          <code>{selectedColor.hex}</code>
                         </span>
                       )}
                     </div>
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                      {TSHIRT_COLORS.map(c => {
-                        const isSel = selectedColor?.id === c.id;
-                        return (
-                          <button
-                            key={c.id}
-                            type="button"
-                            onClick={() => setSelectedColor(c)}
-                            title={`${c.name} (${c.hex})`}
-                            aria-label={`Select ${c.name} (${c.hex})`}
-                            style={{
-                              width: 30,
-                              height: 30,
-                              borderRadius: '50%',
-                              background: c.hex,
-                              border: isSel ? '2.5px solid var(--teal-button, #0d9488)' : (c.hex === '#ffffff' ? '1.5px solid #cbd5e1' : '1px solid rgba(0,0,0,0.15)'),
-                              boxShadow: isSel ? '0 0 0 3px rgba(13, 148, 136, 0.25)' : 'none',
-                              cursor: 'pointer',
-                              padding: 0,
-                              transform: isSel ? 'scale(1.15)' : 'scale(1)',
-                              transition: 'transform 0.15s ease, box-shadow 0.15s ease'
-                            }}
-                          />
-                        );
-                      })}
+                    <div className="color-picker-swatches">
+                      {colors.map((c, i) => (
+                        <button key={i} type="button" className={'swatch-dot-btn' + (selectedColor?.name === c.name ? ' on' : '')}
+                          onClick={() => setSelectedColor(c)} title={`${c.name} (${c.hex})`} aria-label={`Select ${c.name} (${c.hex})`}
+                          style={{ background: c.hex }} />
+                      ))}
                     </div>
                   </div>
                 )}

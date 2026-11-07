@@ -12,6 +12,7 @@ import { FESTIVALS } from '../lib/festiveThemeData.js';
 import { normalizeWhatsAppNumber, saveWhatsAppNumber, validateWhatsAppNumber, buildWhatsAppUrl, buildGeneralEnquiryMessage, useWhatsAppNumber } from '../lib/whatsappData.js';
 import { fetchPromoVideo, savePromoVideo, DEFAULT_PROMO_VIDEO } from '../lib/videoData.js';
 import { FRAME_TIERS, isFrameCategory, frameTierLabel, fetchFrameTierRanges, saveFrameTierRange } from '../lib/frameTiers.js';
+import { isApparelCategory, emptyColor, normalizeColors } from '../lib/productColors.js';
 
 const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal', 'discounts', 'whatsapp', 'video', 'festival'];
 const ORDER_STATUSES = ['new', 'contacted', 'confirmed', 'printing', 'delivered', 'cancelled'];
@@ -348,12 +349,25 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   const [preview, setPreview] = useState(null);
   const [file2, setFile2] = useState(null);
   const [preview2, setPreview2] = useState(null);
+  const [colors, setColors] = useState(() => normalizeColors(p?.colors).map(c => ({ ...c, file: null, preview: null })));
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
   const set = k => e => setF(cur => ({ ...cur, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const onName = e => setF(cur => ({ ...cur, name: e.target.value, slug: p ? cur.slug : slugify(e.target.value) }));
   const isFrame = isFrameCategory(cats.find(c => c.id === f.category_id)?.slug);
+  const isApparel = isApparelCategory(cats.find(c => c.id === f.category_id)?.slug);
+
+  const setColor = (i, patch) => setColors(cur => cur.map((c, k) => (k === i ? { ...c, ...patch } : c)));
+  const addColor = () => setColors(cur => [...cur, { ...emptyColor(), file: null, preview: null }]);
+  const removeColor = i => setColors(cur => cur.filter((_, k) => k !== i));
+  const pickColorFile = (i, fl) => {
+    if (!fl) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(fl.type)) return;
+    const cur = colors[i];
+    if (cur.preview) URL.revokeObjectURL(cur.preview);
+    setColor(i, { file: fl, preview: URL.createObjectURL(fl) });
+  };
 
   const submit = async e => {
     e.preventDefault();
@@ -370,10 +384,16 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
       const image_url_2 = file2
         ? await uploadAdminFile(file2, 'product-images', 'products', 5 * 1024 * 1024, 'Secondary image')
         : (f.image_url_2.trim() || null);
+      const savedColors = [];
+      for (const c of colors) {
+        if (!c.name.trim()) continue;
+        const colorImageUrl = c.file ? await uploadAdminFile(c.file, 'product-images', 'products/colors', 5 * 1024 * 1024, `"${c.name}" colour image`) : (c.image_url || null);
+        savedColors.push({ name: c.name.trim(), hex: c.hex || '#111827', image_url: colorImageUrl, image_url_2: c.image_url_2 || null });
+      }
       const row = {
         name: f.name.trim(), slug: f.slug, category_id: f.category_id, price_from: price, sort_order: parseInt(f.sort_order, 10) || 0,
         description: f.description.trim() || null, image_url, image_url_2, is_active: f.is_active, is_featured: f.is_featured,
-        frame_tier: isFrame ? (f.frame_tier || null) : null
+        frame_tier: isFrame ? (f.frame_tier || null) : null, colors: isApparel && savedColors.length ? savedColors : null
       };
       const { error: err } = p ? await supabase.from('products').update(row).eq('id', p.id) : await supabase.from('products').insert(row);
       setBusy(false);
@@ -412,6 +432,24 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
           <label htmlFor="pImgFile2">Secondary hover image (optional, JPG, PNG or WebP, max 5 MB)</label>
           <ImageDropzone inputId="pImgFile2" file={file2} setFile={setFile2} preview={preview2} setPreview={setPreview2} fallbackSrc={f.image_url_2 ? imgUrl(f.image_url_2) : null} onClearSaved={() => setF(cur => ({ ...cur, image_url_2: '' }))} />
         </div>
+        {isApparel && (
+          <div className="field">
+            <label>Colour options (optional)</label>
+            <p className="hint-text">Add each available colour with its own print-colour code and photo. Customers pick one on the product page and in the Design Studio.</p>
+            {colors.map((c, i) => (
+              <div className="color-row" key={i}>
+                <input type="color" value={c.hex} onChange={e => setColor(i, { hex: e.target.value })} aria-label="Colour code" />
+                <input value={c.name} onChange={e => setColor(i, { name: e.target.value })} placeholder="Colour name, e.g. Navy" maxLength={40} />
+                <label className="color-row-upload">
+                  {c.preview || c.image_url ? <img src={c.preview || imgUrl(c.image_url)} alt="" /> : <span>+ Photo</span>}
+                  <input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={e => { pickColorFile(i, e.target.files[0]); e.target.value = ''; }} />
+                </label>
+                <button type="button" className="btn btn-danger btn-sm" onClick={() => removeColor(i)}>Remove</button>
+              </div>
+            ))}
+            <button type="button" className="btn btn-secondary btn-sm" onClick={addColor}>+ Add colour</button>
+          </div>
+        )}
         {isFrame && (
           <div className="field"><label htmlFor="pFrameTier">Price tier</label>
             <select id="pFrameTier" value={f.frame_tier} onChange={set('frame_tier')}>
