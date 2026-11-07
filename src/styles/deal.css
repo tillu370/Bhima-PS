@@ -21,6 +21,15 @@
   user-select: none;
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
   animation: dealFloatingGlow 3s ease-in-out infinite alternate;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity .2s ease;
+}
+
+/* Hidden once the footer is on screen, so it never sits on top of the footer's own links. */
+.deal-floating-trigger.deal-trigger-hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .deal-floating-trigger:hover {

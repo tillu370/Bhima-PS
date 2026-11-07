@@ -10,8 +10,19 @@ export function DealOfTheDayModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [dontShowToday, setDontShowToday] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [hideTrigger, setHideTrigger] = useState(false);
   const modalRef = useRef(null);
   const navigate = useNavigate();
+
+  // The trigger badge is position:fixed, so on short pages it ends up sitting on top of the
+  // footer's own links. Fade it out once the footer scrolls into view.
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer || typeof IntersectionObserver === 'undefined') return undefined;
+    const obs = new IntersectionObserver(([entry]) => setHideTrigger(entry.isIntersecting), { rootMargin: '0px 0px -40px 0px' });
+    obs.observe(footer);
+    return () => obs.disconnect();
+  }, []);
 
   // Load deal from Supabase / cache
   useEffect(() => {
@@ -84,10 +95,11 @@ export function DealOfTheDayModal() {
     <>
       {/* ================= FLOATING BLINKING DEAL TRIGGER BADGE ================= */}
       <aside
-        className="deal-floating-trigger"
+        className={'deal-floating-trigger' + (hideTrigger ? ' deal-trigger-hidden' : '')}
         onClick={() => setIsOpen(true)}
         role="button"
-        tabIndex={0}
+        tabIndex={hideTrigger ? -1 : 0}
+        aria-hidden={hideTrigger}
         onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setIsOpen(true); } }}
         aria-label="View Today's Deal of the Day"
         title="Click to view Today's Special Deal!"
