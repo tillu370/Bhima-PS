@@ -387,9 +387,10 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
         : (f.image_url_2.trim() || null);
       const savedColors = [];
       for (const c of colors) {
-        if (!c.name.trim()) continue;
-        const colorImageUrl = c.file ? await uploadAdminFile(c.file, 'product-images', 'products/colors', 5 * 1024 * 1024, `"${c.name}" colour image`) : (c.image_url || null);
-        savedColors.push({ name: c.name.trim(), hex: c.hex || '#111827', image_url: colorImageUrl, image_url_2: c.image_url_2 || null });
+        const hex = c.hex || '#111827';
+        const name = c.name.trim() || hex.toUpperCase(); // a colour the admin added always gets saved, even if they only picked a swatch
+        const colorImageUrl = c.file ? await uploadAdminFile(c.file, 'product-images', 'products/colors', 5 * 1024 * 1024, `"${name}" colour image`) : (c.image_url || null);
+        savedColors.push({ name, hex, image_url: colorImageUrl, image_url_2: c.image_url_2 || null });
       }
       const row = {
         name: f.name.trim(), slug: f.slug, category_id: f.category_id, price_from: price, sort_order: parseInt(f.sort_order, 10) || 0,
