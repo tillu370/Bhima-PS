@@ -350,6 +350,7 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
   const [file2, setFile2] = useState(null);
   const [preview2, setPreview2] = useState(null);
   const [colors, setColors] = useState(() => normalizeColors(p?.colors).map(c => ({ ...c, file: null, preview: null })));
+  const [customizable, setCustomizable] = useState(() => normalizeColors(p?.colors).length > 0);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -393,7 +394,7 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
       const row = {
         name: f.name.trim(), slug: f.slug, category_id: f.category_id, price_from: price, sort_order: parseInt(f.sort_order, 10) || 0,
         description: f.description.trim() || null, image_url, image_url_2, is_active: f.is_active, is_featured: f.is_featured,
-        frame_tier: isFrame ? (f.frame_tier || null) : null, colors: isApparel && savedColors.length ? savedColors : null
+        frame_tier: isFrame ? (f.frame_tier || null) : null, colors: isApparel && customizable && savedColors.length ? savedColors : null
       };
       const { error: err } = p ? await supabase.from('products').update(row).eq('id', p.id) : await supabase.from('products').insert(row);
       setBusy(false);
@@ -434,7 +435,15 @@ function ProductForm({ product: p, cats, onClose, onSaved }) {
         </div>
         {isApparel && (
           <div className="field">
-            <label>Colour options (optional)</label>
+            <label className="check-row" style={{ marginBottom: customizable ? 10 : 0 }}>
+              <input type="checkbox" checked={customizable} onChange={e => setCustomizable(e.target.checked)} />
+              Customized (ready-made T-shirts can skip this — turn on only if the customer should choose a colour)
+            </label>
+          </div>
+        )}
+        {isApparel && customizable && (
+          <div className="field">
+            <label>Colour options</label>
             <p className="hint-text">Add each available colour with its own print-colour code and photo. Customers pick one on the product page and in the Design Studio.</p>
             {colors.map((c, i) => (
               <div className="color-row" key={i}>
