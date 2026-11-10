@@ -7,7 +7,17 @@ import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
 import { errMsg, fmtDate, PHONE_RE } from '../lib/utils.js';
 
-const TABS = ['wishlist', 'enquiries', 'profile'];
+const TABS = ['wishlist', 'enquiries', 'reviews', 'profile'];
+
+const Stars = ({ value, size = 14 }) => (
+  <span className="stars" aria-hidden="true">
+    {Array.from({ length: 5 }, (_, i) => (
+      <svg key={i} viewBox="0 0 24 24" width={size} height={size} fill={i < Math.round(value) ? '#f7a81b' : 'none'} stroke="#f7a81b" strokeWidth="1.5">
+        <path d="M12 2.5l2.9 6.6 7.1.7-5.4 4.8 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.8 7.1-.7z" />
+      </svg>
+    ))}
+  </span>
+);
 
 function Wishlist() {
   const { wishlist } = useAuth();
@@ -66,6 +76,39 @@ function Enquiries() {
         </table>
       </div>
     </>
+  );
+}
+
+function MyReviews() {
+  const { user } = useAuth();
+  const [rows, setRows] = useState(null);
+  const [error, setError] = useState('');
+
+  const load = useCallback(async () => {
+    setError('');
+    const { data, error: err } = await supabase.from('reviews')
+      .select('id,rating,comment,status,created_at,products(name,slug)').eq('user_id', user.id).order('created_at', { ascending: false });
+    if (err) setError(errMsg(err)); else setRows(data);
+  }, [user.id]);
+  useEffect(() => { load(); }, [load]);
+
+  if (error) return <StateBox title="Something went wrong" action={<button className="btn btn-primary" onClick={load}>Try again</button>}>{error}</StateBox>;
+  if (!rows) return <div className="sk-block" style={{ minHeight: 180 }} />;
+  if (!rows.length) return <StateBox title="No reviews yet" action={<Link className="btn btn-primary" to="/products">Browse products</Link>}>Reviews you submit on a product page will appear here.</StateBox>;
+  return (
+    <ul className="review-list">
+      {rows.map(r => (
+        <li key={r.id} className="review-item">
+          <div className="review-item-head">
+            <Stars value={r.rating} />
+            <strong>{r.products ? <Link to={'/product/' + r.products.slug}>{r.products.name}</Link> : 'Product'}</strong>
+            <span className={'badge ' + r.status}>{r.status}</span>
+            <span className="muted">{fmtDate(r.created_at)}</span>
+          </div>
+          {r.comment && <p>{r.comment}</p>}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -132,7 +175,7 @@ export default function Account() {
       </>
     );
   }
-  const label = { wishlist: 'Wishlist', enquiries: 'My Enquiries', profile: 'Profile' };
+  const label = { wishlist: 'Wishlist', enquiries: 'My Enquiries', reviews: 'My Reviews', profile: 'Profile' };
   return (
     <>
       <PageHero title="My Account" subtitle="Your wishlist, enquiries and profile." />
@@ -147,6 +190,7 @@ export default function Account() {
             {tab !== 'enquiries' && <h2>{label[tab]}</h2>}
             {tab === 'wishlist' && <Wishlist />}
             {tab === 'enquiries' && <Enquiries />}
+            {tab === 'reviews' && <MyReviews />}
             {tab === 'profile' && <Profile />}
           </div>
         </div>
