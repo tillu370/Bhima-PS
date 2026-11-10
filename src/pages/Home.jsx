@@ -348,6 +348,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ==================== VISIT OUR SHOP ==================== */}
+      <section className="map-section" id="visit-us">
+        <div className="container">
+          <div className="section-header">
+            <div>
+              <span className="eyebrow ">Visit us</span>
+              <h2 className="section-title">Find Our Shop</h2>
+              <p className="section-subtitle">Drop by for a quick chat about your order, or get directions below.</p>
+            </div>
+          </div>
+          <div className="map-card">
+            <iframe
+              className="map-embed"
+              title="Bhima Print Solutions shop location"
+              src="https://www.google.com/maps?q=Bhima+Xerox+Opp+Shanti+Kalyana+Mandapam+Pendurthi+Visakhapatnam+531173&output=embed"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <div className="map-info">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+              <p>Bhima Xerox, Opp. Shanti Kalyana Mandapam,<br />Behind Denim Jeans, Pendurthi, Visakhapatnam, AP 531173</p>
+              <A href="https://maps.google.com/?q=Bhima+Xerox+Opp+Shanti+Kalyana+Mandapam+Pendurthi+Visakhapatnam+531173" className="btn btn-teal-pill">
+                Get Directions
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+              </A>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ==================== FREQUENTLY ASKED QUESTIONS ==================== */}
       <section className="faqs-section" id="faqs">
         <div className="container">
