@@ -230,8 +230,7 @@ footer,
 .faqs-section,
 .testimonials-section,
 .bottom-cta-section,
-.marquee,
-.fab-stack {
+.marquee {
   position: relative;
   z-index: 1;
 }
