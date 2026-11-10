@@ -9,6 +9,7 @@ import { FaqGrid } from '../components/FaqGrid.jsx';
 import { PromoVideoSection } from '../components/PromoVideoSection.jsx';
 import { HomeTestimonials } from '../components/HomeTestimonials.jsx';
 import { useUi } from '../context/UiContext.jsx';
+import { buildWhatsAppUrl } from '../lib/whatsappData.js';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
 import { useScrollReveal } from '../lib/useScrollReveal.js';
 import { useHeroParallax } from '../lib/useHeroParallax.js';
@@ -259,6 +260,55 @@ export default function Home() {
               <div className="corp-img-wrapper">
                 <SafeImage loading="lazy" decoding="async" src="/images/cat-corporate-gifts.jpg" alt="Corporate Merchandise Branding" className="corp-main-img" />
                 <div className="corp-badge"><strong>Bulk orders welcome</strong><span>Custom bulk orders · Dedicated support</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== BULK ORDERS ==================== */}
+      <section className="corporate-banner-section" id="bulk-orders">
+        <div className="container">
+          <div className="corporate-card">
+            <div className="corp-left">
+              <span className="eyebrow">Bulk orders</span>
+              <h2 className="corp-title">
+                Best Prices<br />
+                For Bulk Orders
+              </h2>
+              <p className="corp-desc">
+                Ordering in bulk for a school, college, event or company? Get special pricing and priority turnaround on large quantity orders.
+              </p>
+
+              <ul className="corp-checklist">
+                <li>
+                  <span className="check-icon">✓</span>
+                  <span>Special bulk pricing</span>
+                </li>
+                <li>
+                  <span className="check-icon">✓</span>
+                  <span>Same design, any quantity</span>
+                </li>
+                <li>
+                  <span className="check-icon">✓</span>
+                  <span>Priority turnaround</span>
+                </li>
+                <li>
+                  <span className="check-icon">✓</span>
+                  <span>Free sample before full order</span>
+                </li>
+              </ul>
+
+              <A href={buildWhatsAppUrl("Hi, I'd like to place a bulk order. Please share the pricing and details.")} target="_blank" rel="noopener noreferrer" className="btn btn-teal-pill">
+                Enquire for Bulk Orders
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </A>
+            </div>
+
+            <div className="corp-right">
+              <div className="corp-img-wrapper">
+                <SafeImage loading="lazy" decoding="async" src="/images/t-shirt-printing.jpg" alt="Bulk Custom Printed T-Shirts" className="corp-main-img" />
+                <div className="corp-badge"><strong>Any quantity</strong><span>Best rates on bulk orders</span></div>
               </div>
             </div>
           </div>
