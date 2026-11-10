@@ -1,11 +1,3 @@
-import { buildWhatsAppUrl } from './lib/whatsappData.js';
-
-// Visitors are sent straight to WhatsApp as soon as the site loads, except on
-// /admin so the store owner can still manage products, orders and enquiries.
-if (!window.location.pathname.startsWith('/admin')) {
-  window.location.replace(buildWhatsAppUrl("Hi, I visited bhimaprintsolutions.in and would like to know more about your products."));
-}
-
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -36,18 +28,16 @@ import './styles/premium-festivals.css';
 
 primeWhatsAppNumber();
 
-if (window.location.pathname.startsWith('/admin')) {
-  createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <UiProvider>
-          <AuthProvider>
-            <CartProvider>
-              <App />
-            </CartProvider>
-          </AuthProvider>
-        </UiProvider>
-      </BrowserRouter>
-    </React.StrictMode>
-  );
-}
+createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <UiProvider>
+        <AuthProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </AuthProvider>
+      </UiProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
