@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageHero, PageSection } from '../components/PageHero.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { supabase } from '../lib/supabase.js';
+import { saveWhatsAppConsent } from '../lib/whatsappAutomation.js';
 import { EMAIL_RE, PHONE_RE } from '../lib/utils.js';
 
 // Only allow same-site paths after login.
@@ -19,7 +20,7 @@ export default function Login() {
   const [msg, setMsg] = useState({ type: '', text: '' });
   const [busy, setBusy] = useState(false);
   const [login, setLogin] = useState({ email: '', password: '' });
-  const [signup, setSignup] = useState({ name: '', phone: '', email: '', password: '' });
+  const [signup, setSignup] = useState({ name: '', phone: '', email: '', password: '', waConsent: false });
   const [newPassword, setNewPassword] = useState('');
 
   useEffect(() => { document.title = 'Log in or Sign up | Bhima Print Solutions'; }, []);
@@ -51,7 +52,7 @@ export default function Login() {
 
   const doSignup = async e => {
     e.preventDefault();
-    const { name, phone, email, password } = signup;
+    const { name, phone, email, password, waConsent } = signup;
     if (name.trim().length < 2) return say('error', 'Please enter your full name.');
     if (!PHONE_RE.test(phone.trim())) return say('error', 'Please enter a valid phone number.');
     if (!EMAIL_RE.test(email.trim())) return say('error', 'Please enter a valid email address.');
@@ -60,6 +61,7 @@ export default function Login() {
     const { data, error } = await supabase.auth.signUp({ email: email.trim(), password, options: { data: { full_name: name.trim(), phone: phone.trim() } } });
     setBusy(false);
     if (error) return say('error', error.message);
+    saveWhatsAppConsent(phone.trim(), name.trim(), waConsent, 'signup').catch(() => {});
     if (data.session) { navigate(next, { replace: true }); return; }
     setTab('login');
     say('ok', 'Account created. Please check your email and click the confirmation link, then log in.');
@@ -111,6 +113,9 @@ export default function Login() {
                 <div className="field"><label htmlFor="suPhone">Phone</label><input id="suPhone" type="tel" autoComplete="tel" maxLength={20} required value={signup.phone} onChange={e => setSignup({ ...signup, phone: e.target.value })} /></div>
                 <div className="field"><label htmlFor="suEmail">Email</label><input id="suEmail" type="email" autoComplete="email" required value={signup.email} onChange={e => setSignup({ ...signup, email: e.target.value })} /></div>
                 <div className="field"><label htmlFor="suPassword">Password</label><input id="suPassword" type="password" autoComplete="new-password" minLength={8} required value={signup.password} onChange={e => setSignup({ ...signup, password: e.target.value })} /><span className="hint">At least 8 characters.</span></div>
+                <div className="check-row">
+                  <label><input type="checkbox" checked={signup.waConsent} onChange={e => setSignup({ ...signup, waConsent: e.target.checked })} /> I agree to receive promotional WhatsApp messages from Bhima Print Solutions.</label>
+                </div>
                 <button className="btn btn-primary btn-block" type="submit" disabled={busy}>{busy ? 'Creating account…' : 'Create account'}</button>
               </form>
             )}

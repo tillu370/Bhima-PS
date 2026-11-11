@@ -14,7 +14,7 @@ import { fetchPromoVideo, savePromoVideo, DEFAULT_PROMO_VIDEO } from '../lib/vid
 import { FRAME_TIERS, isFrameCategory, frameTierLabel, fetchFrameTierRanges, saveFrameTierRange } from '../lib/frameTiers.js';
 import { isApparelCategory, emptyColor, normalizeColors } from '../lib/productColors.js';
 
-const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal', 'discounts', 'whatsapp', 'video', 'festival'];
+const TABS = ['overview', 'orders', 'enquiries', 'reviews', 'products', 'categories', 'customers', 'deal', 'discounts', 'whatsapp', 'campaigns', 'video', 'festival'];
 const ORDER_STATUSES = ['new', 'contacted', 'confirmed', 'printing', 'delivered', 'cancelled'];
 const ENQ_STATUSES = ['new', 'contacted', 'closed'];
 const REVIEW_STATUSES = ['pending', 'approved', 'rejected'];
@@ -1477,6 +1477,184 @@ function DiscountManager() {
   );
 }
 
+/* ------------------------------------------------------- whatsapp campaigns */
+const CAMPAIGN_STATUSES = ['draft', 'active', 'paused', 'completed', 'archived'];
+// Reuse the existing badge color classes (defined for order/enquiry statuses)
+// for these different status words, by their rough meaning, instead of adding new CSS.
+const CAMPAIGN_BADGE_CLASS = { draft: 'new', active: 'on', paused: 'contacted', completed: 'delivered', archived: 'cancelled' };
+const MESSAGE_BADGE_CLASS = { pending: 'new', sent: 'contacted', delivered: 'delivered', read: 'delivered', failed: 'cancelled', skipped: 'off', cancelled: 'cancelled', queued: 'new' };
+
+function CampaignForm({ campaign: c, onClose, onSaved }) {
+  const { toast } = useUi();
+  const [f, setF] = useState({
+    campaign_name: c ? c.campaign_name : '',
+    template_name: c ? c.template_name : '',
+    template_language: c ? c.template_language : 'en',
+    inactivity_minutes: c ? String(c.inactivity_minutes) : '60',
+    image_url: c ? c.image_url || '' : '',
+    message_preview: c ? c.message_preview || '' : '',
+    campaign_status: c ? c.campaign_status : 'draft'
+  });
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const set = k => e => setF(cur => ({ ...cur, [k]: e.target.value }));
+
+  const submit = async e => {
+    e.preventDefault();
+    setError('');
+    const minutes = parseInt(f.inactivity_minutes, 10);
+    if (f.campaign_name.trim().length < 2) return setError('Please enter a campaign name.');
+    if (f.template_name.trim().length < 1) return setError('Enter the exact Meta-approved template name.');
+    if (!Number.isFinite(minutes) || minutes < 5 || minutes > 1440) return setError('Inactivity window must be between 5 and 1440 minutes.');
+    setBusy(true);
+    const row = {
+      campaign_name: f.campaign_name.trim(), template_name: f.template_name.trim(),
+      template_language: f.template_language.trim() || 'en', inactivity_minutes: minutes,
+      image_url: f.image_url.trim() || null, message_preview: f.message_preview.trim() || null,
+      campaign_status: f.campaign_status
+    };
+    const { error: err } = c ? await supabase.from('campaigns').update(row).eq('id', c.id) : await supabase.from('campaigns').insert(row);
+    setBusy(false);
+    if (err) return setError(err.message);
+    toast(c ? 'Campaign saved' : 'Campaign created');
+    onSaved();
+  };
+
+  return (
+    <Modal title={c ? 'Edit campaign' : 'New campaign'} onClose={onClose}>
+      <form onSubmit={submit} noValidate>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <div className="field"><label htmlFor="cpName">Campaign name *</label><input id="cpName" required maxLength={120} value={f.campaign_name} onChange={set('campaign_name')} placeholder="e.g. Cart Abandonment Nudge" /></div>
+        <div className="field-row">
+          <div className="field"><label htmlFor="cpTemplate">Meta template name *</label><input id="cpTemplate" required maxLength={120} value={f.template_name} onChange={set('template_name')} placeholder="exact name from Meta Business Manager" /></div>
+          <div className="field"><label htmlFor="cpLang">Template language</label><input id="cpLang" maxLength={10} value={f.template_language} onChange={set('template_language')} placeholder="en" /></div>
+        </div>
+        <div className="field-row">
+          <div className="field"><label htmlFor="cpMinutes">Inactivity window (minutes) *</label><input id="cpMinutes" type="number" min="5" max="1440" required value={f.inactivity_minutes} onChange={set('inactivity_minutes')} /></div>
+          <div className="field"><label htmlFor="cpStatus">Status</label>
+            <select id="cpStatus" value={f.campaign_status} onChange={set('campaign_status')}>
+              {CAMPAIGN_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select></div>
+        </div>
+        <div className="field"><label htmlFor="cpImage">Header image URL (optional)</label><input id="cpImage" maxLength={2000} value={f.image_url} onChange={set('image_url')} placeholder="https://…" /></div>
+        <div className="field"><label htmlFor="cpPreview">Admin reference text (optional)</label><textarea id="cpPreview" rows={3} maxLength={1000} value={f.message_preview} onChange={set('message_preview')} placeholder="Your own note on what this template says — the actual wording Meta sends is controlled by the approved template, not this field." /></div>
+        <p className="muted" style={{ fontSize: '.85rem' }}>Only set this to <strong>Active</strong> once the template above is approved by Meta — an active campaign will automatically message every consenting, non-opted-out customer who goes idle for the window above.</p>
+        <button className="btn btn-primary btn-block" type="submit" disabled={busy}>{busy ? 'Saving…' : c ? 'Save changes' : 'Create campaign'}</button>
+      </form>
+    </Modal>
+  );
+}
+
+function CampaignsManager() {
+  const { toast } = useUi();
+  const state = useLoad(async () => {
+    const [camp, cust, sched, logs] = await Promise.all([
+      supabase.from('campaigns').select('*').order('created_at', { ascending: false }),
+      supabase.from('whatsapp_customers').select('id,marketing_consent,opted_out'),
+      supabase.from('scheduled_messages').select('id,campaign_id,status'),
+      supabase.from('message_logs').select('id,campaign_id,delivery_status,created_at,whatsapp_customers(phone,customer_name),campaigns(campaign_name)').order('created_at', { ascending: false }).limit(30)
+    ]);
+    return { campaigns: must(camp), customers: must(cust), scheduled: must(sched), logs: must(logs) };
+  }, []);
+  const [editing, setEditing] = useState(undefined);
+
+  const setStatus = async (c, campaign_status) => {
+    const { error } = await supabase.from('campaigns').update({ campaign_status }).eq('id', c.id);
+    if (error) return toast(error.message, 'error');
+    toast(`Campaign ${campaign_status === 'active' ? 'activated' : campaign_status}`);
+    state.reload();
+  };
+  const remove = async c => {
+    if (!window.confirm(`Delete the campaign "${c.campaign_name}"? This also deletes its message history.`)) return;
+    const { error } = await supabase.from('campaigns').delete().eq('id', c.id);
+    if (error) return toast(error.message, 'error');
+    toast('Campaign deleted');
+    state.reload();
+  };
+
+  return (
+    <Async state={state}>{({ campaigns, customers, scheduled, logs }) => {
+      const consented = customers.filter(c => c.marketing_consent && !c.opted_out).length;
+      const optedOut = customers.filter(c => c.opted_out).length;
+      const pending = scheduled.filter(s => s.status === 'pending').length;
+      const sent = logs.filter(l => l.delivery_status === 'sent' || l.delivery_status === 'delivered' || l.delivery_status === 'read').length;
+      const delivered = logs.filter(l => l.delivery_status === 'delivered' || l.delivery_status === 'read').length;
+      const failed = logs.filter(l => l.delivery_status === 'failed').length;
+      const perf = campaigns.map(c => ({
+        ...c,
+        sentCount: logs.filter(l => l.campaign_id === c.id && l.delivery_status !== 'failed').length,
+        failedCount: logs.filter(l => l.campaign_id === c.id && l.delivery_status === 'failed').length
+      }));
+
+      return (
+        <>
+          <div className="stat-grid">
+            <div className="stat"><strong>{customers.length}</strong><span>Registered customers</span></div>
+            <div className="stat"><strong>{consented}</strong><span>With marketing consent</span></div>
+            <div className="stat"><strong>{optedOut}</strong><span>Opted out</span></div>
+            <div className="stat"><strong>{pending}</strong><span>Pending messages</span></div>
+            <div className="stat"><strong>{sent}</strong><span>Messages sent</span></div>
+            <div className="stat"><strong>{delivered}</strong><span>Delivered</span></div>
+            <div className="stat"><strong>{failed}</strong><span>Failed</span></div>
+          </div>
+
+          <div className="panel-head"><h2>Campaigns</h2><button className="btn btn-primary btn-sm" onClick={() => setEditing(null)}>New campaign</button></div>
+          <p className="muted" style={{ marginTop: -6 }}>An <strong>active</strong> campaign automatically messages consenting customers once they've been idle for its inactivity window. Keep campaigns in <strong>draft</strong> until the Meta template is approved and you've tested with Meta's sandbox number.</p>
+          {!campaigns.length ? <div className="state-box"><h3>No campaigns yet</h3><p>Create one, keep it in Draft, and test with Meta's sandbox number before activating.</p></div> : (
+            <div className="table-wrap">
+              <table className="data-table">
+                <thead><tr><th>Name</th><th>Template</th><th>Inactivity window</th><th>Sent / Failed</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  {perf.map(c => (
+                    <tr key={c.id}>
+                      <td data-label="Name"><strong>{c.campaign_name}</strong></td>
+                      <td data-label="Template">{c.template_name} ({c.template_language})</td>
+                      <td data-label="Inactivity window">{c.inactivity_minutes} min</td>
+                      <td data-label="Sent / Failed">{c.sentCount} / {c.failedCount}</td>
+                      <td data-label="Status"><span className={'badge ' + (CAMPAIGN_BADGE_CLASS[c.campaign_status] || '')}>{c.campaign_status}</span></td>
+                      <td data-label="">
+                        <div className="row-actions">
+                          <button className="btn btn-secondary btn-sm" onClick={() => setEditing(c)}>Edit</button>
+                          {c.campaign_status === 'active'
+                            ? <button className="btn btn-secondary btn-sm" onClick={() => setStatus(c, 'paused')}>Pause</button>
+                            : c.campaign_status !== 'archived' && c.campaign_status !== 'completed' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(c, 'active')}>Activate</button>}
+                          {c.campaign_status !== 'archived' && <button className="btn btn-secondary btn-sm" onClick={() => setStatus(c, 'archived')}>Archive</button>}
+                          <button className="btn btn-danger btn-sm" onClick={() => remove(c)}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <h2 style={{ marginTop: 28 }}>Recent delivery activity</h2>
+          {!logs.length ? <p className="muted">Nothing sent yet.</p> : (
+            <div className="table-wrap">
+              <table className="data-table">
+                <thead><tr><th>When</th><th>Campaign</th><th>Customer</th><th>Status</th></tr></thead>
+                <tbody>
+                  {logs.map(l => (
+                    <tr key={l.id}>
+                      <td data-label="When">{fmtDate(l.created_at)}</td>
+                      <td data-label="Campaign">{l.campaigns?.campaign_name || '—'}</td>
+                      <td data-label="Customer">{l.whatsapp_customers?.customer_name || l.whatsapp_customers?.phone || '—'}</td>
+                      <td data-label="Status"><span className={'badge ' + (MESSAGE_BADGE_CLASS[l.delivery_status] || '')}>{l.delivery_status}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {editing !== undefined && <CampaignForm campaign={editing} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); state.reload(); }} />}
+        </>
+      );
+    }}</Async>
+  );
+}
+
 /* --------------------------------------------------------------- whatsapp */
 function WhatsAppSettings() {
   const { toast } = useUi();
@@ -1631,7 +1809,7 @@ export default function Admin() {
   if (!user) return <>{hero}<PageSection><StateBox title="Admin login required" action={<Link className="btn btn-primary" to="/login?next=/admin">Log in</Link>}>Log in with an admin account.</StateBox></PageSection></>;
   if (!isAdmin) return <>{hero}<PageSection><StateBox title="Access denied" action={<Link className="btn btn-primary" to="/account">Go to My Account</Link>}>This account does not have admin access.</StateBox></PageSection></>;
 
-  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers, deal: DealManager, discounts: DiscountManager, whatsapp: WhatsAppSettings, video: PromoVideoManager, festival: DiwaliThemeManager }[tab];
+  const View = { overview: Overview, orders: Orders, enquiries: Enquiries, reviews: Reviews, products: Products, categories: Categories, customers: Customers, deal: DealManager, discounts: DiscountManager, whatsapp: WhatsAppSettings, campaigns: CampaignsManager, video: PromoVideoManager, festival: DiwaliThemeManager }[tab];
   return (
     <>
       {hero}
@@ -1645,6 +1823,7 @@ export default function Admin() {
                   ? 'Deal of the Day'
                   : t === 'discounts' ? 'Discounts'
                   : t === 'whatsapp' ? 'WhatsApp'
+                  : t === 'campaigns' ? 'WhatsApp Campaigns'
                   : t === 'video' ? 'Promo Video'
                   : (t === 'festival' ? 'Festive Theme' : (t[0].toUpperCase() + t.slice(1)));
                 return (
@@ -1658,7 +1837,7 @@ export default function Admin() {
               <Link to="/account">My Account</Link>
             </nav>
             <div className={'panel' + (tab === 'festival' ? ' admin-panel-clean' : '')} role="tabpanel">
-              {!['products', 'categories', 'reviews', 'deal', 'discounts', 'whatsapp', 'video', 'festival'].includes(tab) && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
+              {!['products', 'categories', 'reviews', 'deal', 'discounts', 'whatsapp', 'campaigns', 'video', 'festival'].includes(tab) && <h2>{tab[0].toUpperCase() + tab.slice(1)}</h2>}
               {tab === 'overview' ? <Overview goTab={goTab} key={tab} /> : <View key={tab} />}
             </div>
           </div>

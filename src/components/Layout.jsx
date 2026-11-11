@@ -11,6 +11,7 @@ import { DealOfTheDayModal } from './DealOfTheDayModal.jsx';
 import { DiwaliSplashScreen } from './DiwaliSplashScreen.jsx';
 import { useDiwaliTheme } from '../lib/diwaliThemeData.js';
 import { useUi } from '../context/UiContext.jsx';
+import { useActivityHeartbeat } from '../lib/whatsappAutomation.js';
 
 const PALETTE_THEME_IDS = new Set([
   'republic-day', 'independence-day', 'vinayaka-chavithi', 'dasara', 'holi', 'valentines-day', 'raksha-bandhan'
@@ -44,6 +45,8 @@ function Toast() {
 export default function Layout() {
   const { pathname } = useLocation();
   const { config, theme, isDiwali, isPreview, setPreview } = useDiwaliTheme();
+  // Admin staff browsing their own dashboard are not promotional targets.
+  useActivityHeartbeat(!pathname.startsWith('/admin'));
 
   useEffect(() => {
     if (isDiwali) {

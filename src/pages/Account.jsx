@@ -5,6 +5,7 @@ import { ProductCard } from '../components/ProductCard.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
+import { saveWhatsAppConsent } from '../lib/whatsappAutomation.js';
 import { errMsg, fmtDate, PHONE_RE } from '../lib/utils.js';
 
 const TABS = ['wishlist', 'enquiries', 'reviews', 'profile'];
@@ -116,6 +117,7 @@ function Profile() {
   const { user, profile, setProfile } = useAuth();
   const [name, setName] = useState(profile ? profile.full_name || '' : '');
   const [phone, setPhone] = useState(profile ? profile.phone || '' : '');
+  const [waConsent, setWaConsent] = useState(false);
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState({ type: '', text: '' });
   const [busy, setBusy] = useState(false);
@@ -129,6 +131,7 @@ function Profile() {
     setBusy(false);
     if (error) return say('error', error.message);
     setProfile({ ...profile, full_name: name.trim(), phone: phone.trim() });
+    if (phone.trim()) saveWhatsAppConsent(phone.trim(), name.trim(), waConsent, 'account_profile').catch(() => {});
     say('ok', 'Profile saved.');
   };
   const changePassword = async e => {
@@ -147,6 +150,9 @@ function Profile() {
         <div className="field"><label htmlFor="pfEmail">Email</label><input id="pfEmail" value={user.email} disabled /><span className="hint">Your login email.</span></div>
         <div className="field"><label htmlFor="pfName">Full name</label><input id="pfName" maxLength={100} value={name} onChange={e => setName(e.target.value)} /></div>
         <div className="field"><label htmlFor="pfPhone">Phone</label><input id="pfPhone" type="tel" maxLength={20} value={phone} onChange={e => setPhone(e.target.value)} /></div>
+        <div className="check-row">
+          <label><input type="checkbox" checked={waConsent} onChange={e => setWaConsent(e.target.checked)} /> I agree to receive promotional WhatsApp messages from Bhima Print Solutions.</label>
+        </div>
         <button className="btn btn-primary" type="submit" disabled={busy}>Save changes</button>
       </form>
       <hr style={{ margin: '28px 0', border: 0, borderTop: '1.5px dashed #e3e8ef' }} />

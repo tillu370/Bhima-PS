@@ -4,8 +4,9 @@ import { useUi } from '../context/UiContext.jsx';
 import { supabase } from '../lib/supabase.js';
 import { useDialog } from '../lib/useDialog.js';
 import { EMAIL_RE, errMsg, PHONE_RE } from '../lib/utils.js';
+import { saveWhatsAppConsent } from '../lib/whatsappAutomation.js';
 
-const EMPTY = { name: '', phone: '', email: '', product: '', qty: '', notes: '' };
+const EMPTY = { name: '', phone: '', email: '', product: '', qty: '', notes: '', waConsent: false };
 
 // Enquiry form: saved to the Supabase `enquiries` table. Success is shown only after the insert succeeds.
 export function EnquiryModal() {
@@ -57,6 +58,7 @@ export function EnquiryModal() {
     });
     setBusy(false);
     if (err) return setError('We could not send your enquiry: ' + errMsg(err));
+    saveWhatsAppConsent(phone, name, form.waConsent, 'enquiry_modal').catch(() => {});
     setForm(EMPTY);
     enquirySent();
     setDoneMsg(`Thank you, ${name}. Our team will contact you on ${phone}.`);
@@ -94,6 +96,9 @@ export function EnquiryModal() {
               <input id="enqQty" type="number" min="1" max="10000000" value={form.qty} onChange={set('qty')} placeholder="e.g. 100" /></div>
             <div className="form-group"><label htmlFor="enqNotes">Specific Requirements / Notes</label>
               <textarea id="enqNotes" rows={3} maxLength={3000} value={form.notes} onChange={set('notes')} placeholder="Tell us sizes, material, delivery timeline..." /></div>
+            <div className="check-row">
+              <label><input type="checkbox" checked={form.waConsent} onChange={e => setForm(f => ({ ...f, waConsent: e.target.checked }))} /> I agree to receive promotional WhatsApp messages from Bhima Print Solutions.</label>
+            </div>
             {error && <p className="form-error" role="alert">{error}</p>}
             <button type="submit" className="btn btn-primary btn-block" disabled={busy}>{busy ? 'Sending…' : 'Send Enquiry'}</button>
           </form>

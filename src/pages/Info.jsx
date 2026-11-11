@@ -1,7 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PageHero, PageSection } from '../components/PageHero.jsx';
 import { useUi } from '../context/UiContext.jsx';
+import { whatsappOptOut } from '../lib/whatsappAutomation.js';
+import { PHONE_RE } from '../lib/utils.js';
+
+// Self-service "STOP" for someone who no longer has the promotional message
+// handy to reply to, or who never got one and just wants to pre-emptively opt out.
+function WhatsAppOptOutForm() {
+  const [phone, setPhone] = useState('');
+  const [msg, setMsg] = useState({ type: '', text: '' });
+  const [busy, setBusy] = useState(false);
+
+  const submit = async e => {
+    e.preventDefault();
+    if (!PHONE_RE.test(phone.trim())) return setMsg({ type: 'error', text: 'Please enter a valid phone number.' });
+    setBusy(true);
+    const res = await whatsappOptOut(phone.trim());
+    setBusy(false);
+    setMsg(res.success
+      ? { type: 'ok', text: 'Done. That number will not receive WhatsApp promotions from us again.' }
+      : { type: 'error', text: res.error || 'Something went wrong. Please try again.' });
+  };
+
+  return (
+    <form onSubmit={submit} noValidate style={{ maxWidth: 420, marginTop: 12 }}>
+      {msg.type === 'error' && <p className="form-error" role="alert">{msg.text}</p>}
+      {msg.type === 'ok' && <p className="form-ok" role="status">{msg.text}</p>}
+      <div className="field-row">
+        <div className="field"><label htmlFor="optOutPhone">Your WhatsApp number</label><input id="optOutPhone" type="tel" maxLength={20} value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 94918 11360" /></div>
+        <button className="btn btn-secondary" type="submit" disabled={busy}>{busy ? 'Submitting…' : 'Stop promotions'}</button>
+      </div>
+    </form>
+  );
+}
 
 // Information pages. Content only states what this site actually does.
 export default function Info() {
@@ -38,6 +70,9 @@ export default function Info() {
           <p>Your data is stored in a Supabase database. Access is limited by database security rules: you can see your own account data, and authorised Bhima Print staff can see enquiries to respond to them.</p>
           <h2>Your choices</h2>
           <p>You can update your name and phone number from <Link to="/account/profile">My Account</Link>. To ask us to delete your data, contact us at <a href="mailto:bhimaxerox1@gmail.com">bhimaxerox1@gmail.com</a>.</p>
+          <h2>WhatsApp promotions</h2>
+          <p>If you ticked the WhatsApp promotions box on an enquiry, checkout or account form, we may send you occasional promotional WhatsApp messages. You can stop these at any time by replying <strong>STOP</strong> to any such message, or using the form below.</p>
+          <WhatsAppOptOutForm />
         </>
       )
     },

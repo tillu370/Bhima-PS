@@ -6,3 +6,4 @@ dist/
 .env
 .env.local
 Products-20261026T130605Z-1-001/
+supabase/.temp/
