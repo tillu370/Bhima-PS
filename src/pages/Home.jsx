@@ -468,10 +468,10 @@ export default function Home() {
               </svg>
             </div>
 
-            <button className="btn btn-dark-teal cta-btn" onClick={() => openEnquiry('General Custom Print Enquiry')}>
+            <A href={buildWhatsAppUrl("Hi Bhima Print Solutions, I have an idea I'd like to print. Please help me with the next steps.")} className="btn btn-dark-teal cta-btn">
               Start Your Enquiry
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </button>
+            </A>
           </div>
         </div>
       </section>
