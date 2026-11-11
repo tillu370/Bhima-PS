@@ -43,8 +43,13 @@ supabase/schema.sql        database schema, RLS policies, starter data
 | `/checkout` | WhatsApp checkout: opens WhatsApp with the order written out. No login, no payment. |
 | `/login` | Log in, sign up, forgot / reset password. |
 | `/account/:tab` | Wishlist, enquiries, profile. |
-| `/admin/:tab` | Admin: enquiries, products (with image upload), categories, customers. |
+| `/admin/:tab` | Admin: enquiries, products (with image upload), categories, customers, WhatsApp campaigns. |
 | `/info/shipping`, `/info/privacy`, `/info/terms` | Info pages. Privacy and Terms are drafts to review. |
+
+WhatsApp promotional automation (consent, 60-minute inactivity scheduler, Meta
+Cloud API sends, delivery webhooks) is documented separately in
+[`WHATSAPP_AUTOMATION.md`](WHATSAPP_AUTOMATION.md) — deployment steps and a
+manual testing checklist.
 
 ## Supabase
 
