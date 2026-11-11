@@ -21,7 +21,7 @@ export function HomeTestimonials() {
   useEffect(() => {
     let on = true;
     supabase.from('reviews').select('id,name,rating,comment,products(name)')
-      .eq('status', 'approved').order('rating', { ascending: false }).order('created_at', { ascending: false }).limit(3)
+      .eq('status', 'approved').order('rating', { ascending: false }).order('created_at', { ascending: false }).limit(10)
       .then(({ data, error }) => { if (on && !error) setReviews(data || []); })
       .catch(() => {});
     return () => { on = false; };
@@ -32,7 +32,7 @@ export function HomeTestimonials() {
   })) : FALLBACK;
 
   return (
-    <div className="testimonial-cards-container">
+    <div className="testimonial-cards-container" role="region" aria-label="Approved customer reviews" tabIndex={0}>
       {shown.map(r => (
         <div className="testimonial-card" key={r.id}>
           <div className="stars-row">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>

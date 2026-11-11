@@ -392,7 +392,7 @@ export default function Home() {
             </button>
           </div>
 
-          {/* 3 Testimonial Cards, pulled from Admin > Reviews */}
+          {/* Up to 10 approved testimonial cards, pulled from Admin > Reviews */}
           <HomeTestimonials />
         </div>
         </div>
