@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
-import { useUi } from '../context/UiContext.jsx';
 import { FESTIVALS } from '../lib/festiveThemeData.js';
 import { getFestiveTheme } from '../lib/diwaliThemeData.js';
+import { useWhatsAppNumber } from '../lib/whatsappData.js';
+import { A } from './A.jsx';
 import { SafeImage } from './SafeImage.jsx';
 
 export function DiwaliHeroBanner({ config, preview = false }) {
-  const { openEnquiry } = useUi();
+  const whatsappNumber = useWhatsAppNumber();
   const theme = FESTIVALS.find(festival => festival.id === (config?.festival_id || config?.theme_id)) || FESTIVALS[0];
+  const bulkQuoteMessage = `Hi, I'd like a bulk or corporate quote for ${theme.name}. Please share pricing and details.`;
+  const bulkQuoteHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(bulkQuoteMessage)}`;
   const renderData = getFestiveTheme(theme.id);
   const heroImg = config?.hero_image || theme.heroImages[0]?.path || theme.thumb;
   const fallbackHeroImg = theme.heroImages.find(image => image.path !== heroImg)?.path;
@@ -110,17 +113,17 @@ export function DiwaliHeroBanner({ config, preview = false }) {
               </svg>
             </Link>
 
-            <button
-              type="button"
+            <A
+              href={bulkQuoteHref}
               className="btn-festive-enquiry-pill"
-              onClick={() => { if (!preview) openEnquiry(theme.name + ' Corporate & Custom Bulk Gifting'); }}
+              onClick={preview ? e => e.preventDefault() : undefined}
               aria-label="Request bulk or corporate quote"
             >
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
               <span>Bulk / Corporate Quote</span>
-            </button>
+            </A>
           </div>
 
           <div className="festive-hero-features">

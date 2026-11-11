@@ -1,13 +1,12 @@
 import { A } from './A.jsx';
 import { LogoMark, Wordmark } from './LogoMark.jsx';
 import { SOCIAL } from '../lib/config.js';
-import { useUi } from '../context/UiContext.jsx';
 import { buildGeneralEnquiryMessage, buildWhatsAppUrl, useWhatsAppNumber } from '../lib/whatsappData.js';
 
 export function Footer() {
-  const { openEnquiry } = useUi();
   const waNumber = useWhatsAppNumber();
   const waHref = buildWhatsAppUrl(buildGeneralEnquiryMessage());
+  const bulkOrderHref = buildWhatsAppUrl("Hi, I'd like to place a bulk order. Please share the pricing and details.");
   return (
     <footer className="main-footer" id="footer">
         <div className="footer-wordmark" aria-hidden="true">BHIMA</div>
@@ -43,7 +42,7 @@ export function Footer() {
             <h4 className="footer-col-title">Quick Links</h4>
             <ul>
               <li><A href="/products">All Products</A></li>
-              <li><A href="#" onClick={e => { e.preventDefault(); openEnquiry('Bulk Order Enquiry', { product: 'Bulk corporate merchandise' }); }}>Bulk Orders</A></li>
+              <li><A href={bulkOrderHref}>Bulk Orders</A></li>
               <li><A href="/#why-choose">About Us</A></li>
               <li><A href="/#for-business">For Business</A></li>
               <li><A href="#footer">Contact</A></li>
