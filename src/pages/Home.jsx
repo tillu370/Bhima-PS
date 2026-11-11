@@ -250,10 +250,10 @@ export default function Home() {
                 </li>
               </ul>
 
-              <button className="btn btn-teal-pill" onClick={() => openEnquiry('Business Inquiry & Bulk Order')}>
-                Discuss Your Requirements
+              <A href={buildWhatsAppUrl("Hi, I'd like to enquire about business orders. Please share your printing options, pricing and details.")} className="btn btn-teal-pill">
+                Business Orders Enquiry
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
+              </A>
             </div>
 
             <div className="corp-right">
