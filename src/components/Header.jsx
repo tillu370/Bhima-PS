@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useUi } from '../context/UiContext.jsx';
 import { useCategories } from '../lib/data.js';
+import { useWhatsAppNumber } from '../lib/whatsappData.js';
 import { LogoMark, Wordmark } from './LogoMark.jsx';
 
 // Shown only for the brief moment before the real categories load from the database (or if that load fails).
@@ -16,7 +17,9 @@ const STATIC_CATS = [
 export function Header() {
   const { user, isAdmin } = useAuth();
   const cart = useCart();
-  const { setCartOpen, openEnquiry } = useUi();
+  const { setCartOpen } = useUi();
+  const whatsappNumber = useWhatsAppNumber();
+  const bulkOrdersHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi, I'd like to place a bulk order. Please share the pricing and details.")}`;
   const loaded = useCategories();
   const cats = loaded.length ? loaded : STATIC_CATS;
   const loc = useLocation();
@@ -124,7 +127,7 @@ export function Header() {
               </div>
             </div>
             <Link to="/customize" className="nav-link nav-studio">Design Studio</Link>
-            <a href="#" className="nav-link" onClick={e => { e.preventDefault(); openEnquiry('Bulk Order Enquiry', { product: 'Bulk corporate merchandise' }); }}>Bulk Orders</a>
+            <a href={bulkOrdersHref} target="_blank" rel="noopener noreferrer" className="nav-link">Bulk Orders</a>
             <Link to="/#for-business" className="nav-link">For Business</Link>
             <Link to="/#how-it-works" className="nav-link">Design Help</Link>
             <Link to="/#why-choose" className="nav-link">About Us</Link>
@@ -157,7 +160,7 @@ export function Header() {
           </form>
           <Link to="/products">All Products</Link>
           <Link to="/customize">Design Studio</Link>
-          <a href="#" onClick={e => { e.preventDefault(); setMenu(false); openEnquiry('Bulk Order Enquiry', { product: 'Bulk corporate merchandise' }); }}>Bulk Orders</a>
+          <a href={bulkOrdersHref} target="_blank" rel="noopener noreferrer" onClick={() => setMenu(false)}>Bulk Orders</a>
           <Link to="/#for-business">For Business</Link>
           <Link to="/#how-it-works">Design Help</Link>
           <Link to="/#why-choose">About Us</Link>
