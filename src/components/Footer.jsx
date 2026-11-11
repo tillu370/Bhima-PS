@@ -75,7 +75,7 @@ export function Footer() {
               </li>
               <li>
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <A href="https://maps.google.com/?q=Bhima+Xerox+Opp+Shanti+Kalyana+Mandapam+Pendurthi+Visakhapatnam+531173">
+                <A href="https://www.google.com/maps/dir/17.8206757,83.2058775/BHIMA+XEROX/data=!4m12!4m11!1m1!4e1!1m5!1m4!1s0x3a396764bf12f033:0x4e90be4c2a2f0d27!8m2!3d17.8207101!4d83.2058837!2m1!11b1!3e0?utm_source=mstt_0&g_ep=CAESBzI2LjQ0LjUYACCRQSrKASwxMDA4NDc0MTEsOTQyOTIxOTUsOTQyOTk1MzIsMTAwNzk2NDk4LDEwMDc5Nzc2MSwxMDA3OTY1MzUsMTAwODQwMDQ2LDk0MjA3Mzk0LDk0MjA3NTA2LDk0MjA4NTA2LDk0MjE4NjUzLDk0MjI5ODM5LDk0Mjc1MTY4LDEwMDg0ODEwMiwxMDA4MjUwMjUsMTAwODIwMjM3LDEwMDgyMjQ5NCwxMDA4Mjc5NzUsMTAwODM4MzU5LDEyMTgxNjQ2MSwxMDA4NDU5MzhCAklO&skid=027f89d0-b776-4db1-bc8a-9e7cbd126e7a&g_st=aw">
                   Bhima Xerox, Opp. Shanti Kalyana Mandapam,<br />Behind Denim Jeans, Pendurthi, Visakhapatnam, AP 531173
                 </A>
               </li>
